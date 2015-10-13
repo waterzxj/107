@@ -1,0 +1,111 @@
+.beijing-district{
+  width: 360px;
+  height: 360px;
+  position: relative;
+}
+
+.beijing-district .hide{
+  display: none !important;
+}
+
+.beijing-district>svg .district-item{
+  cursor: pointer;
+}
+
+.beijing-district>svg .district-item [data-district]{
+  opacity: 0.3;
+}
+
+.beijing-district>svg .district-item text{  
+  font-size: 14px;
+  fill: #000;
+  opacity: 0.5
+}
+
+.beijing-district>svg .district-item[active] [data-district]{
+  opacity: 1 !important;
+}
+
+.beijing-district>svg .district-item[active] text{  
+  fill: #fff !important;
+  opacity: 1 !important;
+}
+
+.beijing-district>svg>text{  
+  fill: #666;
+  font-size: 14px;
+}
+
+.beijing-district>.selector{
+  height: 342px;  
+  display: block;
+  position: relative;
+  overflow: hidden;  
+}
+
+.beijing-district>.selector>.imgList{
+
+}
+
+.beijing-district>.selector>.imgList>img{
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.beijing-district>.selector>.imgList>img.hide{
+  display: none;
+}
+
+.beijing-district>.selector>.imgList>label{
+  color: #fff;
+  position: absolute;
+  cursor: pointer;
+}
+
+.beijing-district>.map{
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+}
+
+.beijing-district>.map>.panel>.zoomBtn{
+  position: absolute;
+  left:10px;
+  width: 40px;
+  height: 40px;
+  opacity: 0.3;  
+  cursor: pointer;
+}
+
+.beijing-district>.map>.panel>.zoomBtn:hover{
+  opacity: 0.5;
+}
+
+.beijing-district>.map>.panel>.zoomBtn.in{
+  top: 145px;
+}
+
+.beijing-district>.map>.panel>.zoomBtn.out{
+  top: 195px;
+}
+
+.beijing-district>.circle{
+  position: absolute;
+  z-index: 4;
+  border-radius: 50%;
+  left: 175px;
+  top: 175px;
+  width: 0px;
+  height: 0px;
+  background-color: #00ac97;
+}
+/* test */
+.beijing-district .test-div{
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  height:40px;
+  width: 40px;
+  border: 1px solid #000;
+}

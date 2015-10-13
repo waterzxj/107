@@ -1,0 +1,392 @@
+#set($pageTitle="北京租房周刊")
+#set($bannerTitle="北京租房周刊")
+#set($bannerDesc="第一时间获取丰富个人出租信息")
+
+#parse('_style.vm')
+<link href="#staticUrl('css/third-party/mailchimp.css')" rel="stylesheet" type="text/css" />
+<style>
+    h1, h2, h3 {
+        font-weight: normal;
+    }
+    .desc {
+        font-size: 14px;
+    }
+    .em {
+        font-size: 15px;
+    }
+    h2 em {
+        font-style: normal;
+        font-size: 22px;
+        padding: 0 4px;
+    }
+    #contentContainer {
+        padding: 20px 0;
+    }
+    #content {
+        padding: 20px 0;
+        background-color: #fff;
+        height: 395px;
+        position: relative;
+    }
+    .panel {
+        float: left;
+        height: 395px;
+        position: relative;
+        text-align: left;
+    }
+    #panel1 {
+        width: 300px;
+        margin-left: 50px;
+    }
+    #panel1 h1 {
+        color: ${secondColor};
+        bottom: 75px;
+        font-size: 24px;
+        position: absolute;
+        right: 65px;
+        font-weight: bold;
+    }
+    #panel1 h2 {
+        bottom: 45px;
+        font-size: 16px;
+        position: absolute;
+        right: 18px;
+    }
+    #panel1 #time {
+        font-size: 14px;
+        left: 17px;
+        position: absolute;
+        top: 40px;
+    }
+    #panel1 #icon {
+        left: 50px;
+        position: absolute;
+        top: 48px;
+        width: 260px;
+    }
+    #panel1 #all {
+        bottom: 20px;
+        font-size: 14px;
+        position: absolute;
+        right: 18px;
+        color: #C5C5C5;
+    }
+    #panel1 #all:hover {
+        opacity: 0.8;
+    }
+    #panel2 h2, #panel3 h2 {
+        color: ${secondColor};
+        font-size: 16px;
+        margin-top: 35px;
+        line-height: 30px;
+    }
+    #panel2 h3, #panel3 h3 {
+        margin: 20px 0;
+    }
+    #panel2 {
+        margin: 0 70px;
+    }
+    #panel2 h2, #panel2 h3 {
+        margin-left: 14px;
+    }
+    #panel3 {
+        width: 300px;
+    }
+    #panel3 label {
+        display: block;
+        padding: 10px 0 20px;
+    }
+    #mc_embed_signup form {
+        padding: 0;
+        font-size: 13px;
+    }
+    #mc_embed_signup .tip {
+        font-size: 15px;
+        margin-bottom: 20px;
+        padding: 20px 0;
+    }
+    #mc_embed_signup #mce-EMAIL {
+        width: 280px;
+        margin-top: 10px;
+        text-indent: 0;
+        padding-left: 10px;
+    }
+    #mc_embed_signup input:focus {
+        border-color: #00ac97;
+    }
+    #mc_embed_signup .button {
+        border: 0 none;
+        width: 80px;
+        height: 40px;
+        margin: 20px 0 0 0;
+    }
+    #mc_embed_signup .button:hover {
+        background-color: #1ABC9C;
+    }
+    #mc_embed_signup .mc-field-group {
+        padding: 0;
+    }
+    #mc_embed_signup div.response {
+        padding: 0;
+        margin: 0;
+        font-weight: normal;
+    }
+    #mc_embed_signup div#mce-responses {
+        padding: 0 0 10px 0;
+        margin: 0;
+        width: 100%;
+    }
+    #mc_embed_signup #mce-error-response {
+        color: ${warnColor};
+    }
+    #mc_embed_signup #mce-success-response {
+        color: ${mainColor};
+    }
+    #mc_embed_signup div.response {
+        width: 100%;
+    }
+</style>
+<div id="panel1" class="panel">
+    <span id="time">每周一、周五
+        <br>
+        上午8:30发布</span>
+    <img id="icon" src="#staticUrl('image/weekly/weekly.png')" />
+    <h1>北京租房周刊</h1>
+    <h2>第一时间获取丰富个人出租信息</h2>
+    <a id="all" href="#url('/weekly/all')" target="_weekly-all">>>查看往期</a>
+</div>
+<div id="panel2" class="panel">
+    <h2>推荐订阅方式：<em>微信</em></h2>
+    <h3 class="desc">添加微信公共号<span class="em">“weekly107”</span>
+    <br>
+    或扫描二维码</h3>
+    <img src="#staticUrl('image/weekly/code.jpg')" />
+</div>
+<div id="panel3" class="panel">
+    <h2>其他订阅方式：<em>邮件</em></h2>
+    <h3 class="desc">为确保正常接收，建议：不使用QQ邮箱，且将<span class="em">weekly@107room.com</span>添加为联系人</h3>
+    <label for="mce-EMAIL">邮箱地址 </label>
+    <div id="mc_embed_signup">
+        <form action="http://107room.us3.list-manage.com/subscribe/post?u=eef82249bfdf4f513fa3dd1ff&amp;id=fcfc28f40b" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+            <div class="mc-field-group">
+                <input placeholder="输入常用邮箱" type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+            </div>
+            <div id="mce-responses" class="clear">
+                <div class="response" id="mce-error-response" style="display:none"></div>
+                <div class="response" id="mce-success-response" style="display:none"></div>
+            </div>
+            <div class="clear">
+                <input type="submit" value="订阅" name="subscribe" id="mc-embedded-subscribe" class="button buttonBig">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var fnames = new Array();
+    var ftypes = new Array();
+    fnames[0] = 'EMAIL';
+    ftypes[0] = 'email';
+    try {
+        var jqueryLoaded = jQuery;
+        jqueryLoaded = true;
+    } catch(err) {
+        var jqueryLoaded = false;
+    }
+    var head = document.getElementsByTagName('head')[0];
+    if (!jqueryLoaded) {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = '//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js';
+        head.appendChild(script);
+        if (script.readyState && script.onload !== null) {
+            script.onreadystatechange = function() {
+                if (this.readyState == 'complete')
+                    mce_preload_check();
+            }
+        }
+    }
+
+    var err_style = '';
+    try {
+        err_style = mc_custom_error_style;
+    } catch(e) {
+        err_style = '#mc_embed_signup input.mce_inline_error{border-color:#6B0505;} #mc_embed_signup div.mce_inline_error{margin: 0 0 1em 0; padding: 5px 10px; background-color:#6B0505; font-weight: bold; z-index: 1; color:#fff;}';
+    }
+    var head = document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    if (style.styleSheet) {
+        style.styleSheet.cssText = err_style;
+    } else {
+        style.appendChild(document.createTextNode(err_style));
+    }
+    head.appendChild(style);
+    setTimeout('mce_preload_check();', 250);
+
+    var mce_preload_checks = 0;
+    function mce_preload_check() {
+        if (mce_preload_checks > 40)
+            return;
+        mce_preload_checks++;
+        try {
+            var jqueryLoaded = jQuery;
+        } catch(err) {
+            setTimeout('mce_preload_check();', 250);
+            return;
+        }
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'http://downloads.mailchimp.com/js/jquery.form-n-validate.js';
+        head.appendChild(script);
+        try {
+            var validatorLoaded = jQuery("#fake-form").validate({});
+        } catch(err) {
+            setTimeout('mce_preload_check();', 250);
+            return;
+        }
+        mce_init_form();
+    }
+
+    function mce_init_form() {
+        jQuery(document).ready(function($) {
+            var options = {
+                errorClass : 'mce_inline_error',
+                errorElement : 'div',
+                onkeyup : function() {
+                },
+                onfocusout : function() {
+                },
+                onblur : function() {
+                }
+            };
+            var mce_validator = $("#mc-embedded-subscribe-form").validate(options);
+            $("#mc-embedded-subscribe-form").unbind('submit');
+            //remove the validator so we can get into beforeSubmit on the ajaxform, which then calls the validator
+            options = {
+                url : 'http://107room.us3.list-manage.com/subscribe/post-json?u=eef82249bfdf4f513fa3dd1ff&id=fcfc28f40b&c=?',
+                type : 'GET',
+                dataType : 'json',
+                contentType : "application/json; charset=utf-8",
+                beforeSubmit : function() {
+                    $('#mce_tmp_error_msg').remove();
+                    $('.datefield', '#mc_embed_signup').each(function() {
+                        var txt = 'filled';
+                        var fields = new Array();
+                        var i = 0;
+                        $(':text', this).each(function() {
+                            fields[i] = this;
+                            i++;
+                        });
+                        $(':hidden', this).each(function() {
+                            var bday = false;
+                            if (fields.length == 2) {
+                                bday = true;
+                                fields[2] = {
+                                    'value' : 1970
+                                };
+                                //trick birthdays into having years
+                            }
+                            if (fields[0].value == 'MM' && fields[1].value == 'DD' && (fields[2].value == 'YYYY' || (bday && fields[2].value == 1970) )) {
+                                this.value = '';
+                            } else if (fields[0].value == '' && fields[1].value == '' && (fields[2].value == '' || (bday && fields[2].value == 1970) )) {
+                                this.value = '';
+                            } else {
+                                if (/\[day\]/.test(fields[0].name)) {
+                                    this.value = fields[1].value + '/' + fields[0].value + '/' + fields[2].value;
+                                } else {
+                                    this.value = fields[0].value + '/' + fields[1].value + '/' + fields[2].value;
+                                }
+                            }
+                        });
+                    });
+                    $('.phonefield-us', '#mc_embed_signup').each(function() {
+                        var fields = new Array();
+                        var i = 0;
+                        $(':text', this).each(function() {
+                            fields[i] = this;
+                            i++;
+                        });
+                        $(':hidden', this).each(function() {
+                            if (fields[0].value.length != 3 || fields[1].value.length != 3 || fields[2].value.length != 4) {
+                                this.value = '';
+                            } else {
+                                this.value = 'filled';
+                            }
+                        });
+                    });
+                    return mce_validator.form();
+                },
+                success : mce_success_cb
+            };
+            $('#mc-embedded-subscribe-form').ajaxForm(options);
+
+        });
+    }
+
+    function mce_success_cb(resp) {
+        $('#mce-success-response').hide();
+        $('#mce-error-response').hide();
+        if (resp.result == "success") {
+            $('#mce-' + resp.result + '-response').show();
+            $('#mce-' + resp.result + '-response').html(resp.msg);
+            $('#mc-embedded-subscribe-form').each(function() {
+                this.reset();
+            });
+        } else {
+            var index = -1;
+            var msg;
+            try {
+                var parts = resp.msg.split(' - ', 2);
+                if (parts[1] == undefined) {
+                    msg = resp.msg;
+                } else {
+                    i = parseInt(parts[0]);
+                    if (i.toString() == parts[0]) {
+                        index = parts[0];
+                        msg = parts[1];
+                    } else {
+                        index = -1;
+                        msg = resp.msg;
+                    }
+                }
+            } catch(e) {
+                index = -1;
+                msg = resp.msg;
+            }
+            try {
+                if (index == -1) {
+                    $('#mce-' + resp.result + '-response').show();
+                    $('#mce-' + resp.result + '-response').html(msg);
+                } else {
+                    err_id = 'mce_tmp_error_msg';
+                    html = '<div id="' + err_id + '" style="' + err_style + '"> ' + msg + '</div>';
+
+                    var input_id = '#mc_embed_signup';
+                    var f = $(input_id);
+                    if (ftypes[index] == 'address') {
+                        input_id = '#mce-' + fnames[index] + '-addr1';
+                        f = $(input_id).parent().parent().get(0);
+                    } else if (ftypes[index] == 'date') {
+                        input_id = '#mce-' + fnames[index] + '-month';
+                        f = $(input_id).parent().parent().get(0);
+                    } else {
+                        input_id = '#mce-' + fnames[index];
+                        f = $().parent(input_id).get(0);
+                    }
+                    if (f) {
+                        $(f).append(html);
+                        $(input_id).focus();
+                    } else {
+                        $('#mce-' + resp.result + '-response').show();
+                        $('#mce-' + resp.result + '-response').html(msg);
+                    }
+                }
+            } catch(e) {
+                $('#mce-' + resp.result + '-response').show();
+                $('#mce-' + resp.result + '-response').html(msg);
+            }
+        }
+    }
+
+</script>

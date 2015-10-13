@@ -1,0 +1,128 @@
+#set($pageTitle="重置密码")
+#set($bannerTitle="重置密码")
+#set($user = $userUtils.getUser($request, $response))
+
+#parse('_style.vm')
+<style>
+.passwordBox {
+position: relative;
+}
+.username {
+padding-top: 80px;
+font-weight: bold;
+color: ${mainColor};
+}
+.box {
+height: 70px;
+}
+.hint1 {
+padding: 10px 0 20px 0;
+}
+.hint2 {
+display: none;
+font-size: 14px;
+left: 390px;
+padding: 5px 0 5px 5px;
+position: absolute;
+text-align: left;
+}
+.validateText, .unequalText  {
+color: ${warnColor};
+display: none;
+font-size: 13px;
+line-height: 40px;
+margin-left: 10px;
+position: absolute;
+text-align: left;
+}
+.unequalText {
+}
+.passwordBox .box input {
+background: url("#staticUrl('image/icon/password_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+.passwordBox .button {
+width: 290px;
+line-height: 50px;
+}
+</style>
+
+<div class="cardContainer">
+    <div class="card">
+        <div class="passwordBox">
+            <p class="username">
+                $!user.username
+            </p>
+            <p class="hint1">
+                你好，输入新密码完成重置
+            </p>
+            <div class="box box1">
+                <input class="input p1" type="password" />
+                <p class="hint2">
+                    密码字母区分大小写
+                </p>
+                <span class="validateText">最短$validateUtils.USERNAME_MIN_CHARS个字符，最长$validateUtils.USERNAME_MAX_CHARS个字符</span>
+            </div>
+            <div class="box box2">
+                <input class="input p2" type="password" />
+                <p class="hint2">
+                    再次输入确认
+                </p>
+                <span class="validateText">最短$validateUtils.USERNAME_MIN_CHARS个字符，最长$validateUtils.USERNAME_MAX_CHARS个字符</span>
+                <span class="unequalText">密码不一致</span>
+            </div>
+            <a class="button" href="javascript:;">确认重置</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('.passwordBox .input').focus(function() {
+        $(this).closest('.box').find('.hint2').show();
+    }).blur(function() {
+        $(this).closest('.box').find('.hint2').hide();
+    });
+    $('.passwordBox .button').click(function() {
+        $('.validateText, .unequalText').hide();
+        var valid = true;
+        // check length
+        $('.passwordBox .input').each(function() {
+            var v = $(this).val();
+            if (v.length < $validateUtils.USERNAME_MIN_CHARS || v.length > $validateUtils.USERNAME_MAX_CHARS) {
+                valid = false;
+                $(this).closest('.box').find('.validateText').show();
+            }
+        });
+        // check same
+        var p = null;
+        if (valid) {
+            $('.passwordBox .input').each(function() {
+                var v = $(this).val();
+                if (p == null) {
+                    p = v;
+                } else if (v != p) {
+                    $('.passwordBox .unequalText').show();
+                    return valid = false;
+                }
+            });
+        }
+        if (!valid)
+            return;
+        $.post('#url("/user/auth/reset/")', appendDebug({
+            password : p
+        }), function(data) {
+            data = _json(data);
+            switch(data.status) {
+                case 200:
+                    location = '#url("/common/result?pageTitle=重置密码&bannerTitle=重置密码&desc=重置密码成功&button=开始找房&timing=5&url=/house/search")';
+                    break;
+                default:
+                    alert('会话已过期，请重新点击邮箱中的链接重置密码');
+                    break;
+            }
+        });
+    });
+    // input enter
+    validateInput($('.passwordBox .input'), function() {
+        $('.passwordBox .button').click();
+    });
+</script>

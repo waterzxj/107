@@ -1,0 +1,163 @@
+<div class="userinfoWidget" content="$!userAge">
+    <div class="key userinfoComponent">
+        <span>年龄</span>
+    </div>
+    <div class="value">	
+        <ul class="ageWidget" style='position:absolute; left:30px; top:5px;'>
+        	<div class="ageDiv" style='position: absolute;'>
+                <input class="age" type="text" style='border: none !important; font-weight:bold;' value="$!userAge" validate="length1-" readOnly />
+        	</div>
+			
+			<a herf="javascript:;" style="display:none" class="hiddenComponent">
+                <li class="userinfoComponent"></li>
+        	</a>
+		</ul>
+	</div>
+</div>
+
+<script>
+//calculate position
+function getElement(key, i) {
+	if (i > 9) {
+		i = 0;
+	}
+	var selector = '.userinfoWidget .ageWidget .' + key + '[info="' + i + '"]';
+	return $(selector);
+}
+function createElement(i, x, y, key) {
+	if (i > 9) i = 0;
+	var root = $(".userinfoWidget .ageWidget");
+	var element = root.find(".hiddenComponent").clone();
+	element.removeClass("hiddenComponent");
+	element.show();
+	var liElement = element.find("li");
+	liElement.addClass(key);
+	liElement.css("left", x);
+	liElement.css("top", y);
+	liElement.attr("info", i);
+	root.append(element);
+}
+var pi=2*Math.asin(1);
+function deltax(theta, radius) {
+	return Math.sin(theta) * radius;
+}
+function deltay(theta, radius) {
+	return (1 - Math.cos(theta)) * radius;
+}
+function initAge(radius) {
+    var theta = 0;
+	for (var i = 1; i <= 5; i++) {
+		theta += pi / 11;
+		var x = radius + deltax(theta, radius);
+		var y = deltay(theta, radius);
+		createElement(i, x, y, "unit");
+	}
+	for (var i = 6; i <= 10; i++) {
+		var element = getElement("unit", 11 - i);
+		var x = element.css("left");
+		var y = radius * 2 - parseInt(element.css("top"));
+		createElement(i, x, y, "unit");
+	}
+	for (var i = 1; i <= 10; i++) {
+		var element = getElement("unit", i);
+		var x = radius * 2 - parseInt(element.css("left"));
+		var y = element.css("top");
+		createElement(i, x, y, "ten");
+	}
+	var ageDiv = $(".ageWidget .ageDiv");
+	ageDiv.css("left", 0.65 * radius + "px");
+	ageDiv.css("top", 0.60 * radius + "px");
+	var age = $(".ageWidget .age");
+	age.css("width", 1.2 * radius + "px");
+	age.css("font-size", 0.8 * radius + "px");
+	
+	if (!isCurrentEmpty()) {
+		refreshCurrentAge();
+	}
+}
+
+function isCurrentEmpty() {
+	return $(".ageWidget").closest(".userinfoWidget").attr("content") == "";
+}
+function getCurrentUnit() {
+	var now = $(".ageWidget").closest(".userinfoWidget").attr("content");
+	if (now != "") return now % 10;
+	return 0;
+}
+function getCurrentTen() {
+	var now = $(".ageWidget").closest(".userinfoWidget").attr("content");
+	if (now != "") return (now-now%10)/10;
+	return 0;
+}
+
+function refreshCurrentAge() {
+	$(".ageWidget").closest(".userinfoWidget").find(".key").css('opacity', '1');
+	var unit = getCurrentUnit();
+	var ten = getCurrentTen();
+	$(".ageWidget li").each(function(index){
+		if ($(this).hasClass("unit")) {
+			if ($(this).attr("info") == unit) {
+				$(this).css('opacity', '1');
+			} else {
+				$(this).css('opacity', '0.1');
+			}
+		} else {
+			if ($(this).attr("info") == ten) {
+				$(this).css('opacity', '1');
+			} else {
+				$(this).css('opacity', '0.1');
+			}
+		}
+	});
+}
+function initAgeEvents() {
+	//events for constellation
+    $(".ageWidget li").hover(function(){
+    	$(this).css('opacity', '1');
+    	var v = $(this).attr("info");
+    	if ($(this).hasClass("unit")) {
+    		$(".ageWidget input").val(getCurrentTen() + "" + v);
+    	} else {
+    		$(".ageWidget input").val(v + "" + getCurrentUnit());
+    	}
+    }, function(){
+    	var v = $(this).attr("info");
+    	var digit = 0;
+    	if ($(this).hasClass("unit")) {
+    		digit = getCurrentUnit();
+    	} else {
+    		digit = getCurrentTen();
+    	}
+    	if (isCurrentEmpty()) {
+    		$(".ageWidget input").val("");
+   			$(this).css('opacity', '0.35');
+    	} else {
+    		$(".ageWidget input").val(getCurrentTen() + "" + getCurrentUnit());
+			if (v != digit) {
+    			$(this).css('opacity', '0.1');
+    		}
+    	}
+    });
+    $(".ageWidget a").click(function(){
+    	var v = Number($(this).find("li").attr("info"));
+    	if ($(this).find("li").hasClass("unit")) {
+    		$(this).closest(".userinfoWidget").attr("content", getCurrentTen() * 10 + v);
+    		$(".ageWidget input").val(getCurrentTen() + "" + v);
+    	} else {
+    		$(this).closest(".userinfoWidget").attr("content", v * 10 + getCurrentUnit());
+    		$(".ageWidget input").val(v + "" + getCurrentUnit());
+    	}
+		refreshCurrentAge();
+    });
+    //events for userinfoWidget
+    $(".ageWidget").closest(".userinfoWidget").hover(function(){
+    	if (isCurrentEmpty()) {
+    		$(this).find(".userinfoComponent").css('opacity', '0.35');
+    	}
+    }, function(){
+    	if (isCurrentEmpty()) {
+    		$(this).find(".userinfoComponent").css('opacity', '0.1');
+    	}
+    });
+}
+</script>

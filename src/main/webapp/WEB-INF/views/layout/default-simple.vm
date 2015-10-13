@@ -1,0 +1,87 @@
+#parse("_style.vm")
+
+#set($browser = $userUtils.getBrowser($request))
+#set($uri = $request.requestURI)
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        #if($pageTitle)
+        <title>107间 - $pageTitle</title>
+        #else
+        <title>107间 </title>
+        #end
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="keywords" content="$!pageKeywords 租房 北京租房 无中介 无中介租房" />
+        #if($pageDesc)
+        <meta name="description" content="$pageDesc">
+        #else
+        <meta name="description" content="「107间」是免费连接年轻租客与房东的真实智能无中介平台，每间房都经过智能核实，每位租客均通过身份认证。专注于为北京毕业生、年轻白领打造真实而简单的线上租房体验。">
+        #end
+        <meta name="author" content="107间">
+        <meta name="viewport" content="width=1170">
+        <meta http-equiv="X-UA-Compatible" content="IE=10" />
+        <link rel="shortcut icon" href="#staticUrl('favicon.ico')" type="image/ico">
+        <link rel="stylesheet" type="text/css" href="#staticUrl('css/main.css')?20150414">
+        <script type="text/javascript" src="#staticUrl('js/jquery-1.9.1.min.js')?20140615"></script>
+        <script type="text/javascript" src="#staticUrl('js/jquery.mousewheel.js')"></script>
+        <script type="text/javascript" src="#staticUrl('js/common.js')?20140911"></script>
+        <script type="text/javascript" src="#staticUrl('js/main.js')?20150418"></script>
+        <script type="text/javascript" src="#staticUrl('js/Card.js')?20140315"></script>
+    </head>
+    <body>
+        $!debugDetail
+        <style>
+            body {
+                background-color:white;
+            }
+            body, a {
+                color:${fontColor};
+            }
+            #header .banner {
+                background-color:${mainColor};
+                border-bottom-color:${secondColor};
+            }
+            #contentContainer {
+                background-color:${backgroundColor};
+            }
+            #header {#if($noBanner)
+                border-bottom:0 none;
+                #end
+            }
+            #header .statusNotVerified {
+                color:${secondColor};
+                margin-left:5px;
+            }
+            #usernameMenu {
+                padding-top: 2px;
+                font-size: 12px;
+                float: left;
+            }
+        </style>
+    
+        <div id="header">
+            <div id="navigator" class="fixedWithContainer">
+                <a id="navLogo" href="#url('/')"><img src="#staticUrl('image/logo0.png')?20150415" /></a>
+            </div>
+            #if(!$noBanner)
+            <div class="banner">
+                <div class="fixedWithContainer">
+                    <span class="title">$!bannerTitle</span>
+                    <span class="desc">$!bannerDesc</span>
+                </div>
+            </div>
+            #end
+        </div>
+
+        <div id="contentContainer">
+            <div id="content" class="fixedWithContainer">
+                $screen_content
+            </div>
+        </div>
+        
+        #if(!$disableStatistic)
+        #statistic()
+        #end
+    </body>
+</html>

@@ -1,0 +1,1 @@
+D:/Tesseract-OCR/tesseract.exe http://www.douban.com/group/topic/45777993/,http://www.douban.com/group/topic/46226104,http://www.douban.com/group/topic/46057875,http://www.douban.com/group/topic/46057886

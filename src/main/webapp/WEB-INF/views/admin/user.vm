@@ -1,0 +1,140 @@
+#set($pageTitle = "用户管理")
+
+<style>
+    .op a {
+        width: 120px;
+        padding: 3px 0;
+        display: inline-block;
+        background-color: lightblue;
+        opacity: 0.7;
+        margin: 0 auto;
+    }
+    .op a:hover {
+        opacity: 1;
+    }
+    #userDiv table {
+        padding-right:200px;
+        border: 0px solid;
+        font-size: 14px;
+    }
+    #userDiv table .verifyBorder {
+    border:1px solid;
+    }
+    #userDiv tr > * {
+        padding: 0 5px;
+        border: 1px solid;
+    }
+    #userDiv tr:hover {
+        opacity: 0.6;
+    }
+    .verified {
+        background-color: lightgreen;
+    }
+    .super {
+        padding-left: 10px;
+        color: red;
+    }
+</style>
+
+<div id="userDiv"  style="margin-left: -200px;">
+    <table>
+        <tbody>
+
+            <div style="margin-bottom:10px;text-align:left;font-size:20px;padding-top:20px;">
+                <label>条件查找</label>
+                <input class="search-key" type="text" style="font-size:20px;width:500px;border:1px solid;" />
+                <a style="margin-left:30px; color:green; text-decoration: none;" id="search" href="javascript:;">查找</a>
+            </div>
+            <tr>
+                <th>时间</th>
+                <th>用户名</th>
+                <th>编码</th>
+                <th>性别</th>
+                <th>电话</th>
+                <th>邮箱</th>
+                <th>姓名</th>
+                <th>描述</th>
+                <th>余额</th>
+                <th>认证状态</th>
+            </tr>
+            #foreach($u in $users)
+            <tr #if($u.verifyStatus >
+                0) class="verified" #end> <td>$!u.createdTime</td>
+                <td><span class="username">$!u.username</span><a class="super" href="#url('/admin/user/super-login')?username=$!u.username" target="_blank">登录</a><a class="super" href="#url('/admin/user/super-reset')?username=$!u.username" target="_blank">密码</a></td>
+                <td>$!u.token</td>
+                <td>#if($u.gender==1)男#elseif($u.gender==2)女#end</td>
+                <td>$!u.telephone</td>
+                <td>$!u.email</td>
+                <td>$!u.name</td>
+                <td>$!u.description</td>
+                <td>$!u.houseBalance</td>
+                <td class="op">
+                #if($u.verifyStatus == 0)
+                <label class="unverified">姓名：</label>
+                <input type="text" class="verifyBorder unverified" id="verifyName" name="verfiyName" style="width: 106px"/>
+                <a class="verifyNameButton unverified" href="javascript:;" title="仅用作证件认证" style="width: 40px;margin-left: 0; background-color: white; color: red;">验证</a>
+                <br class="unverified" />
+                <label class="unverified">描述：</label>
+                <input type="text" class="verifyBorder unverified" id="verifyId" name="verifyId" style="width: 130px;" />
+                <a class="verifyOp unverified" href="javascript:;" title="仅用作证件认证" style="width: 70px;">证件认证</a>
+                #elseif($u.verifyStatus == 1) $!u.verifyEmail
+                #elseif($u.verifyStatus == 2) $!u.verifyId &amp;$!u.verifyName
+                #end </td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(".verifyNameButton").click(function() {
+        var t = $(this).parents("tr");
+        var p = {
+            'verifyName' : t.find("#verifyName").val()
+        };
+        $.post("#url('/admin/user/verify-name')", p, function(result) {
+            alert(result);
+        });
+    });
+    $(".verifyOp").click(function() {
+        var t = $(this).parents("tr");
+        var p = {
+            'username' : t.find(".username").text(),
+            'verifyName' : t.find("#verifyName").val(),
+            'verifyId' : t.find("#verifyId").val()
+        };
+<<<<<<< HEAD
+	$.post("#url('/admin/user/verify')", p, function(result) {
+			if(result == "no verifyId"){
+				alert("请输入验证信息");
+			} else if(result == "ok"){
+=======
+        $.post("#url('/admin/user/verify')", p, function(result) {
+            if(result == "no verifyId"){
+                alert("请输入验证信息");
+            } else if(result == "ok"){
+>>>>>>> cc89e81b55692f52be9a2a8cb4c9582662d25904
+                t.addClass("verified");
+                t.find('.op').text(p.verifyName + " " + p.verifyId);
+                t.find(".unverified").remove();
+                alert("验证成功");
+                t.find()
+            }
+        });
+    });
+<<<<<<< HEAD
+	$("#search").click(function(){
+	var searchKey = $(this).closest("div").find(".search-key").val();
+    var url = "#url('/admin/user/search')?searchKey="+searchKey;
+	window.open(url);
+	});
+	
+=======
+    $("#search").click(function(){
+        var searchKey = $(this).closest("div").find(".search-key").val();
+        var url = "#url('/admin/user/search')?searchKey="+searchKey;
+        window.open(url);
+    });
+>>>>>>> cc89e81b55692f52be9a2a8cb4c9582662d25904
+</script>
+

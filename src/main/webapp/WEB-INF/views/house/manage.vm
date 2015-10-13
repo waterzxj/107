@@ -1,0 +1,411 @@
+## qiniu
+##set($uptoken = $uptokenTest)
+#set($uptoken = $uptokenHouse)
+
+## Even there is no `isAdd` status in manage, We have to keep it falsy for 
+## behaviors in manage-room and usercenter.
+#set($isAdd=false)
+
+## manage
+#if($houseAndRoom)
+#set($house = $houseAndRoom.house)
+#set($rooms = $houseAndRoom.rooms)
+#end
+
+## user
+#set($login = $userUtils.isLoggedIn($request, $response))
+
+#set($pageTitle = "管理房间")
+#parse("_style.vm")
+<script>
+    // redirect if user doesn't login
+    if(!$login){
+        location.href = '/#url("house/add")';
+    }
+</script>
+<script src="#staticUrl('js/jquery-ui/jquery-ui.min.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.imagesloaded.min.js')"></script>
+<script src="#staticUrl('js/EasySelector.js')?20131208"></script>
+<script src="#staticUrl('js/DragAndDrop.js')?20130915"></script>
+<script src="#staticUrl('js/NumberSlider.js')?20131208"></script>
+<script src="#staticUrl('js/SpinButton.js')?20131208"></script>
+<script src="#staticUrl('js/HouseStructSelector.js')?20131208"></script>
+## file upload
+<script src="#staticUrl('js/jquery-ui/jquery.ui.widget.min.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.iframe-transport.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.fileupload.js')?20130915"></script>
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/scrollbar.css')?20130915">
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/NumberSlider.css')?20130915">
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/SpinButton.css')?20130915">
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/HouseStructSelector.css')?20130915">
+<style>
+    .cardContent {
+        padding: 20px 30px;
+        height: 395px;
+        text-align: left;
+    }
+    #registerCard .cardContent {
+        padding: 0;
+    }
+    .card .panel {
+        float: left;
+        height: 100%;
+        position: relative;
+    }
+    .rightPanel {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 0 20px 20px 0;
+    }
+    .infoBox {
+        background-color: ${backgroundColor};
+        height: 36px;
+        line-height: 36px;
+        margin-bottom: 12px;
+        padding: 10px 0;
+        text-align: left;
+        cursor: default;
+        width: 100%;
+        position: relative;
+    }
+    .infoBox .infoInput, .infoBox .button {
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+    }
+    .infoBox .infoInput {
+        width: 270px;
+    }
+    .infoTitle {
+        font-size: 18px;
+        margin-right: 5px;
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        text-indent: 20px;
+    }
+    .infoTitleHint {
+        font-size: 10px;
+        left: 0px;
+        position: relative;
+        line-height: 20px;
+        vertical-align: -2px;
+    }
+    .infoUnit {
+        bottom: 7px;
+        color: #CCCCCC;
+        display: inline-block;
+        font-size: 12px;
+        position: absolute;
+        right: 20px;
+    }
+    .previous, .cancel, .ignore {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+    .previous:hover, .cancel:hover {
+        opacity: 0.8;
+    }
+    .rightPanel .button {
+        width: 130px;
+    }
+    .errorMessage {
+        position: absolute;
+        bottom: 20px;
+        left: 920px;
+        color: ${warnColor};
+        font-size: 13px;
+        z-index: 205;
+    }
+    #welcomeCard .descContainer {
+        margin-left: 60px;
+        margin-top: 40px;
+        letter-spacing: 1px;
+    }
+
+</style>
+
+<script type="text/javascript">
+    // redirect if the user has no houses
+    if(room107.userType==1){
+        location.href = '/#url("house/add")';
+    }
+
+    var rentOption = {
+        'rentType' : 1,
+        'house' : null,
+        'rooms' : {},
+        'cover' : null
+    };
+    var model = {
+        rentOption : rentOption,
+        houseId : parseInt('$!house.id'),
+        housePhotoPath : '#url("/static/user/house/")',
+        isByRoom : function() {
+            return (rentOption.rentType & 1) !== 0;
+        },
+        isByHouse : function() {
+            return (rentOption.rentType & 2) !== 0;
+        },
+        isBedroom : function(room) {
+            return room.type < 3;
+        },
+        deleteRoom : function(roomId) {
+            var o = this.rentOption;
+            for (var k in o) {
+                if (o[k] && o[k].roomId == roomId)
+                    delete o[k];
+            }
+        },
+        share : {
+            title : function() {
+                var house = rentOption.house.district + rentOption.house.position;
+                var room = '';
+                if (rentOption.rentType === 1) {
+                    for (var r in rentOption.rooms) {
+                        var t = rentOption.rooms[r].type
+                        if (t > 0 && t < 3) {
+                            if (room) {
+                                room += '+';
+                            }
+                            if (t === 1) {
+                                room += '主卧';
+                            } else if (t === 2) {
+                                room += '次卧';
+                            }
+                        }
+                    }
+                } else if (rentOption.rentType === 2) {
+                    room = '整租';
+                } else if (rentOption.rentType === 3) {
+                    room = '整租（可分租）';
+                }
+                return '[' + house + '  ' + room + ']';
+            },
+            url : function() {
+                return 'http://107room.com/' + model.houseId;
+            },
+            summary : function(button) {
+                var summary = rentOption.house.description, limit = 200;
+                if (button.hasClass('jiathis_button_tsina')) {
+                    summary = '@107间  ' + summary;
+                }
+                if (summary && summary.length > limit) {
+                    summary = summary.substring(0, limit) + '...';
+                }
+                return summary;
+            }
+        }
+    };
+    model.maxRoomCount = 3;
+    // TODO hint user
+</script>
+
+<div class="cardContainer">
+    #parse("house/manage-house.vm")
+    #parse("house/manage-room.vm")
+    #parse("house/manage-usercenter.vm")
+</div>
+
+<script type="text/javascript">
+    room107.compacityTip = '你的浏览器模式与网站不兼容，如希望正常使用，请切换至“极（高）速模式”或使用右侧推荐的浏览器';
+    var card = Card.create();
+    function initLayout() {
+        card.layout();
+        // read only input style
+        $('input').each(function() {
+            if ($(this).attr('readonly')) {
+				$(this).css('cursor', 'default');
+                //$(this).css('cursor', 'pointer').focus(function() {
+                //    $(this).blur();
+                //});
+            }
+        });
+    }
+
+    function initEvent() {
+        function validate(button, onSuccess) {
+            var f = button.attr('validateFunction');
+            var v = false;
+            if (!f) {
+                v = Input.validateAll(button.parents('.card'));
+            } else {
+                v = eval(f + '()');
+            }
+            if (v) {
+                showError();
+                onSuccess();
+            }
+        }
+
+
+        $('.previous').click(function() {
+            clearError();
+            card.slideRight($(this).attr('previous'));
+        });
+        $('.next').click(function() {
+            clearError();
+            var button = $(this);
+            validate(button, function() {
+                var r = evalFunction(button.attr('onNext'));
+                if ( typeof r === 'undefined' || r) {
+                    card.slideLeft(button.attr('next'));
+                }
+            });
+        });
+        $('.cancel').click(function() {
+            clearError();
+            evalFunction($(this).attr('onCancel'));
+        });
+        $('.save').click(function() {
+            clearError();
+            var button = $(this);
+            validate(button, function() {
+                evalFunction(button.attr('onSave'));
+            });
+        });
+        $('.infoUnit').click(function(e) {
+            $(this).prev('input').click();
+            e.stopPropagation()
+        });
+    }
+
+    function initModel() {
+        #if($house)
+        rentOption.rentType = $house.rentType;
+        rentOption.cover = '$!house.imageId';
+        /*
+         * DOM
+         */
+        $('#houseCard #rentByRoom').remove();
+        /*
+         * user (save from DOM)
+         *
+         */
+        var uc = $('#usercenterCard');
+        if ("$!user.faviconUrl") {
+            uc.find('.faviconUrl').attr('src', "$!user.faviconUrl");
+        }
+        uc.find('.nickname').val('$!stringUtils.escapeJS("$!user.name")');
+        uc.find('.school').val('$!stringUtils.escapeJS("$!user.school")');
+        uc.find('.major').val('$!stringUtils.escapeJS("$!user.major")');
+        uc.find('.company').val('$!stringUtils.escapeJS("$!user.company")');
+        uc.find('.profession').val('$!stringUtils.escapeJS("$!user.profession")');
+        uc.find('.detail').val('$!stringUtils.escapeJS("$!user.description")');
+        
+
+        /*
+         * house (save from DOM)
+         */
+        var c = $('#houseCard');
+        c.find('#district').val("$!house.city");
+        c.find('#position').val("$!house.position");
+        c.find('#struct input').val("$!house.roomNumber室 $!house.hallNumber厅 $!house.kitchenNumber厨 $!house.toiletNumber卫");
+        c.find('#facility input').val("$!house.facilities".replace(/\|/g, '、'));
+        c.find('#description textarea').val('$!stringUtils.escapeJS("$house.description")');
+        c.find('#contactInput #phoneInput').val("$!house.telephone");
+        c.find('#contactInput #qqInput').val("$!house.qq");
+        c.find('#contactInput #wechatInput').val("$!house.wechat");
+        c.find('#contactInput #wechatInput').val("$!house.wechat");
+        c.find('#area input').val("$!house.area");
+        c.find('#price input').val("$!house.price");
+        // Input.select(c.find('[role="rentType"] .button[rent-type="'+rentOption.rentType+'"]'));
+        setFacilityItems();
+
+        function setFacilityItems(){
+          var facilityValue = "$!house.facilities";
+          var facility = c.find('[role="facility-selector-unselected"] .button');
+          facility.each(function(){
+              if(~facilityValue.indexOf($(this).text())){
+                  $(this).trigger('click');
+              }
+          });
+        }
+
+
+        if (model.isByHouse()) {
+            c.find('#floor input').val("$!house.floor");                
+            c.find('#floorElevator input').val("$!house.floor");
+            #if($!house.hasElevator == "true")
+                Input.select(c.find('#floorElevator .button[elevator="1"]'));
+            #elseif($!house.hasElevator == "false")
+                Input.select(c.find('#floorElevator .button[elevator="0"]'));
+            #end
+        } else {
+            Input.select(c.find('[role="gender"] .button[required-gender="$!house.requiredGender"]'));                            
+            c.find('#floor input').val("$!house.floor");
+            #if($!house.hasElevator)
+                Input.select(c.find('#elevator .button[elevator=' + ($!house.hasElevator ? 1 : 0) + ']'));
+            #end
+        }
+        rentOption.house = getHouseModel();
+        /*
+         * room
+         */
+        var room;
+        #foreach($r in $rooms)
+            #if($velocityCount <= 100)
+                room = {
+                    'roomId' : parseInt('$!r.id'),
+                    'type' : parseInt('$!r.type'),
+                    #if($r.imageIds)
+                    'images' : '$!r.imageIds'.split('|')
+                    #else
+                    'images' : null
+                    #end
+                };
+                #if($r.type < 3)
+                room.status = parseInt('$!r.status');
+                room.price = parseInt('$!r.price');
+                room.area = parseInt('$!r.area');
+                room.orientation = '$!r.orientation';
+                #end
+                #if($r.requiredGender == 1)
+                room.requiredGender = '限男';
+                #elseif($r.requiredGender == 2)
+                room.requiredGender = '限女';
+                #else
+                room.requiredGender = '不限';
+                #end
+                updateRoom(room, false);
+            #end
+        #end
+        #end //This is really confusing. This `# end` if for the velocity`# if($house)` at top.
+        log("Init model:")
+        log(model)
+    }
+
+    $(function() {
+        initModel();
+        initLayout();
+        initEvent();
+        showHouseCard();
+        card.show("#roomCard");
+
+        $('input').attr('autocomplete', 'off');
+        // confirm when exit
+        $(window).bind('beforeunload', function(e) {
+            if ($('#roomContent').is(':visible'))
+                return '房间信息还未保存';
+            var cid = $('.card:visible').attr('id');
+            if (cid === 'houseCard')
+                return '房间基本信息还未保存'
+        });
+    });
+
+    function showError(msg) {
+        $('.errorMessage').remove();
+        if (msg) {
+            $('<p class="errorMessage"></p>').text(msg).appendTo('.cardContainer').fadeOut(3000);
+        } else {// clear
+            $('.validateError').removeClass('validateError');
+        }
+    }
+
+    function clearError() {
+        showError();
+        $('.' + Input.validateErrorClass).removeClass(Input.validateErrorClass);
+    }
+</script>

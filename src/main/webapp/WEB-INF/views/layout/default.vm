@@ -1,0 +1,341 @@
+#parse("_style.vm")
+#set($auth = $userUtils.getAuthenticationStatus($request, $response))
+#set($user = $userUtils.getUser($request, $response))
+
+#set($browser = $userUtils.getBrowser($request))
+#set($uri = $request.requestURI)
+#set($isAdmin = $uri.contains('admin'))
+#if(!$debug)
+##set($totoro = $uri.contains('house/manage'))
+#end
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        #if($pageTitle)
+        <title>107间 - $pageTitle</title>
+        #else
+        <title>107间 </title>
+        #end
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="keywords" content="$!pageKeywords 租房 北京租房 无中介 无中介租房" />
+        <!-- oauth validation-->
+        <meta property="qc:admins" content="254623033127756375" />
+        #if($pageDesc)
+        <meta name="description" content="$pageDesc">
+        #else
+        <meta name="description" content="「107间」是免费连接年轻租客与房东的真实智能无中介平台，每间房都经过智能核实，每位租客均通过身份认证。专注于为北京毕业生、年轻白领打造真实而简单的线上租房体验。">
+        #end
+        <meta name="author" content="107间">
+        <meta name="viewport" content="width=1170">
+        <meta http-equiv="X-UA-Compatible" content="IE=10" />
+        #if($isAdmin)
+        <meta http-equiv="pragma" content="no-cache">
+        <meta http-equiv="cache-control" content="no-cache">
+        <meta http-equiv="expires" content="0">
+        #end
+        <link rel="shortcut icon" href="#staticUrl('favicon.ico')" type="image/ico">
+        <link rel="stylesheet" type="text/css" href="#staticUrl('css/main.css')?20150505">
+        <script type="text/javascript" src="#staticUrl('js/jquery-1.9.1.min.js')?20140615"></script>
+        <script type="text/javascript" src="#staticUrl('js/jquery.mousewheel.js')"></script>
+        <script type="text/javascript" src="#staticUrl('js/common.js')?20150505"></script>
+        <script type="text/javascript" src="#staticUrl('js/main.js')?20150523"></script>
+        <script type="text/javascript" src="#staticUrl('js/Card.js')?20140315"></script>
+    </head>
+    <body>
+        $!debugDetail
+        <style>
+            body {
+               background-color:white;
+            }
+            body, a {
+               color:${fontColor};
+            }
+            #header .navMenu:hover {
+               color:${mainColor};
+            }
+            #header .banner {
+               background-color:${mainColor};
+               border-bottom-color:${secondColor};
+            }
+            #footer a {
+               color:#9C9E9C;
+            }
+            #footer #company {
+               color:${fontWeakColor};
+            }
+            #footer .highlight {
+               color:${mainColor};
+            }
+            #contentContainer {
+               background-color:${backgroundColor};
+            }
+            #header {#if($noBanner)
+               border-bottom:0 none;
+               #end
+            }
+            #header .statusNotVerified {
+               color:${secondColor};
+               margin-left:5px;
+            }
+            #usernameMenu {
+               margin-right: 18px;
+               padding-top: 2px;
+               font-size: 12px;
+               float: left;
+            }
+            #homeMenu>img.favicon{
+               margin-right: 5px;               
+               border-radius: 50%;
+               float: left;
+               width: 20px;
+               height: 20px;
+               margin-top: 2px;
+            }
+            #homeMenu>img.favicon.border{
+               border: 1px solid $mainColor;
+            }
+        </style>
+    
+        <div id="header">
+            <div id="navigator" class="fixedWithContainer">
+                <a id="navLogo" href="#url('/')"><img src="#staticUrl('image/logo0.png')?20150415" /></a>
+                <ul id="navMenu">
+                    <li id="searchMenu">
+                        <a class="navItem" href="#url('/house/search')"> <div class="icon"></div> <span class="navItemText">找房</span> </a>
+                    </li>
+                    #if($user && $user.type>1)
+                    <li id="houseMenu">
+                    	<a class="navItem" href="#url('/house/manage')"> <div class="icon"></div> <span class="navItemText">理房</span> </a>
+                    </li>
+                    #else
+                    <li id="addHouseMenu">
+                    	<a class="navItem" href="#url('/house/add')"> <div class="icon"></div> <span class="navItemText">发房</span> </a>
+                    </li>
+                    #end
+                    <!--
+                    <li id="squareMenu">
+                    	<a class="navItem" href="#url('/square')"> <div class="icon"></div> <span class="navItemText">广场</span> </a>
+                    </li>
+                    -->
+                    <li id="homeMenu">
+                        #if($auth>0)
+                            #if($user.faviconUrl)
+                                <img class="favicon border" src="$!user.faviconUrl"/>
+                            #else
+                                <img class="favicon" src="#staticUrl('image/icon/oauth/head.png')"/>
+                            #end
+                            <span id="usernameMenu">#if($stringUtils.isNotEmpty($user.name))$user.name#else$userUtils.formatUsername($user.username)#end</span>
+                        #end
+                        <a class="navItem loginLightbox unloginTag" href="#"><span class="navItemText">登录</span></a>
+                        <span class="navItemText unloginTag">|</span>
+                        <a class="navItem unloginTag" href="#url('/user/auth/register')"><span class="navItemText">注册</span> </a>
+                        <a class="navItem unverifiedTag" href="#url('/user/auth/verify')"><span class="navItemText">认证</span> </a>
+                        <span class="navItemText unverifiedTag">|</span>
+                        <a id="logout" title="$!{user.email}" class="navItem verifiedTag" href="#url('/user/logout')">
+                            <span class="navItemText">退出</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            #if($browser == "ie")
+            <div id="compacityBox">
+                <div class="tip">
+                    <h3>温馨提示</h3>
+                    <p class="desc">
+                        你的浏览器模式与网站不兼容，如希望获得最佳浏览体验，建议切换至“极（高）速模式”或使用右侧推荐的浏览器
+                    </p>
+                    <a href="http://se.360.cn/v6/help/help5.html" target="_blank"><img src="#staticUrl('image/icon/360.png')">360安全浏览器如何切换至“极速模式”</a>
+                    <a href=" http://ie.sogou.com/help/help-3-3.html" target="_blank"><img src="#staticUrl('image/icon/sougou.png')">搜狗高速浏览器如何切换至“高速模式”</a>
+                </div>
+                <div class="download">
+                    <span style="font-size: 16px">107间推荐以下浏览器</span><span style="font-size: 12px">（点击图标下载）</span>
+                    <div class="browserBox">
+                        <a href="http://www.google.com/intl/zh-CN/chrome/" class="browser" target="_blank"> <img src="#staticUrl('image/icon/chrome.png')" />
+                        <p>
+                            Chrome
+                        </p> </a>
+                        <a href="http://www.firefox.com.cn/download/" class="browser" target="_blank"> <img src="#staticUrl('image/icon/firefox.png')" />
+                        <p>
+                            Firefox
+                        </p> </a>
+                        <a href="http://www.apple.com/safari/" class="browser" target="_blank"> <img src="#staticUrl('image/icon/safari.png')" />
+                        <p>
+                            Safari
+                        </p> </a>
+                        <a href="http://ie.microsoft.com/" class="browser" target="_blank"> <img src="#staticUrl('image/icon/IE.png')" />
+                        <p>
+                            &nbsp; IE 9+
+                        </p> </a>
+                    </div>
+                </div>
+                <div class="close">
+                    <img src="#staticUrl('image/icon/close_13x15.png')" />
+                    <div>
+                        <a href="javascript:;">关闭 </a>
+                    </div>
+                </div>
+            </div>
+            #end
+            #if(!$noBanner)
+            <div class="banner">
+                <div class="fixedWithContainer">
+                    <div class="feedback">
+	                    <a href="#url('/user/feedback')">
+		                    <img src="#staticUrl('image/icon/feedback.png')" />
+		                    <span>意见箱</span>
+	                    </a>
+                    </div>
+                    <span class="title">$!bannerTitle</span>
+                    <span class="desc">$!bannerDesc</span>
+                </div>
+            </div>
+            #end
+        </div>
+
+        <div id="contentContainer">
+            <div id="lightbox">
+                <div id="lightboxBg">
+                    <div class="loading">
+                        <img src="#staticUrl('image/icon/cat-loading.png')" />
+                        <img src="#staticUrl('image/icon/cat-loading.gif')" />
+                    </div>
+                </div>
+                <div id="lightboxClose" title="关闭"></div>
+                <div id="lightboxContent"></div>
+            </div>
+            <div id="navTop" class="reactive">
+                <a href="javascript:;">回到顶部</a>
+            </div>
+            
+		    <script type="text/javascript">
+            	room107.auth = $auth;
+            	room107.email = "$user.email";
+              room107.userType = ("$!user.type" == "")?0:parseInt("$!user.type");
+            	refreshLoginStatus();
+            	
+                $("#lightboxClose").click(Lightbox.close);
+                $(".loginLightbox").click(UI.showLogin);
+                $(".navItem").hover(function() {
+                    var icon = $(this).children(".icon");
+                    icon.css("background-position", -icon.width());
+                }, function() {
+                    var icon = $(this).children(".icon");
+                    icon.css("background-position", 0);
+                });
+                $("body").mousewheel(function() {
+                    return room107.enableScroll;
+                });
+                $(function() {
+                    PlaceHolder.init();
+                    $(':input').attr('spellcheck', 'false');
+                    Input.bindValidate();
+                    Input.bindNumberInput($('input.numberInput'));
+                });
+            </script>
+            <div id="content" class="fixedWithContainer">
+                $screen_content
+            </div>
+        </div>
+
+        <div id="footer">
+            <div class="fixedWithContainer">
+                <ul class="footerNav">
+                    <li class="textNav">
+                        <a href="#url('/weixin')" target="_blank"><span>微信APP</span></a>
+                    </li>
+                    <li class="textNav">
+                        <a href="#url('/weekly')" target="_blank"><span>北京租房周刊</span></a>
+                    </li>
+					<!--
+                    <li class="textNav" style="margin-left: 20px;">
+                        <a href="#url('/totoro')" target="_blank"><span>龙猫中介搜索</span></a>
+                    </li>
+					-->
+                </ul>
+                <ul class="footerNav">
+                    <li class="textNav">
+                        <a href="#url('/about')" target="_blank"><span>关于我们</span></a>
+                    </li>
+                    <li class="textNav">
+                        <a href="http://107room.lofter.com" target="_blank"><span>产品博客</span></a>
+                    </li>
+                    <li class="textNav" style="margin-left: 20px;">
+                        <a href="#url('/doc/protocol')" target="_blank"><span>用户协议</span></a>
+                    </li>
+                    <li class="iconNav" style="margin-left: 20px;">
+                        <a href="http://weibo.com/107room" target="_blank" id="iconSina" title="微博 107间"> </a>
+                    </li>
+                    <li class="iconNav">
+                        <a href="http://www.douban.com/people/hi107room" target="_blank" id="iconDouban" title="豆瓣 107间"> </a>
+                    </li>
+					<!--
+                    <li class="iconNav">
+                        <a href="http://page.renren.com/601782605" target="_blank" id="iconRenren" title="人人网 107间公共主页"> </a>
+                    </li>
+					-->
+                </ul>
+                <div id="company">
+                    <span>© 2014 107间・六度草堂出品&nbsp;&nbsp;京ICP备13034745号 </span>
+                </div>
+                <div class="totoro">
+                    <a class="reactive" href="http://107room.lofter.com/post/27e0bc_100b290" target="_blank"><img src="#staticUrl('image/icon/totoro-rotate.gif')?0.3" /></a>
+                    <span class="desc"> <span class="desc1">龙猫中介识别系统</span> <span class="desc2">正在保护你</span> </span>
+                </div>
+                <div class="right">
+                    <span>已拦截<span class="em">$houseUtils.stat.rejectedHouseCount</span>个中介房子</span>
+                </div>
+            </div>
+        </div>
+        ## browser compacity
+        #if($browser == "ie")
+        <script type="text/javascript">
+            (function() {
+                _ie(6, 8, function(v) {
+                    if (v === 8 && !room107.compacityTip) {
+                        return;
+                    }
+                    var b = $('#compacityBox');
+                    if (room107.compacityTip) {
+                        b.find('.desc').text(room107.compacityTip);
+                    }
+                    b.show().animate({
+                        height : 250
+                    }, 500);
+                    $('#compacityBox .close').click(function() {
+                        b.animate({
+                            height : 0
+                        }, 500, function() {
+                            b.remove();
+                        });
+                    });
+                });
+            })();
+        </script>
+        #end
+
+        ## sniff history only when logged in AND sniff enabled
+        #if($totoro)
+        #if($auth>0)
+        #set($sniffUrl = "#url('/antispam/history/')")
+        #if(!$session.getAttribute("disableSniff"))
+        #foreach($i in [0..0])
+        #if($browser == "chrome")
+        <iframe id="antispam1" src="$!sniffUrl" style="position: absolute; bottom: 0; width: 100%; height: 100px; overflow: hidden; z-index: -1"></iframe>
+        #elseif($browser == "firefox")
+        <iframe id="antispam1" src="$!sniffUrl" style="position: absolute; bottom: 0; width: 1px; height: 1px; overflow: hidden"></iframe>
+        #elseif($browser == "ie")
+        #if($userUtils.getIEVersion($request) >= 10)
+        <iframe id="antispam1" src="$!sniffUrl" style="position: absolute; bottom: 0; width: 100%; height: 100px; overflow: hidden; z-index: -1"></iframe>
+        #end
+        #end
+        #end
+        #end
+        #end
+        #end
+
+        #if(!$disableStatistic)
+        #statistic()
+        #end
+    </body>
+</html>

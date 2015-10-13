@@ -1,0 +1,439 @@
+#parse("_style.vm")
+
+#if($verifyMethod)
+#set($pageTitle = "认证")
+#else
+#set($pageTitle = "注册")
+#end
+
+#set($browser = $userUtils.getBrowser($request))
+<style>
+/*
+* verify email
+*/
+#emailCard .panel {
+position: absolute;
+bottom: 200px;
+text-align: left;
+}
+#emailCard h3 {
+font-weight: normal;
+font-size: 18px;
+margin-bottom: 20px;
+}
+#emailCard #panel1 {
+left: 120px;
+width:500px;
+}
+#emailCard #panel1 h3 {
+color: ${secondColor};
+}
+#emailCard #panel1 ol {
+font-size: 14px;
+}
+#emailCard #panel1 li {
+float: none;
+list-style-position: inside;
+margin-top: 10px;
+}
+#emailCard #panel2 {
+padding: 0;
+right: 120px;
+width: 400px;
+}
+#emailCard #panel2 .title {
+font-size: 22px;
+color: ${mainColor};
+display: inline-block;
+}
+#emailCard .verifyCredential {
+margin-bottom: 15px;
+color: ${secondColor};
+}
+#emailCard .noEmail {
+font-size: 12px;
+margin-left: 5px;
+}
+#emailCard .supportedEmail {
+line-height: 50px;
+font-size: 14px;
+}
+#emailCard .emailInput {
+float: left;
+width: 270px;
+text-indent: 10px;
+height: 40px;
+line-height: 40px;
+border: 1px solid ${mainColor};
+}
+#emailCard .emailButton {
+width: 110px;
+float: left;
+font-size: 14px;#if($browser != "firefox")
+border: 1px solid ${mainColor};
+#end
+}
+#emailCard .disabled.button {
+#if($browser != "firefox")
+border: 1px solid #AAA;
+#end
+}
+#emailCard .warnBox {
+bottom: 0;
+font-size: 12px;
+position: absolute;
+right: -90px;
+text-align: center;
+width: 110px;
+}
+#emailCard .warn {
+color: ${warnColor} !important;
+}
+#emailCard .result {
+display: none;
+background-color: ${backgroundColor};
+position: absolute;
+top: 140px;
+left: 0;
+width: 342px;
+padding: 20px;
+}
+#emailCard .result .tipArrow {
+border-bottom: 10px solid ${backgroundColor};
+}
+#emailCard .result .loading {
+left: 0;
+position: absolute;
+top: 17px;
+}
+#emailCard .resultTitle {
+color: ${mainColor};
+}
+#emailCard .resultContent {
+margin-top: 10px;
+font-size: 13px;
+}
+#emailCard .resultContent .help {
+color: ${secondColor};
+}
+/*
+* verify credential
+*/
+#verifyCredentialDiv {
+padding: 0 10px;
+}
+#verifyCredentialDiv .verifyStep {
+background-color: #F6F6F6;
+float: left;
+height: 395px;
+margin: 20px 10px;
+text-align: left;
+width: 330px;
+position: relative;
+}
+#verifyCredentialDiv .verifyStep.first .stepTitle{
+padding-left: 11px;
+padding-right: 0px;
+}
+#verifyCredentialDiv .verifyStep.second .stepTitle{
+padding: 10px 33px;
+}
+#verifyCredentialDiv .verifyStep.second .tips-color{
+color: $secondColor;
+}
+#verifyCredentialDiv .verifyStep.first .imgContainer{
+padding-top: 20px;
+}
+#verifyCredentialDiv .stepNum {
+left: -15px;
+position: absolute;
+top: -15px;
+width: 30px;
+}
+#verifyCredentialDiv .stepTitle {
+color: ${mainColor};
+font-weight: normal;
+padding: 10px 40px;
+}
+#verifyCredentialDiv .stepImg {
+width: 245px;
+}
+#verifyCredentialDiv .imgContainer {
+text-align: center;
+}
+#verifyCredentialDiv .stepHint {
+text-align: left;
+font-size: 13px;
+}
+#verifyCredentialDiv #p1 img {
+width: 140px;
+}
+#verifyCredentialDiv #p2 {
+margin-top: 22px;
+}
+#verifyCredentialDiv #p2 p {
+margin-bottom: 16px;
+color: $mainColor;
+font-size: 16px;
+}
+#verifyCredentialDiv #p2 .verify-code{
+color: $secondColor;
+font-size: 50px;
+}
+#verifyCredentialDiv #p2 img {
+width: 150px;
+}
+#verifyCredentialDiv #hint2 {
+left: 52px;
+position: absolute;
+top: 260px;
+width: 95px;
+}
+#verifyCredentialDiv #hint2 p {
+margin-top: 5px;
+}
+#verifyCredentialDiv #hint3 {
+margin-left: 44px;
+margin-top: 40px;
+}
+#verifyCredentialDiv #hint3 p {
+margin-bottom: 10px;
+}
+#verifyCredentialDiv a {
+color: ${mainColor};
+}
+#verifyCredentialDiv .promise {
+bottom: 1px;
+font-size: 12px;
+position: absolute;
+right: 20px;
+}
+#credentialCard .back {
+background: url("#staticUrl('image/icon/undo.png') ") no-repeat scroll center top transparent; line-height : 16px; display : block; font-size : 15px; padding-top : 15px; position : absolute; right : -50px; top : 150px; width : 20px; color : ${secondColor};
+}
+</style>
+
+<div class="cardContainer">
+    #if(!$verifyMethod)
+    #parse("user-auth-register.vm")
+    #end
+
+    <div id="emailCard" class="card">
+        <div class="banner">
+            <span class="title">认证</span>
+            <span class="desc">学生/公司用户身份认证</span>
+        </div>
+        <div id="verifyEmailDiv" class="content">
+            <div id="panel1" class="panel">
+                <h3>为什么需要认证？</h3>
+                <ol>
+                    <li>
+                        认证后将可以查看房东联系方式
+                    </li>
+                    <li>
+                        更多后续服务将针对认证用户开放
+                    </li>
+                </ol>
+            </div>
+            <div id="panel2" class="panel">
+                <div class="titleBox">
+                    <span class="title">学校/工作单位邮箱认证</span>
+                    <span class="noEmail">没有邮箱？<a class="verifyCredential" href="javascript:;">使用证件认证</a></span>
+                </div>
+                <p class="supportedEmail">
+                    支持含edu、ac等后缀的学校邮箱或工作单位邮箱
+                </p>
+                <div class="emailBox">
+                    <input class="emailInput" type="email" placeholder="例如 x@pku.edu.cn 或 x@107room.com" tabindex="1" />
+                    <button class="button emailButton">
+                        发送邮件
+                    </button>
+                </div>
+                <span class='warnBox'></span>
+                <div class='result'>
+                    <div class="tipArrow tipArrowUp"></div>
+                    <span class="resultTitle"></span>
+                    <p class="resultContent"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="credentialCard" class="card">
+        <div class="banner">
+            <span class="title">认证</span>
+            <span class="desc">学生/公司用户身份认证</span>
+        </div>
+        <div id="verifyCredentialDiv" class="content">
+            <div class="verifyStep first">
+                <img class="stepNum" src="#staticUrl('image/icon/1.png')" />
+                <h4 class="stepTitle">扫码添加&nbsp;或&nbsp;搜索微信公众号“hi107room”</h4>
+                <div id="p1" class="imgContainer">
+                    <img class="stepImg" src="#staticUrl('image/verify/p2.jpg')" />
+                </div>
+                <div id="p2" class="imgContainer">
+                    <p>记住以下验证码（字母区分大小写）</p>
+                    <p role="verify-code" class="verify-code"></p>
+                </div>
+            </div>
+            <div class="verifyStep second">
+                <img class="stepNum" src="#staticUrl('image/icon/2.png')" />
+                <h4 class="stepTitle">输入”ID <span class="tips-color">验证码</span>“之后上传相关证件</h4>
+                <div id="p3" class="imgContainer">
+                    <img class="stepImg" src="#staticUrl('image/verify/p3.jpg')?20150529" />
+                    <div id="hint2" class="stepHint">
+                        <p>
+                            上传身份证后：
+                        </p>
+                        <div style="font-size:12px">
+                            <p>
+                                <b style="padding-right:2px">学生用户</b>请上传学生证或校园卡
+                            </p>
+                            <p>
+                                <b style="padding-right:2px">公司用户</b>请上传名片或工卡
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="verifyStep">
+                <img class="stepNum" src="#staticUrl('image/icon/3.png')" />
+                <h4 class="stepTitle">输入“完成”，完成认证！</h4>
+                <div id="p4" class="imgContainer">
+                    <img class="stepImg" src="#staticUrl('image/verify/p4.jpg')?20131221" />
+                </div>
+                <div id="hint3" class="stepHint">
+                    <p>
+                        一个工作日后未收到审核结果，请<a href="#url('/user/feedback')" target="_blank">联系我们</a>
+                    </p>
+                </div>
+            </div>
+            <span class="promise">107间承诺：证件仅作认证，不作他用</span>
+        </div>
+        <a class="back reactive" href="javascript:;">返回邮箱认证</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function() {
+        var verifyCode = "$!token";
+        var verifyCodeEle = $('[role="verify-code"]');
+        var card = Card.create();
+        card.layout();
+        //#if($verifyMethod)//
+        card.show("#$!{verifyMethod}Card");
+        //#end//
+        function showResult(title, content, noWarn) {
+            var r = $('#emailCard .result');
+            var t = r.find('.resultTitle').text(title).removeClass('warn');
+            var contact = '<a class="help reactive" href="' + '#url("/user/feedback")' + '" target="_blank">联系我们</a>'
+            content = content.replace(/联系我们/g, contact);
+            r.find('.resultContent').html(content);
+            if (!noWarn) {
+                t.addClass('warn');
+            }
+            r.show();
+        }
+
+        function verifyEmail(email) {
+            if (room107.auth === 2) {
+                showResult('请勿重复认证', '你已经是认证用户。如需帮助，请联系我们')
+                return false;
+            }
+            showResult('', '<img class="loading" src="' + "#staticUrl('image/icon/loading.gif')" + '" />')
+            log('Verify email: ' + email);
+            $.post('#url("/user/auth/verify/email")', {
+                email : email
+            }, function(data) {
+                data = parseInt(data);
+                log(data);
+                switch(data) {
+                    case 1:
+                        showResult('请输入学校/工作单位邮箱', '你的邮箱不属于学校或工作单位邮箱。如暂无此类邮箱，可<a class="verifyCredential" href="javascript:;">使用证件认证</a>。如需帮助，请联系我们');
+                        break;
+                    case 3:
+                        showResult('该邮箱已被认证', '请尝试其他邮箱，如需帮助，请联系我们');
+                        break;
+                    default:
+                        showResult('认证邮件已发送！', '请查收邮件并完成认证。如未收到邮件，可尝试重新发送。如需帮助，请联系我们', true);
+                        break;
+                }
+                $('.result .verifyCredential').click(function() {
+                    card.slideLeft('#credentialCard');
+                });
+            });
+        }
+
+        function initLayout() {
+            _ie(0, 7, function(v) {
+                $('#emailCard .emailButton').height(42);
+            });
+        }
+
+        function initEvent() {
+            room107.onRegister = function(role) {
+                if (role === '2') {
+                    window.location = "#url('/house/add/')";
+                } else {
+                    card.slideLeft();
+                }
+            }
+            $('#emailCard .verifyCredential').click(function() {
+                card.slideLeft('#credentialCard');
+            });
+            $('#emailCard .emailInput').keydown(function(e) {
+                if (e.which == 13) {
+                    $('#emailCard .emailButton').click();
+                }
+            }).focus();
+            $('#emailCard .emailButton').click(function() {
+                if ($(this).hasClass('disabled')) {
+                    return false;
+                }
+                // validate email
+                var warnBox = $('#emailCard .warnBox').removeClass('warn');
+                var v = $.trim($('#emailCard .emailInput').val());
+                if (!new RegExp(/$validateUtils.EMAIL_PATTERN/).test(v)) {
+                    warnBox.addClass('warn').text('邮件格式错误').show();
+                    return false;
+                }
+                // validate login
+                if (!room107.auth) {
+                    $('#loginMenu a').click();
+                    return false;
+                }
+                // send request
+                $(this).addClass('disabled');
+                function endCallback() {
+                    $('#emailCard .warnBox').hide();
+                    $('#emailCard .emailButton').removeClass('disabled');
+                }
+
+                var timeId = timing(30, function(time) {
+                    warnBox.text(time + ' 秒后可以重试').show();
+                }, endCallback);
+                verifyEmail(v);
+            });
+            $('#credentialCard .back').click(function() {
+                card.slideRight('#emailCard');
+            });
+
+            // init verify code
+            function renderVerifyCode(verifyCode){
+                if(verifyCode){
+                    verifyCodeEle.text(verifyCode);                    
+                }else{
+                    verifyCodeEle.text("请先登录");
+                }
+            };
+            renderVerifyCode(verifyCode);
+            room107.bindLogin(function(options){
+                verifyCode = options.user.token;
+                renderVerifyCode(verifyCode);
+            });
+        }
+
+        initLayout();
+        initEvent();
+    })();
+</script>

@@ -1,0 +1,2637 @@
+#parse("_style.vm")
+#parse("_constant.vm")
+#set($auth = $userUtils.getAuthenticationStatus($request, $response))
+#set($userId = "$!userUtils.getUser($request, $response).id")
+
+#set($shortDesc = "$!stringUtils.abbreviate($suite.house.description, 200)")
+
+#set($isSimpleHouse = $suite.isTextOnly())
+#set($noNeedToSeeLandlord =  false)
+#if(!$!suite.landlord.school && !$!suite.landlord.major 
+    && !$!suite.landlord.company && !$!suite.landlord.profession 
+    && !$!suite.landlord.description)
+    #set($noNeedToSeeLandlord = true)
+#end
+#if($embedded)
+#set($layout = "layout/null.vm")
+#else
+#set($pageTitle = "$!{suite.house.city}$!{suite.house.position}")
+#set($pageKeywords = "$!{suite.house.city}租房 $!{suite.house.position}")
+#set($pageDesc = $!shortDesc.replaceAll('\s', ''))
+#set($bannerTitle = "找房")
+#set($bannerDesc = "<span class='bannerDesc3'>安得广厦</span><span class='bannerDesc1'>10</span><sup class='bannerDesc2'>7</sup><span class='bannerDesc3'>间，大庇天下寒士俱欢颜</span>")
+<style>
+    #content {
+        width: 100%
+    }
+    .bannerDesc1 {
+        font-family: arial;
+        font-size: 20px;
+        padding-left: 2px;
+        vertical-align: top;
+    }
+    .bannerDesc2 {
+        font-size: 15px;
+        position: relative;
+        bottom: 5px;
+    }
+    .bannerDesc3 {
+        vertical-align: top;
+    }
+</style>
+<link type="text/css" href="#staticUrl('css/jquery.jscrollpane.css')" rel="stylesheet" media="all" />
+<script type="text/javascript" src="#staticUrl('js/jquery.jscrollpane.min.js')"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=$!webUtils.getBaiduAK($request)"></script>
+#end
+
+##---- mocks
+##set($embedded = true)
+##$userUtils.mockAuthenticationStatus($request, 0)
+##set($suite.house.rentType = 2)
+##set($suite.house.price = 12300)
+##set($suite.house.area = 107)
+##---- mock end
+
+#set($itemType = $request.getParameter("itemType"))
+#if(!$itemType)
+#if($suite.house.rentType == 1 || $suite.house.rentType == 3)
+#set($itemType = 1)
+#else
+#set($itemType = 2)
+#end
+#end
+#set($landlord = $suite.landlord)
+#set($desc = "#formatDesc($suite.house.description)")
+#set($summary = $!stringUtils.escapeSummary($shortDesc, 200))
+#set($gender=$suite.house.requiredGender)
+
+<script type="text/javascript" src="#staticUrl('js/jquery.mousewheel.js')"></script>
+<script type="text/javascript" src="#staticUrl('js/jquery.masonry.min.js')"></script>
+<script type="text/javascript" src="#staticUrl('js/ZeroClipboard.min.js')"></script>
+
+<style>
+#set($contentHeight=460)
+#set($hMargin=10)
+#set($vMargin=20)
+#set($houseMargin=5)
+#set($houseDivWidth=500)
+#if($embedded)
+#detailContainer {
+position: fixed;
+width: 100%;
+height: 100%;
+top: 0;
+left: 0;
+z-index: 200;
+overflow: hidden;
+}
+#else
+#detailContainer {
+height: 620px;
+overflow: hidden;
+}
+#detailContainer .detailDiv {
+margin-top: -30px !important;
+}
+#end
+p, h1,h2,h3,h4,h5,h6 {
+cursor: default;
+font-weight: normal;
+font-style: normal;
+}
+/*
+* detail
+*/
+#detailContainer {
+opacity: 0; /* display after image loaded */
+}
+#detailContainer .actionButtonDiv {
+position: relative;
+height: 60px;
+z-index: 200;
+}
+#detailContainer .actionButtonDiv span {
+padding-right: 10px;
+vertical-align: 2px;
+color: white;
+}
+#detailContainer .actionButtonDiv a {
+color: white;
+}
+#detailContainer .actionButtonDiv .left {
+float: left;
+height: 60px;
+margin: 10px;
+}
+#detailContainer .actionButtonDiv .right {
+float: right;
+height: 60px;
+margin: 10px;
+}
+#detailContainer .contactBackButton {
+float: right;
+cursor: pointer;
+}
+
+#detailContainer .actionButtonDiv .shareForwardButton{
+float: left;
+cursor: pointer;
+}
+#detailContainer .actionButtonDiv .shareLogo{
+width: 30px;
+height: 44px;
+float:left;
+margin: 0px 15px 0px 0px;
+border:0px;
+}
+
+#detailContainer .actionButtonDiv .contactButtonDiv {
+float: right;
+width: 120px;
+height: 44px;
+border-radius: 22px;
+text-align: left;
+background: ${mainColor};
+}
+#detailContainer .actionButtonDiv .contactButtonDiv .text {
+font-size: 13px;
+}
+#detailContainer .actionButtonDiv .contactButtonDiv .content {
+padding-left: 22px;
+}
+#detailContainer .actionButtonDiv .actionButton {
+display: inline-block;
+padding-left: 35px;
+margin-top: 9px;
+margin-bottom: 9px;
+font-size: 18px;
+line-height: 26px;
+}
+#detailContainer .actionButtonDiv .confirmButton {
+line-height: 20px;
+margin-top: 12px;
+margin-bottom: 12px;
+}
+#detailContainer .contactButton {
+background: url("#staticUrl('image/detail/call.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .actionButtonDiv .verify, #detailContainer .actionButtonDiv .login, #detailContainer .actionButtonDiv .confirm, #detailContainer .actionButtonDiv .contactInfo {
+display: none;
+}
+#detailContainer .verifyButton {
+background: url("#staticUrl('image/detail/verify.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .loginButton {
+background: url("#staticUrl('image/detail/login.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .confirmButton {
+background: url("#staticUrl('image/detail/confirm.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .phoneInfo {
+background: url("#staticUrl('image/detail/cell.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .qqInfo {
+background: url("#staticUrl('image/detail/qq.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .wechatInfo {
+background: url("#staticUrl('image/detail/wc.png')") no-repeat scroll 0px 0px transparent;
+}
+#detailContainer .actionButtonDiv .jiathis_button_tsina span  {
+background: url("#staticUrl('image/detail/weibo.png')") no-repeat scroll center center transparent;
+}
+#detailContainer .actionButtonDiv .jiathis_button_tsina span:hover{
+background: url("#staticUrl('image/detail/weibo2.png')") no-repeat scroll center center transparent;
+}
+#detailContainer .actionButtonDiv .jiathis_button_douban span {
+background: url("#staticUrl('image/detail/douban.png')") no-repeat scroll center center transparent;
+}
+#detailContainer .actionButtonDiv .jiathis_button_douban span:hover{
+background: url("#staticUrl('image/detail/douban2.png')") no-repeat scroll center center transparent;
+}
+#detailContainer .actionButtonDiv .jiathis_button_renren span {
+background: url("#staticUrl('image/detail/renren.png')") no-repeat scroll center center transparent;
+}
+#detailContainer .actionButtonDiv .jiathis_button_renren span:hover {
+background: url("#staticUrl('image/detail/renren2.png')") no-repeat scroll center center transparent;
+}
+#detailContainer .actionButtonDiv .copy_button#copyInfo {
+font-size: 13px;
+width: 52px;
+height: 20px;
+margin: 12px 15px;
+cursor: pointer;
+}
+#detailContainer .actionButtonDiv .copy_button.zeroclipboard-is-hover {
+opacity: 0.7;
+}
+#detailContainer .shareButtonDiv {
+float: left;
+width: 120px;
+height: 44px;
+border-radius: 22px;
+text-align: left;
+background: ${secondColor};
+}
+#detailContainer .shareButtonDiv span.jiathis_txt{
+margin: 6px 15px;
+}
+#detailContainer .actionButtonDiv .shareButton {
+padding-left: 57px;
+background: url("#staticUrl('image/detail/share.png')") no-repeat scroll 22px 0px transparent;
+}
+#detailContainer .actionButtonDiv .contactInfo.shareLogo {
+margin-right: 30px;
+}
+#detailContainer .detailDiv a {
+color: white;
+}
+#detailContainer .detailDiv {
+position: relative;
+height: ${contentHeight}px;
+margin: 0 20px;
+border-width: 20px ${hMargin}px;
+border-color: white;
+border-style: solid;
+z-index: 200;
+background-color: white;
+color: white;
+font-size: 15px;
+word-wrap: break-word;
+overflow: hidden;
+}
+#detailContainer .detailDiv .cube {
+float: left;
+height: ${contentHeight}px;
+margin: 0 10px;
+position: relative;
+}
+#detailContainer .detailDiv .cube > img {
+min-width: 300px;
+}
+/*
+* house
+*/
+.jspVerticalBar {
+background: none !important;
+}
+#detailContainer .houseDiv {
+width: 500px;
+font-size: 13px;
+}
+#detailContainer .houseDiv .cell {
+position: absolute;
+text-align: center;
+}
+#detailContainer .houseDiv .subtitle {
+font-size: 13px;
+}
+#detailContainer .houseDiv .subcontent {
+text-align: left;
+}
+#detailContainer .houseDiv .subcontent p {
+margin-bottom: 3px;
+padding-top: 2px;
+padding-bottom: 2px;
+}
+#detailContainer .houseMapDiv {
+cursor:pointer;
+background-color: ${mainColor};
+}
+#detailContainer .houseMapDiv .content {
+width: 100px;
+height: 100px;
+margin: 0 auto;
+position: relative;
+background: url("#staticUrl('image/detail/house-map.png')") no-repeat scroll center 13px transparent;
+}
+#detailContainer .houseMapDiv .content .subtitle {
+left: -13px;
+position: relative;
+top: 85px;
+cursor: pointer;
+}
+#detailContainer .houseDiv .houseContent, #detailContainer .houseDiv .map {
+width: 100%;
+height: 100%;
+}
+#detailContainer .houseDiv .map {
+position: absolute;
+opacity: 0;
+z-index: 0;
+}
+#detailContainer .houseDiv .map .closeMap {
+opacity: 0.5;
+bottom: 20px;
+height: 60px;
+left: 20px;
+width: 60px;
+}
+#detailContainer .houseDiv .map .closeMap:hover {
+opacity: 0.3;
+}
+#detailContainer .houseDiv .houseContent {
+position: absolute;
+background-color: white;
+}
+#detailContainer .houseTitleDiv {
+background: #019e97;
+display: table;
+}
+#detailContainer .houseTitleDiv .username {
+font-size: 18px;
+font-weight: normal;
+padding: 15px 55px;
+text-align: left;
+}
+#detailContainer .houseTitleDiv .title {
+display: table-cell;
+font-size: 22px;
+font-weight: normal;
+padding: 0 20px;
+vertical-align: middle;
+}
+#detailContainer .houseLandlordDiv {
+display: table;
+background-color: $secondColor;
+}
+#detailContainer .houseLandlordDiv .content {
+width:  240px;
+height: 100px;
+top: 5px;
+margin: 0 auto;
+position: relative;
+background: url("#staticUrl('image/detail/house-landlord.png')") no-repeat scroll 45px 21px transparent;
+}
+#detailContainer .houseLandlordDiv .content.center {
+background-position: 85px 21px;
+}
+#detailContainer .houseLandlordDiv .favicon {
+width: 80px;
+height: 80px;
+position: absolute;
+left:45px;
+top:17px;
+}
+#detailContainer .houseLandlordDiv .content.no-back-pic {
+background-image: none;
+}
+#detailContainer .houseLandlordDiv .subtitle {
+position: absolute;
+font-size: 14px;
+left: 21px;
+top: 12px;
+}
+#detailContainer .houseLandlordDiv .info {
+position: absolute;
+font-size: 19px;
+}
+#detailContainer .houseLandlordDiv .info.age-gender{
+left: 144px;
+top: 22px;    
+line-height: 30px;
+}
+#detailContainer .houseLandlordDiv .info.age-gender.single-gender{
+left: 175px;
+top: 40px;    
+line-height: 30px;
+}
+#detailContainer .houseLandlordDiv .info.age-gender span{
+margin-right: 10px;
+}
+#detailContainer .houseLandlordDiv .subcontent .gender{
+width: 100px;
+text-align: center;
+position: absolute;
+font-size: 20px;
+top: 10px;
+right: 28px;
+}
+#detailContainer .houseLandlordDiv .info.constellation{
+left: 144px;
+top: 57px;
+background-color: inherit;
+}
+#detailContainer .houseLandlordDiv .roomInfo{
+width: 110px;
+padding: 12px 0 0 24px;
+text-align: left;
+}
+#detailContainer .houseLandlordDiv .roomInfo>.roomInfoItem{
+display: block;
+}
+#detailContainer .houseLandlordDiv .roomInfo>.roomInfoItem.name{
+font-size: 20px;
+}
+#detailContainer .houseLandlordDiv .roomInfo>.roomInfoItem.area{
+font-size: 14px;
+padding-top: 4px;
+}
+#detailContainer .houseLandlordDiv .roomInfo>.roomInfoItem.orientation{
+font-size: 14px;
+padding-top: 10px;
+}
+#detailContainer .houseAbstractDiv {
+display: table;
+background: url("#staticUrl('image/detail/house-abstract.png')") no-repeat scroll 170px 20px #e8c061;
+}
+#detailContainer .houseAbstractDiv.large{
+background-position: 150px 80px;
+}
+#detailContainer .houseAbstractDiv .subtitle {
+position: absolute;
+left: 180px;
+top: 80px;
+}
+#detailContainer .houseAbstractDiv.large .subtitle {
+left: 160px;
+top: 135px;
+}
+#detailContainer .houseAbstractDiv .subcontent {
+text-align: left;
+padding: 15px 0 0 25px;
+}
+#detailContainer .houseAbstractDiv.large .subcontent {
+position: absolute;
+padding: 20px 0 0 38px;
+}
+#detailContainer .houseAbstractDiv strong {
+font-size: 25px;
+font-weight: normal;
+margin-left: 
+}
+#detailContainer .houseAbstractDiv.large strong {
+margin-left: 8px;
+}
+#detailContainer .houseAbstractDiv.large strong:first-child {
+margin-left: 0px;
+}
+#detailContainer .houseAbstractDiv.large strong {
+font-size: 32px;
+}
+#detailContainer .houseAbstractDiv.large .num{
+font-size: 30px;
+}
+#detailContainer .houseAbstractDiv.large p{
+margin-top: 0;
+}
+#detailContainer .houseAbstractDiv.large p:first-child{
+margin-top:0px;
+}
+#detailContainer .houseDescDiv {
+background: url("#staticUrl('image/detail/house-desc.png')") no-repeat scroll 20px 15px #32a47e;
+}
+#detailContainer .houseDescDiv .subtitle {
+line-height: 54px;
+text-align: left;
+text-indent: 55px;
+}
+#detailContainer .houseDescDiv .subcontent {
+height: 280px;
+line-height: 28px;
+overflow: hidden;
+}
+#detailContainer .houseDescDiv p {
+padding: 0 20px;
+}
+#detailContainer .houseDescDiv .facility-tags{
+padding: 20px;
+}
+#detailContainer .houseDescDiv .facility-tags .tags{
+padding-top: 5px;
+}
+#detailContainer .houseDescDiv .facility-tags .tags span{
+display: inline-block;
+width: 46px;
+color: $mainColor;
+background-color:#FFF;
+text-align: center;
+margin-right: 2px;
+margin: 0 2px 7px 0;
+font-size: 12px;
+}
+#detailContainer .houseDescOpen {
+position: relative;
+bottom: 196px;
+}
+#detailContainer .houseDescClose {
+bottom: 20px;
+cursor: pointer;
+display: none;
+left: 20px;
+position: absolute;
+}
+#detailContainer .houseDescClose:hover {
+opacity: 0.7;
+}
+#detailContainer .houseRoommateDiv {
+display: table;
+#if($itemType == 1 && !$isSimpleHouse)
+background-color: #e17b65;
+#else
+background: url("#staticUrl('image/detail/house-price.png')") no-repeat scroll 20px 45px #e17b65;
+#end
+}
+#detailContainer .houseRoommateDiv.large{
+background-position: 35px 28px;
+}
+#detailContainer .houseRoommateDiv .subtitle {
+position: absolute;
+left: 25px;
+top: 17px;
+font-size: 14px;
+}
+#detailContainer .houseRoommateDiv.large .subtitle {
+left: 78px;
+top: 49px;
+}
+#detailContainer .houseRoommateDiv .subcontent {
+position: absolute;
+top: 55px;
+right: 18px;
+font-size: 24px;
+text-align: center;
+display: table-cell;
+}
+#detailContainer .houseRoommateDiv .subcontent.price-content {
+top: 44px;
+}
+#detailContainer .houseRoommateDiv.large .subcontent.price-content {
+top: 80px;
+right: inherit;
+left: 35px;
+}
+#detailContainer .houseRoommateDiv .subcontent .price {
+font-size: 12px;
+}
+#detailContainer .houseRoommateDiv .subcontent .price>.number {
+font-size: 38px;
+margin-right: 5px;
+}
+#detailContainer .houseRoommateDiv.large .subcontent .price>.number{
+font-size: 54px;
+margin-right: 15px;
+}
+#detailContainer .houseRoommateDiv .gender {
+font-size:20px;
+padding-left: 8px;
+width: 80px;
+display: inline-block;
+}
+#detailContainer .required-gender {
+position: absolute;
+top: 50px;
+}
+#detailContainer .required-gender.normal{
+left: 30px;
+}
+#detailContainer .required-gender.right {
+left: initial;
+right: 30px;
+}
+#detailContainer .required-gender .icon{
+display: inline-block;
+width: 40px;
+height: 40px;
+background-image: url(#staticUrl('image/detail/required_gender.png'));
+}
+#detailContainer .required-gender .icon:first-child{
+margin-right: 12px;
+}
+#detailContainer .required-gender .icon.inactive{
+opacity: 0.3;
+}
+#detailContainer .required-gender .icon.male{
+background-position: -40px 0px;
+}
+#detailContainer .required-gender .icon.female{
+background-position: 0px 0px;    
+}
+/*
+* room
+*/
+#detailContainer .roomNav{
+display: none;
+position: fixed;
+left:0;
+z-index:210;
+}
+#detailContainer .roomNavButton{
+margin-top: 10px;
+height: 85px;
+width: 20px;
+cursor: pointer;
+opacity: 0.6;
+}
+.roomNavButton:hover{
+opacity: 0.8;
+}
+.roomNavButton .navText{
+display: table-cell;
+vertical-align: middle;
+font-size: 13px;
+cursor: pointer;
+}
+.room{
+position: relative;
+float: left;
+height: ${contentHeight}px;
+}
+.roomOpBar{
+position: absolute;
+bottom: 10px;
+height: 85px;
+left: ${hMargin}px;
+}
+.roomOpBar > div{
+position: absolute;
+height: 100%;
+}
+.roomOpBg{
+width: 100%;
+opacity: 0.1;
+}
+.roomOpHead{
+width: 20px;
+opacity: 0.8;
+}
+.roomDetail{
+margin: 10px 0 0 40px;
+min-width: 300px;
+}
+.roomDetail  *{
+float:left;
+}
+.roomDetailContent {
+min-width: 165px;
+}
+.roomName{
+font-size: 21px;
+margin-right: 15px;
+line-height: 30px;
+}
+.roomPrice{
+line-height: 30px;
+}
+.roomPriceValue{
+font-size: 21px;
+margin-right: 5px;
+}
+.roomSubDetail{
+bottom: 8px;
+position: absolute;
+padding-bottom: 15px;
+}
+.roomSubDetail .roomSubDetailItem {
+margin-right: 1em;
+}
+.roomSubDetail sup {
+font-size: 8px;
+}
+.roomDetail .report-region{
+position: relative;
+}
+.roomDetail .report-region>.report-popup {
+font-size: 13px;
+position: absolute;
+top: -220px;
+left: -78px;
+width: 230px;
+height: 200px;
+}
+.roomDetail .report-region>.report-popup *{
+float: none;
+text-align: left;
+}
+.roomDetail .report-region>.report-popup>.content{
+padding: 12px 15px 0 15px;
+position: relative;
+z-index: 1;
+}
+.roomDetail .report-region>.report-popup>.content .btn{
+margin: 15px 0;
+cursor: pointer;
+height: 28px;
+position: relative;
+}
+.roomDetail .report-region>.report-popup>.content .btn.small-gap{
+margin: 10px 0;
+}
+.roomDetail .report-region>.report-popup>.content .btn.large-gap{
+margin: 22px 0;
+}
+.roomDetail .report-region>.report-popup>.content .btn.inline{
+display: inline-block;
+width: 45%;
+}
+.roomDetail .report-region>.report-popup>.content .btn.inline.first{
+margin-right: 10px;
+}
+.roomDetail .report-region>.report-popup>.content .btn>.back{
+position: absolute;
+width: 100%;
+height: 100%;
+}
+.roomDetail .report-region>.report-popup>.content .btn>.back:hover{
+background-color: #FFF;
+opacity: 0.2;
+}
+.roomDetail .report-region>.report-popup>.content .btn>p{
+padding-top: 3px;
+text-align: center;
+font-size: 16px;
+}
+.roomDetail .report-region>.report-popup>.content .close-btn{
+color: #FFF;
+position: absolute;
+right: 16px;
+top: 12px;
+cursor: pointer;
+}
+.roomDetail .report-region>.report-popup>.content .report-card.textcard{
+text-align: center;
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group{
+margin-top: 16px;
+position: relative; 
+height: 90px;
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group>.back{
+position: absolute;
+width: 100%;
+height: 100%;
+background-color: #FFF;
+opacity: 0.2;
+top: 0;
+left: 0;
+z-index: 0;
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group>textarea{
+position: relative;
+z-index: 1;
+background-color: transparent;
+resize: none;
+overflow: hidden;
+border: none;
+color: #FFF;
+width: 100%;
+height: 100%;
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group>textarea::-webkit-input-placeholder{
+color: #FFF;
+opacity: 0.7;   
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group>textarea:-moz-placeholder{
+color: #FFF;
+opacity: 0.7;   
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group>textarea:-ms-input-placeholder{
+color: #FFF;
+opacity: 0.7;       
+}
+.roomDetail .report-region>.report-popup>.content .report-card>.text-group>textarea::-moz-placeholder{
+color: #FFF;
+opacity: 0.7;   
+}
+.roomDetail .report-region>.report-popup>.content .report-card>p.report-desc.first{
+margin-top: 0px;
+}
+.roomDetail .report-region>.report-popup>.content .report-card>p.report-desc{
+margin-top: 16px;
+}
+.roomDetail .report-region>.report-popup>.content .report-card>p.report-desc.last{
+margin-bottom: 8px;
+}
+.roomDetail .report-region>.report-popup>.back{
+position: absolute;
+z-index: 0;
+width: 100%;
+height: 100%;
+background-color: rgb(0, 160, 233);
+opacity: 0.4;
+}
+.roomDetail .roomReport {
+    position: absolute;
+    left: 5px;
+    top: 0px;
+    width: 55px;
+    padding: 8px 5px 7px 5px;
+    display: none;
+}
+.roomDetail .roomReport .roomReportBg {
+    background-color: white;
+    opacity: 0.1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+}
+.roomDetail .roomReport:hover {
+    cursor: pointer;
+}
+.roomDetail .roomReport:hover .roomReportBg {
+    opacity: 0.2;
+}
+.roomReportIcon {
+    float: none;
+    display: block;
+    background: url("#staticUrl('image/detail/roomRent.png')") 0px 0px no-repeat scroll transparent;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+}
+.roomDetail .roomReport:hover .roomReportIcon {
+    background: url("#staticUrl('image/detail/roomRent.png')") -30px 0px no-repeat scroll transparent;
+}
+.roomDetail .roomReport p {
+    float: none;
+    margin: 3px auto 0;
+    font-size: 12px;
+}
+.roomDetail .roomReported {
+    position: absolute;
+    left: 5px;
+    top: 0px;
+    width: 55px;
+    padding: 8px 5px 7px 5px;
+    display: none;
+}
+.roomDetail .roomReported .roomReportBg {
+    background-color: white;
+    opacity: 0.1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    top: 0px;
+}
+.roomReportedIcon {
+    float: none;
+    display: block;
+    background: url("#staticUrl('image/detail/roomRent.png')") -30px 0px no-repeat scroll transparent;
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+}
+.roomDetail .roomReported p {
+    float: none;
+    margin: 3px auto 0;
+    font-size: 12px;
+}
+
+.roomDetail .auditStatus {
+font-size: 17px;
+font-style: italic;
+line-height: 30px;
+margin-left: 20px;
+}
+.imgDragging{
+cursor: url("#staticUrl('image/icon/cursor_grab.cur')") , move !important;
+cursor: -moz-grabbing;
+cursor: move;
+}
+.imgDragEnd{
+cursor: url("#staticUrl('image/icon/cursor_hand.cur')") , move !important;
+cursor: -moz-grab;
+cursor: move;
+}
+.detailDivDragging {
+box-shadow: 0 5px 20px rgba(0, 0, 0, 0.6);
+}
+.detailDivDragEnd {
+box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+#detailContainer .landlordDiv {
+position: absolute;
+width: 100%;
+height: 100%;
+background-color: $secondColor;
+z-index: 0;
+} 
+#detailContainer .landlord-item{
+text-align: center;
+margin: 0 68px;
+}
+#detailContainer .landlord-item.info-list{
+text-align: left;
+}
+#detailContainer .landlord-item.info-list .list-container{
+display: inline-block;
+}
+#detailContainer .landlord-item>.desc{
+text-indent: 25px;
+margin-top: 26px;
+font-weight: bold;
+text-align: left;
+}
+#detailContainer .landlordDiv .favicon {
+width: 80px;
+height: 80px;
+#if($stringUtils.isNotEmpty($suite.landlord.faviconUrl))
+border-radius: 50%;
+border: 2px solid white;
+#end
+}
+#detailContainer .landlordDiv .nicknameDiv {
+font-size: 14px;
+text-align: center;
+width: 320px;
+display: inline-block;
+}
+#detailContainer .landlordDiv .basicInfoDiv {
+display: inline-block;
+width: 100%;
+height: 80px;
+}
+#detailContainer .landlordDiv .basicInfoDiv .ageWidget {
+left: 0px !important;
+}
+#detailContainer .landlordDiv .basicInfoDiv .constellationWidget {
+left: 0 !important;
+top: 0 !important;
+}
+#detailContainer .landlordDiv .moreInfoDiv {
+position: absolute;
+left: 40px;
+top: 125px;
+width: 100px;
+height: 240px;
+}
+#detailContainer .landlordDiv .descriptionDiv {
+margin: 30px 10px;
+position: relative;    
+height: 400px;
+font-size: 12px;
+text-align: left;
+}
+#detailContainer .houseDescDiv .subcontent p {
+min-height: 150px;
+}
+#detailContainer .landlordDiv .keyValueDiv {
+margin-top: 6px;
+}
+#detailContainer .landlordDiv .keyValueDiv .key {
+height: 24px;
+font-size: 12px;
+vertical-align: bottom;
+text-align: left;
+font-weight: bold;
+}
+#detailContainer .landlordDiv .keyValueDiv .value {
+padding-left: 50px;
+margin-top: 2px;
+font-size: 13px;
+font-weight: bold;
+text-align: left;
+}
+#detailContainer .icon{
+width: 24px;
+height: 24px;
+display: inline-block;
+vertical-align: bottom;
+margin-right: 4px;
+}
+#detailContainer .icon.school {
+background: url("#staticUrl('image/detail/school.png')") no-repeat scroll 0px 0 transparent;
+}
+#detailContainer .icon.major {
+background: url("#staticUrl('image/detail/major.png')") no-repeat scroll 0px 0 transparent;
+}
+#detailContainer .icon.company {
+background: url("#staticUrl('image/detail/company.png')") no-repeat scroll 0px 0 transparent;
+}
+#detailContainer .icon.profession {
+background: url("#staticUrl('image/detail/profession.png')") no-repeat scroll 0px 0 transparent;
+}
+#detailContainer .landlordDiv .close {
+position: absolute;
+left: 20px;
+top: 390px;
+opacity: 0.5;
+cursor: pointer;
+}
+#detailContainer .landlordDiv .userinfoWidget {
+height: 65px;
+width: 60px;
+margin: 6px 0px 10px 0px;
+position: relative;
+display: inline-block;
+vertical-align: top;
+}
+#detailContainer .landlordDiv .userinfoWidget.genderDiv{
+margin: 0 78px;
+}
+#detailContainer .landlordDiv .userinfoWidget .userinfoComponent {
+opacity: 0.1;
+}
+#detailContainer .landlordDiv .userinfoWidget .key {
+display: none;
+}
+#detailContainer .houseDiv .ageWidget li {
+position: absolute;
+background: url("/static/image/detail/age-dot.png");
+width: 5px;
+height: 5px;
+}
+#detailContainer .houseDiv .age {
+color: white;
+background-color: $secondColor;
+}
+#detailContainer .houseDiv .genderDiv img {
+height: 52px;
+text-align: left;
+margin-top: 10px;
+}
+#detailContainer .houseDiv .constellation {
+color: white;
+background-color: $secondColor;
+}
+#detailContainer .houseDiv .unknown {
+display: none;
+}
+</style>
+
+<div id="detailContainer">
+    <div class="detailDiv detailDivDragEnd">
+        <div class="houseDiv cube">
+            <div class="map">
+                <div class="mapContent"></div>
+                <img class="op closeMap" src="#staticUrl('image/icon/map/close.png')">
+                <img class="op zoomin" src="#staticUrl('image/icon/map/zoomin.png')">
+                <img class="op zoomout" src="#staticUrl('image/icon/map/zoomout.png')">
+            </div>
+            #if($suite.landlord.name)
+            <div class="landlordDiv">
+                <div class="descriptionDiv">
+                    <div class="landlord-item">
+                        <img class="favicon" src=#if($stringUtils.isNotEmpty($suite.landlord.faviconUrl))$!{suite.landlord.faviconUrl}#else#staticUrl('image/detail/house-landlord.png')#end></img>
+                    </div>
+                    <div class="landlord-item">
+                        <div class="nicknameDiv">$stringUtils.truncate($suite.landlord.name, 16)</div>                        
+                    </div>
+                    <div class="landlord-item">
+                        <div class="basicInfoDiv">
+                            #if($suite.landlord.age)
+                            #set($userAge=$suite.landlord.age)
+                            #parse("house/age.vm")
+                            #else
+                            <div class="userinfoWidget"></div>
+                            #end
+                            <div class="userinfoWidget genderDiv">
+                            #if($suite.landlord.gender == "男")
+                                <img src="#staticUrl('image/detail/male.png')"/>
+                            #elseif ($suite.landlord.gender == "女")
+                                <img src="#staticUrl('image/detail/female.png')"/>
+                            #end
+                            </div>
+                            #if($suite.landlord.constellation)
+                            #set($userConstellation=$suite.landlord.constellation)
+                            #set($constellationImgPath="/static/image/detail")
+                            #parse("house/constellation.vm")
+                            #else
+                            <div class="userinfoWidget"></div>
+                            #end
+                        </div>                        
+                    </div>
+                    <div class="landlord-item info-list">
+                      <div class="list-container">
+                      #if($suite.landlord.school)
+                         <div class="keyValueDiv">
+                                    <div class="key school" style=""><span class="icon school"></span>学校</div>
+                                    <div class="value" title="$suite.landlord.school">$stringUtils.truncate($suite.landlord.school, 40)</div>
+                         </div>
+                            #else
+                         <div class="keyValueDiv unknown">
+                                    <div class="key school" style=""><span class="icon school"></span>学校</div>
+                           <div class="value">未填</div>
+                         </div>
+                      #end
+                      #if($suite.landlord.major)
+                         <div class="keyValueDiv">
+                             <div class="key major"><span class="icon major"></span>专业</div>
+                                    <div class="value" title="$suite.landlord.major">$stringUtils.truncate($suite.landlord.major, 40)</div>
+                                </div>
+                            #else
+                         <div class="keyValueDiv unknown">
+                             <div class="key major"><span class="icon major"></span>专业</div>
+                           <div class="value">未填</div>
+                         </div>
+                      #end
+                      #if($suite.landlord.company)
+                         <div class="keyValueDiv">
+                           <div class="key company"><span class="icon company"></span>单位</div>
+                           <div class="value" title="$suite.landlord.company">$stringUtils.truncate($suite.landlord.company, 40)</div>
+                         </div>
+                            #else
+                         <div class="keyValueDiv unknown">
+                           <div class="key company"><span class="icon company"></span>单位</div>
+                           <div class="value">未填</div>
+                         </div>
+                      #end
+                            #if($suite.landlord.profession)
+                         <div class="keyValueDiv">
+                           <div class="key profession"><span class="icon profession"></span>职业</div>
+                           <div class="value" title="$suite.landlord.profession">$stringUtils.truncate($suite.landlord.profession, 40)</div>
+                         </div>
+                            #else
+                         <div class="keyValueDiv unknown">
+                           <div class="key profession"><span class="icon profession"></span>职业</div>
+                           <div class="value">未填</div>
+                         </div>
+                      #end
+                      </div>
+                    </div>
+                    <div class="landlord-item">
+                        <p class="desc" #if($stringUtils.isEmpty($suite.landlord.description))style="text-align: center;text-indent:0;" class="unknown"#end>#formatDesc($suite.landlord.description)</p>
+                    </div>
+                </div>
+                <img class="close" src="#staticUrl('image/detail/close.png')">
+            </div>
+            #end
+            <div class="houseContent">
+                <div class="houseMapDiv cell">
+                    <div class="content">
+                        <h3 class="subtitle">地图</h3>
+                    </div>
+                </div>
+                <div class="houseTitleDiv cell">
+                    <h3 class="title" style="margin-top: 40px;">$!{suite.house.city}$!{suite.house.position}</h3>
+                </div>
+                #if(!$isSimpleHouse && $!suite.landlord.name && !$!noNeedToSeeLandlord)
+                <a class="houseLandlordButton" href="javascript:;">
+                #end
+                #if($isSimpleHouse)
+                    #if($itemType==1)
+                        #set($room = $suite.rooms.get(0).room)
+                        <div class="houseLandlordDiv cell">
+                            #if($room.type <= 2)
+                                <div class="roomInfo">
+                                    <h3 class="name roomInfoItem">$!room.name</h3>
+                                    #if($room.orientation && $room.orientation.length()>0)
+                                    <span class="orientation roomInfoItem">朝$room.orientation</span>
+                                    #end
+                                    #if($room.area)
+                                    <span class="area roomInfoItem"><span>${room.area}m</span><sup>2</sup></span>
+                                    #end
+                                </div>
+                                <div class="required-gender right">
+                                    #if($gender!=2)
+                                    <span class="icon male"></span>
+                                    #else
+                                    <span class="icon male inactive"></span>
+                                    #end
+                                    #if($gender!=1)
+                                    <span class="icon female"></span>
+                                    #else
+                                    <span class="icon female inactive"></span>
+                                    #end
+                                </div>
+                                <div class="subcontent">
+                                    #if($gender==1)
+                                    <p class="gender">
+                                        限男生
+                                    </p>
+                                    #elseif($gender==2)
+                                    <p class="gender">
+                                        限女生
+                                    </p>
+                                    #else
+                                    <p class="gender">
+                                        不限
+                                    </p>
+                                    #end
+                                </div>
+                            #end
+                        </div>
+                    #end
+                #else
+                    <div class="houseLandlordDiv cell">
+                        #if($!suite.landlord.faviconUrl)
+                        <div class="content no-back-pic">
+                            <img class="favicon" style="border-radius: 50%;" src=$!{suite.landlord.faviconUrl}>
+                        ## this is for judging gender defined or not
+                        #elseif($suite.landlord.getGender()=="男" || $suite.landlord.getGender()=="女")
+                        <div class="content">                             
+                        #else
+                        <div class="content center">          
+                        #end
+                            <h3 class="subtitle">房东</h3>
+                            #if($!suite.landlord.getConstellation() || $!suite.landlord.getAge())
+                            <p class="info age-gender">                        
+                                <span>$!suite.landlord.getAge()</span><span>$!suite.landlord.getGender()</span><br/>
+                                #if($!suite.landlord.getConstellation())
+                                    <span>$!suite.landlord.getConstellation()座</span>
+                                #end
+                            </p>                            
+                            #else
+                            <p class="info age-gender single-gender">
+                                <span>$!suite.landlord.getGender()</span>
+                            </p>
+                            #end
+                        </div>
+                    </div>                
+                #end
+                #if(!$isSimpleHouse && $!suite.landlord.name && !$!noNeedToSeeLandlord) 
+                </a>
+                #end
+                <div class="houseAbstractDiv cell #if($isSimpleHouse && $itemType==2)large#end">
+                    <h3 class="subtitle">概貌</h3>
+                    <div class="subcontent">
+                        #if($suite)
+                        <p>
+                            #if($!houseUtils.isValidNumber($!suite.house.roomNumber))
+                                <strong>$!suite.house.roomNumber</strong>&nbsp;室
+                            #else
+                                <strong>0</strong>&nbsp;室
+                            #end
+                            #if($!houseUtils.isValidNumber($!suite.house.hallNumber))
+                                <strong>$!suite.house.hallNumber</strong>&nbsp;厅
+                            #else
+                                <strong>0</strong>&nbsp;厅
+                            #end
+                            #if($!houseUtils.isValidNumber($!suite.house.kitchenNumber))
+                                <strong>$!suite.house.kitchenNumber</strong>&nbsp;厨
+                            #else
+                                <strong>0</strong>&nbsp;厨
+                            #end
+                            #if($!houseUtils.isValidNumber($!suite.house.toiletNumber))
+                                <strong>$!suite.house.toiletNumber</strong>&nbsp;卫
+                            #else
+                                <strong>0</strong>&nbsp;卫
+                            #end
+                        </p>
+                        <p>
+                            #if(${suite.house.floor})第<span class="num">$!{suite.house.floor}</span>层&nbsp;&nbsp;#end
+                        </p>
+                        #if($suite.house.area)
+                        <p>
+                            共 <span class="num">$!{suite.house.area}</span> m<sup style="line-height: 10px; position: relative;top: 2px">2</sup>
+                        </p>
+                        #end
+                        #end
+                    </div>
+                </div>
+                <div class="houseDescDiv cell">
+                    <h3 class="subtitle">描述</h3>
+                    <div class="subcontent">
+                        <p>
+                            $!desc
+                        </p>
+                        #if($!houseUtils.formatFacility($suite.house).size()>0)
+                            <div role="facility-tags" class="facility-tags">
+                                <h3>附加标签</h3>
+                                <div role="tags" class="tags">
+                                    #foreach($facility in $houseUtils.formatFacility($suite.house))
+                                    <span>$!facility</span>
+                                    #end
+                                </div>
+                            </div>
+                        #end
+                    </div>
+                    <img class="houseDescOpen" src="#staticUrl('image/icon/open.png')?20131208"/>
+                    <img class="houseDescClose" src="#staticUrl('image/icon/close.png')?20131208"/>
+                </div>
+                #if($isSimpleHouse)                    
+                    #if($itemType==1)
+                        #set($price=$suite.rooms.get(0).room.price)
+                    #elseif($itemType==2)
+                        #set($price=$suite.house.price)
+                    #end
+                    <div class="houseRoommateDiv asPrice cell #if($isSimpleHouse && $itemType==2)large#end">
+                        <h3 class="subtitle">价格</h3>
+                        <div class="subcontent price-content">
+                            #if($price)
+                            <p class="price">
+                                <span class="number">$price</span>元/月
+                            </p>
+                            #else
+                            未知
+                            #end
+                        </div>                        
+                    </div>
+                #else
+                <div class="houseRoommateDiv asGender cell">
+                    #if($itemType == 1)
+                    <div class="required-gender normal">
+                        #if($gender!=2)
+                        <span class="icon male"></span>
+                        #else
+                        <span class="icon male inactive"></span>
+                        #end
+                        #if($gender!=1)
+                        <span class="icon female"></span>
+                        #else
+                        <span class="icon female inactive"></span>
+                        #end
+                    </div>
+                    <h3 class="subtitle">性别要求</h3>
+                    <div class="subcontent">
+                        #if($gender==1)
+                        <p class="gender">
+                            限男生
+                        </p>
+                        #elseif($gender==2)
+                        <p class="gender" >
+                            限女生
+                        </p>
+                        #else
+                        <p>
+                            不限
+                        </p>
+                        #end
+                    </div>
+                    #else
+                    <h3 class="subtitle">价格</h3>
+                    <div class="subcontent price-content">
+                        #if($suite.house.price)
+                        <p class="price">
+                            <span class="number">$!suite.house.price</span>元/月
+                        </p>
+                        #else
+                        未知
+                        #end
+                    </div>
+                    #end
+                </div>
+                #end                
+            </div>
+        </div>
+        <!-- rooms -->        
+        <div class="roomNav">
+            #if(!$suite.rooms.isEmpty())
+            #set($i = $suite.rooms.size() - 1)
+            #foreach($roomPreview in $suite.rooms)
+            #set($r = $suite.rooms.get($i).room)
+            <div id="room$!{r.id}-nav" class="room$!{r.id}-nav roomNavButton">
+                <p class="navText"></p>
+            </div>
+            #set($i = $i - 1)
+            #end
+            #end
+        </div>
+        #foreach($roomPreview in $suite.rooms)
+        #set($room = $roomPreview.room)
+        #if($velocityCount <= 100)
+        <div class="room$!room.id room" roomId="$!room.id">
+            #foreach($imgId in $roomPreview.imageIds)
+            <div class="cube">
+                <img class="preview imgDragEnd" imageId="$!imgId" height="${contentHeight}">
+            </div>
+            #end
+            <div class="roomOpBar">
+                <div class="roomOpBg"></div>
+                <div class="roomOpHead"></div>
+                <div class="roomDetail">
+                    <div class="roomDetailContent">
+                        <h3 class="roomName">$!room.name</h3>
+                        #if($room.status==0 && $room.type<=2 )
+                        #if($room.price)
+                        <span class="roomPrice"><h4 class="roomPriceValue">$!room.price</h4>元/月</span>
+                        #end
+                        <div class="roomSubDetail">
+                            #if($room.area)
+                            <span class="roomSubDetailItem"><span>${room.area}m</span><sup>2</sup></span>
+                            #end
+                            #if($room.orientation && $room.orientation.length()>0)
+                            <span class="roomSubDetailItem">朝$room.orientation</span>
+                            #end
+                        </div>
+                        #end
+                    </div>
+                    #if ($auth == $auth_verified && $room.type <= 2 && $suite.house.auditStatus == 0 && $room.status == 0 && $suite.house.status == 0)
+                    <div role="report-container" class="report-region">
+                        <div role="report" class="report-popup">
+                            <div class="back"></div>
+                            <div class="content">
+                                <p>感谢报告！</p>
+                                <span role="close" class="close-btn">X</span>
+                                <div role="report-card" data-type="selector" class="report-card ">
+                                    <p class="report-desc first">你的反馈会帮助107间更加真实！</p>
+                                    <div role="selector-btn" data-card="house-rented" class="btn">
+                                        <div class="back"></div>
+                                        <p>房间已租</p>
+                                    </div>
+                                    <div role="selector-btn" data-card="broker" class="btn">
+                                        <div class="back"></div>
+                                        <p>举报中介</p>
+                                    </div>
+                                    <div role="selector-btn" data-card="other" class="btn">
+                                        <div class="back"></div>
+                                        <p>其他问题</p>
+                                    </div>                                    
+                                </div>
+                                <div role="report-card" data-type="house-rented" class="report-card rented">
+                                    <p class="report-desc first">你的反馈会帮助107间更加真实！</p>
+                                    <p class="report-desc">我们将立即核实并下线已租的房间</br>恶意误报的账号将被封锁。</p>
+                                    <p class="report-desc last">确认已联系房东发现该房间已租？</p>
+                                    <div role="submit-report" data-type="RENTED" class="btn inline first" title="点击举报房间已租">
+                                        <div class="back"></div>
+                                        <p>确定</p>
+                                    </div>
+                                    <div role="back" class="btn inline">
+                                        <div class="back"></div>
+                                        <p>取消</p>
+                                    </div>
+                                </div>
+                                <div role="report-card" data-type="broker" class="report-card">
+                                    <p class="report-desc first">你的反馈会帮助107间更加真实！</p>
+                                    <p class="report-desc">我们将立刻核实。</p>
+                                    <p class="report-desc last">确认已联系发现该房间是中介房？</p>
+                                    <div role="submit-report" data-type="IS_BROKER" class="btn large-gap inline first" title="点击举报中介房">
+                                        <div class="back"></div>
+                                        <p>确定</p>
+                                    </div>
+                                    <div role="back" class="btn large-gap inline">
+                                        <div class="back"></div>
+                                        <p>取消</p>
+                                    </div>
+                                </div>
+                                <div role="report-card" data-type="other" class="report-card textcard">
+                                    <p class="report-desc first">你的反馈会帮助107间更加真实！</p>
+                                    <div class="text-group">
+                                        <textarea placeholder="写下该房间的问题（信息不实等）"></textarea>
+                                        <div class="back"></div>
+                                    </div>
+                                    <div role="submit-report" data-type="OTHER_REASON" class="btn small-gap inline" title="点击提交举报信息">
+                                        <div class="back"></div>
+                                        <p>确定</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        #if ($itemType == 1)
+                        #set ($hasReportUsers = $!room.hasReportUsers($!userId))
+                        #if (!$hasReportUsers)
+                        <div class="roomReport" style="display:block;">
+                            <div class="roomReportBg"></div>
+                            <i class="roomReportIcon"></i>
+                            <p>举报</p>
+                        </div>
+                        <div class="roomReported" style="display:none;">
+                            <div class="roomReportBg"></div>
+                            <i class="roomReportedIcon"></i>
+                            <p>已举报</p>
+                        </div>
+                        #else
+                        <div class="roomReport" style="display:none;">
+                            <div class="roomReportBg"></div>
+                            <i class="roomReportIcon"></i>
+                            <p>举报</p>
+                        </div>
+                        <div class="roomReported" style="display:block;">
+                            <div class="roomReportBg"></div>
+                            <i class="roomReportedIcon"></i>
+                            <p>已举报</p>
+                        </div>
+                        #end
+                        #end
+                        #if ($itemType == 2)
+                        <div class="roomReport">
+                            <div class="roomReportBg"></div>
+                            <i class="roomReportIcon"></i>
+                            <p>举报</p>
+                        </div>
+                        <div class="roomReported">
+                            <div class="roomReportBg"></div>
+                            <i class="roomReportedIcon"></i>
+                            <p>已举报</p>
+                        </div>
+                        #end
+                    </div>
+                    #end
+                    <!-- status (only shown for bedrooms) -->
+                    #if($room.type <= 2 )
+                    #set($showOp = false )
+                    #if($suite.house.auditStatus == 1)
+                    <span class="auditStatus">审核中</span>
+                    #elseif($suite.house.auditStatus == 2)
+                    <span class="auditStatus">审核未通过</span>
+                    #elseif(($suite.house.rentType == 2 && $suite.house.status == 1) || $room.status == 1)
+                    <span class="auditStatus">已租</span>
+                    #else
+                    #set($showOp = true )
+                    #end
+                    #end
+                    <!-- op -->
+                    #if($showOp)
+                    #if($suite.house.rentType == 3)
+                    #set($showOp = $room.status == 0 || $suite.house.status == 0 )
+                    #else
+                    #set($showOp = $room.status == 0 && $suite.house.status == 0 )
+                    #end
+                    #end
+                </div>
+            </div>
+        </div>
+        #end
+        #end
+    </div>
+    #if(($suite.house.auditStatus == 0 || $suite.house.auditStatus == 1) && $suite.house.status == 0)
+    <div class="actionButtonDiv">
+        <div class="left">
+            <div class="contactButtonDiv">
+                <div class="content">
+                    <span class="verify login text">认证账号可查看</span>
+                    <span class="confirm text">已在新页面登录？</span>
+                    <span class="phoneInfo actionButton contactInfo"></span>
+                    <span class="wechatInfo actionButton contactInfo"></span>
+                    <span class="qqInfo actionButton contactInfo"></span>
+                    <a class="contactButton actionButton" href="javascript:;">看房</a>
+                    <a class="verifyButton actionButton verify" href="javascript:;">认证</a>
+                    <a class="loginButton actionButton login" href="javascript:;">登录</a>
+                    <a class="confirmButton actionButton confirm" href="javascript:;">确认</a>
+                    <img class="contactBackButton verify login confirm contactInfo" src="#staticUrl('image/detail/close2.png')"></img>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="shareButtonDiv">
+                <img class="shareForwardButton contactInfo " src="#staticUrl('image/detail/close1.png')"></img> 
+                <div class="jiathis_style_32x32">
+                     <a id="weiboInfo" class="jiathis_button_tsina contactInfo shareLogo"></a>
+                     <a id="doubanInfo" class="jiathis_button_douban contactInfo shareLogo"></a>
+                     <a id="renrenInfo" class="jiathis_button_renren contactInfo shareLogo"></a>
+                     <a id="copyInfo" class="copy_button contactInfo shareLogo">复制链接</a>
+                </div>
+                <a class="shareButton actionButton" href="javascript:;">分享</a>
+            </div>    
+        </div>
+    </div>
+    #end
+</div>
+
+#function_containerHeight()
+<script type="text/javascript">
+    function houseDetail() {
+        var roomIndex = 0, roomColors = ["#00A0E9", "#F39800", "#21C1BA", "#D64CAA", "#FCB215", "#9CCB3B", "#25B0E6", "#8151A1"];
+        var scrollLock = false;
+
+        // map model
+        var bmap = null;
+        room107.map = {
+            housePoint : null,
+            zoomLevel : 14,
+            reset : function() {
+                //#if(!$suite.house.locationX || !$suite.house.locationY)//
+                log('invalid location');
+                return;
+                //#end//
+
+                // should called after init
+                function doReset() {
+                    bmap.centerAndZoom(room107.map.housePoint, room107.map.zoomLevel);
+                }
+
+                if (!this.housePoint) {// init
+                    bmap = Map.create($("#detailContainer .houseDiv .map"), {
+                        autoShow : false
+                    });
+                    bmap.centerAndZoom(Map.point('PKU'), 11);
+                    this.housePoint = new BMap.Point($suite.house.locationX, $suite.house.locationY);
+                    var marker = new BMap.Marker(this.housePoint, {
+                        icon : new BMap.Icon('#staticUrl("image/icon/map/marker1-normal.png")', new BMap.Size(24, 31), {
+                            anchor : new BMap.Size(12, 28)
+                        })
+                    });
+                    marker.setShadow(new BMap.Icon('#staticUrl("image/icon/map/marker1-normal.png")', new BMap.Size(24, 31), {
+                        imageOffset : new BMap.Size(-23, 4)
+                    }));
+                    bmap.addOverlay(marker);
+                }
+                doReset();
+            }
+        }
+
+        function initDetailLayout() {
+            var detailDiv = $("#detailContainer .detailDiv"), detailContainer = $("#detailContainer"), actionButtonDiv = $("#detailContainer .actionButtonDiv");
+            // compute detailDiv width
+            var detailDivWidth = 0;
+            $("#detailContainer .detailDiv .cube").each(function() {
+                detailDivWidth += $(this).outerWidth(true);
+            });
+            detailDiv.width(detailDivWidth + $(".room").length * 1.5 + 2);
+            // center detailDiv
+            detailDiv.css("top", (containerHeight(detailContainer) - detailDiv.height()) / 2 - $vMargin);
+			if (detailDivWidth < detailContainer.width()) {
+                detailDiv.css("left", (detailContainer.width() - detailDiv.outerWidth(true)) / 2);
+            } else {
+                detailDiv.css("left", 0);
+            }
+            // calc actionButtonDiv position by detailDiv
+            actionButtonDiv.css("top", (containerHeight(detailContainer) - detailDiv.height()) / 2 - $vMargin);
+            var windowWidth = $(window).width();
+            $("#detailContainer .actionButtonDiv .left").css("width", windowWidth/2 - 20);
+            $("#detailContainer .actionButtonDiv .right").css("width", windowWidth/2 - 20);
+        }
+        
+        function initLandlordLayout() {
+            #if(!$suite.landlord.name)
+            return ;
+            #end
+            var descDiv = $("#detailContainer .landlordDiv .descriptionDiv");
+            var api = descDiv.jScrollPane().data('jsp');
+            var speed = {
+                "mouseWheelSpeed" : 30
+            };
+            api.reinitialise(speed);
+			var jspContainer = descDiv.find(".jspContainer");
+			jspContainer.width("100%").height("100%");
+			var jspPane = descDiv.find(".jspPane");
+			jspPane.width("100%");
+            descDiv.find(".jspHorizontalBar").remove();
+            var verticalBar = descDiv.find(".jspVerticalBar");
+            if (verticalBar.length > 0) {// has vertical bar
+                verticalBar.css({
+                    "right" : 5,
+                    "width" : 10
+                });
+                var j = descDiv.find(".jspDrag");
+                j.css({
+                    "background-color" : "$!secondColoradd",
+                    "opacity" : 0.9,
+                    "border" : "1px solid white",
+                    "height" : j.height() - 2
+                });
+                descDiv.find(".jspTrack").css({
+                    "background-color" : "white",
+                    "opacity" : 0.9
+                });
+            } else {
+                verticalBar.hide();
+            }
+            var margin = (jspContainer.height() - jspPane.height()) / 2;
+            if (margin > 30) {
+               jspPane.css("margin-top", margin - 20);
+            }
+            //age widget
+            #if($suite.landlord.age)
+            initAge(25);
+            #end
+            //constellation widget
+            #if($suite.landlord.constellation)
+            initConstellation(25, 8);
+            #end
+        }
+
+        function initHouseLayout() {
+            var houseDiv = $("#detailContainer .houseDiv");
+            var houseSubDivWidth = ($houseDivWidth - $houseMargin) / 2;
+            var houseSubDivHeight = ($contentHeight - 3 * $houseMargin) / 4;
+            $("#detailContainer .houseDiv .cell").width(houseSubDivWidth).height(houseSubDivHeight);
+            $("#detailContainer .houseMapDiv").width(houseSubDivHeight);
+            var left = $("#detailContainer .houseMapDiv").width() + $houseMargin;
+            $("#detailContainer .houseTitleDiv").width($houseDivWidth - left).css("left", left);
+            $("#detailContainer .houseDescDiv").height(houseSubDivHeight * 3 + $houseMargin * 2).css("top", houseSubDivHeight + $houseMargin);
+            var houseShortDivWidth = (houseSubDivWidth - $houseMargin) / 2;
+            var houseLongDivHeight = houseSubDivHeight * 2 + $houseMargin;
+            var houseSubDivWidthWithMargin = houseSubDivWidth + $houseMargin +0.5;
+            var largeSubDivHeight = houseSubDivHeight*1.5 + $houseMargin/2;
+
+            //houseHostDiv layout
+            $("#detailContainer .houseLandlordDiv").width(houseSubDivWidth);
+            $("#detailContainer .houseLandlordDiv").css("left", houseSubDivWidthWithMargin);
+            $("#detailContainer .houseLandlordDiv").css("top",  houseSubDivHeight + $houseMargin);
+            
+            //houseAbstractDiv layout
+            $("#detailContainer .houseAbstractDiv").each(function(){
+                var div = $(this);
+                var top = houseSubDivHeight * 2 + $houseMargin * 2;
+                if(div.hasClass('large')){
+                    top = houseSubDivHeight + $houseMargin;
+                    div.height(largeSubDivHeight);
+                }
+                div.width(houseSubDivWidth);
+                div.css("left", houseSubDivWidthWithMargin);
+                div.css("top", top);
+            });
+
+            //houseRoommateDiv
+            $("#detailContainer .houseRoommateDiv").each(function(){
+                var div = $(this);
+                var top = houseSubDivHeight + houseLongDivHeight + $houseMargin * 2;                
+                if(div.hasClass('large')){
+                    div.height(largeSubDivHeight);
+                    top = houseSubDivHeight + $houseMargin * 2 + largeSubDivHeight;
+                }
+                div.width(houseSubDivWidth);
+                div.css("left", houseSubDivWidthWithMargin);
+                div.css("top", top);
+            });
+        }
+
+        function initHouseMap() {
+            var houseDiv = $("#detailContainer .houseDiv"), houseMapDiv = $('#detailContainer .houseMapDiv'), other = $('#detailContainer .houseDiv .cell').not(houseMapDiv), content = $('#detailContainer .houseMapDiv .content'), map = $('#detailContainer .houseDiv .map');
+            var houseMapDivStyle = {
+                width : houseMapDiv.width(),
+                height : houseMapDiv.height(),
+                cursor : 'pointer',
+                zIndex : 200
+            }, houseMapDivOpeningStyle = {
+                cursor : "default",
+                opacity : 1,
+                zIndex : 202
+            };
+            houseMapDiv.hover(function() {
+                if (content.is(':visible')) {
+                    $(this).css('opacity', 0.7);
+                }
+            }, function() {
+                $(this).css('opacity', 1);
+            })
+            map.hover(function() {
+                scrollLock = true;
+            }, function() {
+                scrollLock = false;
+            })
+            var animateTime = 800;
+            // open map
+            var animate = false;
+            $('#detailContainer .houseMapDiv').click(function() {
+                if (animate || content.is(':hidden'))
+                    return;
+                animate = scrollLock = true;
+                $(this).css(houseMapDivOpeningStyle).stop().animate({
+                    width : houseDiv.width(),
+                    height : houseDiv.height()
+                }, animateTime, function() {
+                    room107.map.reset();
+                    other.hide();
+                    content.fadeOut(500, function() {
+                        animate = false;
+                    });
+                    map.css({
+                        zIndex : 203
+                    }).animate({
+                        opacity : 1
+                    }, 1000);
+                });
+                content.stop().animate({
+                    top : 170
+                }, animateTime);
+                other.stop().animate({
+                    opacity : 0
+                }, animateTime);
+            });
+            // close map
+            $('#detailContainer .houseDiv .map .closeMap').click(function() {
+                if (animate)
+                    return;
+                animate = true;
+                map.css({
+                    opacity : 0,
+                    zIndex : 0
+                });
+                content.show();
+                houseMapDiv.css(houseMapDivOpeningStyle).stop().animate(houseMapDivStyle, animateTime, function() {
+                    $(this).css(houseMapDivStyle);
+                    animate = false;
+                });
+                content.stop().animate({
+                    top : 0
+                }, animateTime);
+                other.show().stop().animate({
+                    opacity : 1
+                }, animateTime);
+            });
+        }
+        
+        function initLandlord() {
+            #if(!$suite.landlord.name)
+            return ;
+            #end
+            var landlordDiv = $("#detailContainer .houseLandlordDiv");
+            var content = $("#detailContainer .houseLandlordDiv .content");
+            var houseDiv = $("#detailContainer .houseDiv");
+            var landlord = $("#detailContainer .landlordDiv");
+            var close = $("#detailContainer .landlordDiv .close");
+            var animateTime = 800;
+            
+            var isLandlordShow = false;
+            //hover
+            #if(!$!isSimpleHouse && !$!noNeedToSeeLandlord)
+            landlordDiv.hover(function(){
+                if (!isLandlordShow) {
+                    landlordDiv.css("opacity", 0.7);
+                }
+            }, function(){
+                landlordDiv.css("opacity", 1);
+            });
+            #end
+            close.hover(function() {
+                close.css("opacity", 0.3);
+            }, function() {
+                close.css("opacity", 0.5);
+            });
+            
+            var openStyle = {
+                "top" : 0,
+                "left" : 0,
+                "width" : houseDiv.width(),
+                "height" : houseDiv.height()
+            };
+             var other = $("#detailContainer .houseDiv .cell").not(".houseLandlordDiv");
+            //open landlord info
+            $("#detailContainer .detailDiv .houseLandlordButton").click(function(){
+                if (isLandlordShow) return false;
+                isLandlordShow = true;
+                landlordDiv.css("opacity", 1);
+                landlordDiv.css("zIndex", 205);
+                landlordDiv.animate(openStyle, animateTime, function() {
+                    landlord.css("zIndex", 204);
+                    landlordDiv.animate({opacity: 0}, animateTime, function() {
+                        landlordDiv.css("zIndex", 203);
+                        landlordDiv.css("opacity", 1);
+                    });
+                });
+                content.stop().animate({
+                    top : 170
+                }, animateTime);
+                other.show().stop().animate({opacity : 0}, animateTime);
+            });
+            var closedStyle = {
+                top: landlordDiv.css("top"),
+                left: landlordDiv.css("left"),
+                width: landlordDiv.width(),
+                height: landlordDiv.height()
+            };
+            //close landlord info
+            close.click(function() {
+                if (!isLandlordShow) return false;
+                landlord.css("zIndex", 0);
+                landlordDiv.animate(closedStyle, animateTime, function() {
+                    landlordDiv.css("zIndex", 200);
+                    isLandlordShow = false;
+                });
+                content.stop().animate({
+                    top : 5
+                }, animateTime);
+                other.show().stop().animate({opacity : 1}, animateTime);
+            });
+        }
+
+
+        function initHouseDesc() {
+            var descOpened = false, animateSemaphore = 0, animateTime = 500;
+            var houseDiv = $("#detailContainer .houseDiv"), houseSubDiv = $("#detailContainer .houseDiv .cell");
+            var descDiv = $("#detailContainer .houseDescDiv"), subcontentDiv = $("#detailContainer .houseDescDiv .subcontent");
+            var openDiv = $("#detailContainer .houseDescOpen"), closeDiv = $("#detailContainer .houseDescClose");
+            // hover
+            var openedStyle = {
+                cursor : "default",
+                opacity : 1,
+                zIndex : 201
+            };
+            var closedStyle = {
+                cursor : "pointer",
+                opacity : 0.7,
+                zIndex : 200
+            };
+            descDiv.hover(function() {
+                if (!descOpened) {
+                    $(this).css(closedStyle);
+                    descDiv.find("p").css("cursor", "pointer");
+                    descDiv.find("h3").css("cursor", "pointer");
+                }
+            }, function() {
+                if (!descOpened) {
+                    $(this).css(openedStyle);
+                }
+            });
+            // open
+            descDiv.click(function() {
+                if (descOpened || animateSemaphore != 0)
+                    return false;
+                descOpened = true;
+                // hide others
+                openDiv.hide();
+                descDiv.css(openedStyle);
+                animateSemaphore += houseSubDiv.length + 1;
+                houseSubDiv.each(function() {
+                    if ($(this)[0] != descDiv[0]) {
+                        $(this).animate({
+                            opacity : 0
+                        }, animateTime, function() {
+                            animateSemaphore--;
+                        });
+                    }
+                });
+                // enlarge
+                //// descDiv
+                var descW = descDiv.width(), descH = descDiv.height();
+                descDiv.find("p").css("cursor", "default");
+                descDiv.find("h3").css("cursor", "default");
+                var top = parseInt(descDiv.css("top"));
+                descDiv.animate({
+                    top : 0,
+                    width : houseDiv.width(),
+                    height : houseDiv.height()
+                }, animateTime, function() {
+                    closeDiv.show();
+                    animateSemaphore--;
+                });
+                //// subcontent
+                var subcontentH = subcontentDiv.height();
+                subcontentDiv.animate({
+                    height : houseDiv.height() - 140
+                }, animateTime, function() {
+                    descContentOpened();
+                    animateSemaphore--;
+                });
+                // revert
+                closeDiv.click(function() {
+                    if (!descOpened || animateSemaphore != 0)
+                        return false;
+                    descOpened = false;
+                    // show others
+                    closeDiv.hide();
+                    $("#detailContainer .houseDescDiv .jspVerticalBar").hide();
+                    animateSemaphore += houseSubDiv.length + 1;
+                    houseSubDiv.each(function() {
+                        if ($(this)[0] != descDiv[0]) {
+                            $(this).animate({
+                                opacity : 1
+                            }, animateTime, function() {
+                                animateSemaphore--;
+                            });
+                        }
+                    });
+                    // shrink
+                    descDiv.find("p").css("cursor", "pointer");
+                    descDiv.find("h3").css("cursor", "pointer");
+                    subcontentDiv.animate({
+                        height : subcontentH
+                    }, animateTime, function() {
+                        descContentClosed();
+                        animateSemaphore--;
+                    });
+                    descDiv.animate({
+                        top : top,
+                        width : descW,
+                        height : descH
+                    }, animateTime, function() {
+                        openDiv.show();
+                        descDiv.css(closedStyle);
+                        animateSemaphore--;
+                    });
+                    return false;
+                });
+            });
+            // scroll
+            var closedScrollS = {
+                "mouseWheelSpeed" : 0
+            };
+            var openedScrollS = {
+                "mouseWheelSpeed" : 30
+            };
+            var scrollWidth = subcontentDiv.width();
+            var scrollApi = subcontentDiv.jScrollPane().data('jsp');
+            descContentClosed();
+            function descContentClosed() {
+                scrollLock = false;
+                scrollApi.reinitialise(closedScrollS);
+                subcontentDiv.width("100%");
+                $("#detailContainer .houseDescDiv .jspContainer").width("100%").height("100%");
+                $("#detailContainer .houseDescDiv .jspPane").width("100%");
+                $("#detailContainer .houseDescDiv .jspVerticalBar").hide();
+                $("#detailContainer .houseDescDiv .jspHorizontalBar").hide();
+                $("#detailContainer .houseDescDiv p").css("padding-right", 20);
+            }
+
+            function descContentOpened() {
+                scrollLock = true;
+                scrollApi.reinitialise(openedScrollS);
+                subcontentDiv.width("100%");
+                $("#detailContainer .houseDescDiv .jspContainer").width("100%").height("100%");
+                $("#detailContainer .houseDescDiv .jspPane").width("100%");
+                var verticalBar = $("#detailContainer .houseDescDiv .jspVerticalBar");
+                $("#detailContainer .houseDescDiv .jspHorizontalBar").remove();
+                if (verticalBar.length > 0) {// has vertical bar
+                    $("#detailContainer .houseDescDiv p").css("padding-right", 40);
+                    $("#detailContainer .houseDescDiv .jspVerticalBar").css({
+                        "right" : 15,
+                        "width" : 10
+                    });
+                    var j = $("#detailContainer .houseDescDiv .jspDrag");
+                    j.css({
+                        "background-color" : "#32a47e",
+                        "opacity" : 0.9,
+                        "border" : "1px solid white",
+                        "height" : j.height() - 2
+                    });
+                    $("#detailContainer .houseDescDiv .jspTrack").css({
+                        "background-color" : "white",
+                        "opacity" : 0.9
+                    });
+                } else {
+                    $("#detailContainer .houseDescDiv .jspHorizontalBar").hide();
+                }
+                // in case of scroll conflict
+                $(".jspScrollable").hover(function() {
+                    scrollLock = true;
+                }, function() {
+                    scrollLock = false;
+                });
+            }
+
+        }
+
+        var targetLeftLeft = 0, targetRightLeft = 0;
+        function initRoomLayout() {
+            // re-layout when image loaded
+            var detailDiv = $("#detailContainer .detailDiv");
+            $(".preview").each(function(){
+                if(!$(this).attr('src')) {
+                    $(this).attr('src', _image.thumbDetail($(this).attr('imageId')));
+                }
+            }).imagesLoaded(function() {
+                initDetailLayout();
+                targetRightLeft = $(window).width() - detailDiv.outerWidth(true);
+                if (targetRightLeft > 0) {
+                    targetLeftLeft = targetRightLeft = targetRightLeft / 2;
+                }
+                onDrag();
+                $("#detailContainer").css("opacity", 1);
+            });
+			// operation bar
+            $(".roomOpBar").each(function() {
+                $(this).width($(this).parent(".room").width() - 2 * $hMargin);
+                var color = roomColors[(roomIndex++) % roomColors.length];
+                $(this).find(".roomOpBg,.roomOpHead,.report-popup>.back").css("background-color", color);
+                $("#detailContainer .room" + $(this).parent().attr("roomid") + "-nav").css("background-color", color);
+            });
+            $(".roomOpBar").hover(function() {
+                $(this).children(".roomOpBg").css("opacity", 0.4);
+            }, function() {
+                $(this).children(".roomOpBg").css("opacity", 0.1);
+            });
+			
+            // operation navigation
+            var navHeight = 0, maxTotalHeight = 300;
+            var navButtons = $(".roomNavButton");
+            if (navButtons.length * navButtons.height > maxTotalHeight) {// resize
+                navButtons.height(maxTotalHeight / navButtons.length);
+            }
+            navButtons.click(function() {
+                var id = $(this).attr("id");
+                var targetRoom = $("#detailContainer ." + id.substring(0, id.indexOf('-')));
+                var width = $("#detailContainer .houseDiv").outerWidth(true) + 40;
+                $(".room").each(function() {
+                    if ($(this)[0] == targetRoom[0]) {
+                        return false;
+                    } else {
+                        width += $(this).width();
+                    }
+                });
+                $("#detailContainer .detailDiv").stop().animate({
+                    left : -width
+                }, {
+                    "duration" : 500,
+                    "step" : onDrag
+                });
+            });
+            
+            //layout roomReport
+            #if ($auth == $auth_verified && $itemType == 2)
+            var userId = "$userId";
+            var hasReportUsers = $!suite.house.hasReportUsers($!userId);
+            if (hasReportUsers) {
+                $('.roomReport').eq(0).hide();
+                $('.roomReported').eq(0).show();
+            } else {
+                $('.roomReport').eq(0).show();
+                $('.roomReported').eq(0).hide();
+            }
+            #end
+        }
+        function judgeWidth(str){
+           var diglen=0;
+           var charlen=0;
+           var chilen=0;
+           var width=0;
+           for(var i=0;i<str.length;i++){
+                   var ch = str.charAt(i);
+                if ((ch >= '0' && ch <= '9') || ch == '-' || (ch >= 'a' && ch <= 'z' && ch != 'm' && ch != 'w')){
+                    diglen++;
+                } else if ((ch >= 'A' && ch <= 'Z' && ch != 'M' && ch != 'W') || ch == 'm' || ch == 'w'){
+                    charlen++;
+                } else {
+                    chilen++;
+                }
+            }
+            width= diglen * 11.5 + charlen * 13 + chilen * 18 + 46;
+            return width;
+        }
+        
+        function showContactInfo() {
+            $.get('#url("/house/apply/$!{suite.house.id}")' + "?date=" + (new Date().getTime()), appendDebug({}), function(data) {
+                var result = _json(data);
+                var authStatus = result["authStatus"];
+                var animateTime = 500;
+                $("#detailContainer .contactButton").hide();
+                $("#detailContainer .contactButtonDiv .confirm").hide();
+                if (authStatus == $auth_notLogIn) {
+                    var style = {};
+                    style.width = "265px";
+                    $("#detailContainer .contactButtonDiv").animate(style, animateTime, "swing", function() {
+                        $("#detailContainer .contactButtonDiv .login").css("display", "inline-block");
+                    });
+                } else if (authStatus == $auth_notVerified) {
+                       var style = {};
+                    style.width = "265px";
+                       $("#detailContainer .contactButtonDiv").animate(style, animateTime, "swing", function() {
+                        $("#detailContainer .contactButtonDiv .verify").css("display", "inline-block");
+                    });
+                } else {
+                       //verified.
+                    var style = {};
+                    var width = 66;
+                    var arrResultTel=result["telephone"];
+                    var arrResultQq=result["qq"];
+                    var arrResultWchat=result["wechat"];
+                    if (arrResultTel) {
+                        width+=judgeWidth(arrResultTel);
+                    }
+                    if (arrResultQq) {
+                        width+=judgeWidth(arrResultQq);
+                    }
+                    if (arrResultWchat) {
+                        width+=judgeWidth(arrResultWchat);
+                    }
+                    style.width = width + "px";
+                    $("#detailContainer .contactButtonDiv").animate(style, animateTime, "swing", function() {
+                        if (result["telephone"]) {
+                            $("#detailContainer .contactButtonDiv .phoneInfo").text(result["telephone"]);
+                            $("#detailContainer .contactButtonDiv .phoneInfo").css("display", "inline-block");
+                        }
+                        if (result["qq"]) {
+                            $("#detailContainer .contactButtonDiv .qqInfo").text(result["qq"]);
+                            $("#detailContainer .contactButtonDiv .qqInfo").css("display", "inline-block");
+                        }
+                        if (result["wechat"]) {
+                            $("#detailContainer .contactButtonDiv .wechatInfo").text(result["wechat"]);
+                            $("#detailContainer .contactButtonDiv .wechatInfo").css("display", "inline-block");
+                        }
+                        $("#detailContainer .contactBackButton").css("display", "inline-block");
+                    });
+                }
+            });
+        }
+        
+        function initClipboard() {
+            ZeroClipboard.config({
+                swfPath : "#staticUrl('js/ZeroClipboard.swf')",
+                forceHandCursor : true,
+                title : "复制链接"
+            });
+            var client = new ZeroClipboard($("#copyInfo"));
+            client.on({
+                "copy" : function(event) {
+                    event.clipboardData.setData("text/plain", window.location.protocol 
+                        + "//" + window.location.host 
+                        + "#url('/')" 
+                        + "$suite.house.id");
+                },
+                "aftercopy" : function(event) {
+                    alert(event.data["text/plain"] + "\n\n" 
+                        + "已复制到剪贴板！");
+                    $("#detailContainer .actionButtonDiv .copy_button").removeClass("zeroclipboard-is-hover");
+                }
+            });
+        }
+
+        function closeAllReportPopup(){
+            $('#detailContainer [role="report"]').hide();
+        }
+
+        function initActionButton() {
+            var animateTime = 500;
+            var reportAlarm = "感谢报告！我们将立即核实并下线已租的房间；恶意误报的账号将被封锁。\n\n确认已联系房东发现该房间已租？";
+
+            var reportPopup = $('#detailContainer [role="report"]');
+            var getFamilyReport = function(ele){
+                var report = $(ele).parents('[role="report"]');
+                if(report.length<1){
+                    report = $(ele).parents('[role="report-container"]').find('[role="report"]');
+                }
+                return report;
+            };
+            var togglePopup = function(ele, show, card){
+                if(!card){
+                    card = 'selector';
+                }
+
+                ele.find('[role="report-card"]').each(function(index){
+                    if($(this).attr('data-type') === card){
+                        $(this).show();
+                    }else{
+                        $(this).hide();
+                    }
+                });
+
+                if(show){
+                    ele.show();
+                }else{
+                    ele.hide();
+                }
+            };
+            reportPopup.each(function(){
+                var popup = $(this);
+                popup.find('[role="submit-report"]').click(function(){
+                    var type = $(this).attr('data-type');
+                    var extraInfo = '';
+                    if(type === 'OTHER_REASON'){
+                        extraInfo = popup.find('textarea').val().trim();
+                        if(!extraInfo){
+                            return ;
+                        }
+                    }
+                    reportHandle(
+                        popup.parents('[role="report-container"]').find('.roomReport'), 
+                        type,
+                        extraInfo,
+                        function(){
+                            togglePopup(popup, false);
+                        }
+                    );
+                });
+                popup.find('[role="back"]').click(function(){
+                    togglePopup(popup, true);
+                });
+                popup.find('[role="close"]').click(function(){
+                    togglePopup(popup, false);
+                });
+                popup.find('[role="selector-btn"]').click(function(){
+                    togglePopup(popup, true, $(this).attr('data-card'));
+                });
+                popup.find('[role="report-card"]').each(function(index){
+                    if(index === 0){
+                        $(this).show();
+                    }else{
+                        $(this).hide();
+                    }
+                });
+            }).hide();
+
+            //event roomReport
+            var reportHandle = function(ele, reportType, extraInfo, callback){
+                var url = '#url("/house/hreport")';
+                var isRoom = false;
+                #if ($itemType == 1)
+                    isRoom = true;
+                #end
+                var param = {
+                    'houseId' : "$suite.house.id",
+                    'userId' : "$userId",
+                    'reportType' : reportType,
+                    'extraInfo' : extraInfo
+                };
+                if(isRoom){
+                    url = '#url("/house/rreport")';
+                    param.roomId = ele.parents('[roomid]').attr('roomid');
+                };
+
+                $.post(url, appendDebug(param), function(data) {
+                    log(data);
+                }, "json");
+
+                // callback directly
+                // this should have been called in the `$.post` callbacks
+                callback && callback();
+
+                ele.fadeOut("slow");
+                ele.parent().children('.roomReported').fadeIn("slow");
+            };
+
+            #if ($itemType == 2)
+            $(".roomReport").eq(0).click(function() {
+                togglePopup(getFamilyReport($(this)), true);
+            });
+            #elseif ($itemType == 1)
+            $(".roomReport").each(function() {
+                $(this).click(function() {
+                    togglePopup(getFamilyReport($(this)), true);
+                });
+            });
+            #end
+
+            $("#detailContainer .contactButtonDiv .contactButton").click(showContactInfo);
+            $("#detailContainer .contactButtonDiv .loginButton").click(function(){
+                $("#detailContainer .contactButtonDiv .login").hide();
+                var style = {};
+                style.width = "265px";
+                $("#detailContainer .contactButtonDiv").animate(style, animateTime, "swing", function() {
+                    $("#detailContainer .contactButtonDiv .confirm").css("display", "inline-block");
+                });
+                window.open("/user/login");
+            });
+            $("#detailContainer .contactButtonDiv .verifyButton").click(function(){
+                $("#detailContainer .contactButtonDiv .verify").hide();
+                var style = {};
+                style.width = "265px";
+                $("#detailContainer .contactButtonDiv").animate(style, animateTime, "swing", function() {
+                    $("#detailContainer .contactButtonDiv .confirm").css("display", "inline-block");
+                });
+                window.open("/user/auth/verify");
+            });
+            $("#detailContainer .contactButtonDiv .confirmButton").click(showContactInfo);
+            $("#detailContainer .contactBackButton").click(function(){
+                $("#detailContainer .contactButtonDiv .verify").hide();
+                $("#detailContainer .contactButtonDiv .login").hide();
+                $("#detailContainer .contactButtonDiv .contactInfo").hide();
+                $("#detailContainer .contactButtonDiv .confirm").hide();
+                var style = {};
+                style.width = "120px";
+                $("#detailContainer .contactButtonDiv").animate(style, animateTime, "swing", function() {
+                    $("#detailContainer .contactButton").css("display", "block");
+                });
+            });
+            $("#detailContainer .contactButton, #detailContainer .loginButton, #detailContainer .verifyButton, #detailContainer .confirmButton, #detailContainer .contactBackButton").hover(function() {
+                $(this).css("opacity", 0.7);
+            }, function() {
+                $(this).css("opacity", 1);
+            });
+        }
+		
+        function initShareButton(){
+            var animateTime = 500;
+            var initClipboardTag = true;
+            $("#detailContainer .shareButtonDiv .shareButton").click(function(){
+                if (initClipboardTag) {
+                    initClipboard();
+                    initClipboardTag = false;
+                }
+                $("#detailContainer .shareButton").hide();
+                var style={};
+                style.width ="325px";
+                $("#detailContainer .shareButtonDiv").animate(style, animateTime, "swing", function() {
+                    $("#detailContainer .shareButtonDiv .shareForwardButton").css("display", "inline-block");
+                    $("#detailContainer .shareButtonDiv .shareLogo").css("display", "inline-block");
+                });
+            });
+
+            $("#detailContainer .shareButtonDiv .shareForwardButton").click(function(){
+                $("#detailContainer .shareForwardButton").hide();
+                $(".shareLogo").hide();
+                var style={};
+                style.width="120px";
+                $("#detailContainer .shareButtonDiv").animate(style, animateTime ,"swing", function(){
+                    $("#detailContainer .shareButtonDiv .shareButton").css("display","block");
+                })
+            });
+            $("#detailContainer .shareButtonDiv .jiathis_style_32x32 a").click(function(){
+                var url = window.location.protocol + "//" + window.location.host + "#url('/')" + "$suite.house.id";
+                jiathis_config = {
+                    "url" : url,
+                    "title" : "[$!{suite.house.city}$!{suite.house.position}]",
+                    "summary" : "$!summary",
+                    "pic" : "$!{suite.house.imageId}"
+                }
+            });
+            $("#detailContainer .shareButton, #detailContainer .shareForwardButton").hover(function() {
+                $(this).css("opacity", 0.7);
+            }, function() {
+                $(this).css("opacity", 1);
+            });
+        }
+		
+        function initRoomDrag() {
+            var detailDiv = $("#detailContainer .detailDiv");
+            var previewDragging = false;
+            var maxOutOfBound = 100, moveRight;
+            var x;
+            $(".preview").bind("mousedown touchstart", function(e) {
+                previewDragging = true;
+                e.preventDefault();
+                if (_context.isTouch) {
+                    var touch = e.originalEvent.touches.item(0);
+                    x = touch.pageX;
+                } else {
+                    x = e.pageX;
+                }
+                var left = parseInt(detailDiv.css("left"));
+                // on move
+                $(document).bind("mousemove touchmove", function(e) {
+                    if (previewDragging) {
+                        e.preventDefault();
+                        var newX = x;
+                        if (_context.isTouch) {
+                            var touch = e.originalEvent.touches.item(0);
+                            newX = touch.pageX;
+                        } else {
+                            newX = e.pageX;
+                        }
+                        var delta = newX - x;
+                        moveRight = delta >= 0;
+                        detailDiv.css("left", left + delta);
+                        onDrag();
+                    }
+                });
+                $(this).removeClass("imgDragEnd").addClass("imgDragging");
+                detailDiv.removeClass("detailDivDragEnd").addClass("detailDivDragging");
+            });
+            $(document).bind("mouseup touchend", function(e) {
+                if (previewDragging) {
+                    e.preventDefault();
+                    $(this).unbind("mousemove touchmove");
+                    $(".preview").removeClass("imgDragging").addClass("imgDragEnd");
+                    $("#detailContainer .detailDiv").removeClass("detailDivDragging").addClass("detailDivDragEnd");
+                    moveBack(moveRight);
+                    previewDragging = false;
+                    onDrag();
+                }
+            });
+            function moveBack(moveRight) {
+                var left = parseInt(detailDiv.css("left"));
+                if (moveRight) {
+                    if (left > targetLeftLeft)
+                        detailDiv.stop().animate({
+                            left : targetLeftLeft
+                        }, {
+                            "duration" : 500,
+                            "step" : onDrag
+                        });
+                } else {
+                    if (left < targetRightLeft)
+                        detailDiv.stop().animate({
+                            left : targetRightLeft
+                        }, {
+                            "duration" : 500,
+                            "step" : onDrag
+                        });
+                }
+            }
+
+            // scroll
+            detailDiv.mousewheel(function(e, delta) {
+                if (!scrollLock) {
+                    e.preventDefault();
+                    detailDiv.css("left", parseInt(detailDiv.css("left")) + 80 * delta);
+                    onDrag();
+                    moveBack(delta > 0);
+                }
+            });
+
+            // keyboard shortcuts
+            var lastKeydownTime = 0;
+            $("body").keydown(function(e) {
+                if(e.target.nodeName === 'TEXTAREA'){
+                    return;
+                }
+                var i = 0;
+                if (e.which == 33 || e.which == 37 || e.which == 38) {// page up, arrow up/left
+                    i = 1;
+                } else if (e.which == 34 || e.which == 39 || e.which == 40) {// page down, arrow down/right
+                    i = -1;
+                }
+                function _moveBack() {
+                    moveBack(i > 0);
+                }
+
+                if (i != 0) {
+                    e.preventDefault();
+                    var offset = parseInt(detailDiv.css("left")) + 500 * i;
+                    var t = new Date().getTime();
+                    if (t - lastKeydownTime < 200) {
+                        return;
+                        // smooth
+                    } else {
+                        detailDiv.stop().animate({
+                            "left" : offset
+                        }, {
+                            "duration" : 200,
+                            "step" : onDrag,
+                            "complete" : _moveBack
+                        });
+                    }
+                    lastKeydownTime = t;
+                }
+            });
+        }
+
+        var roomOpBarFixedTop = null;
+        function onDrag() {
+            // close the report popup
+            closeAllReportPopup();
+
+            (function handleOpBar() {
+                var roomNav = $("#detailContainer .roomNav").hide();
+                $(".roomNavButton").hide();
+                function addRoomNav(opBar) {
+					roomNav.css("bottom", $(window).height() + $(window).scrollTop() - opBar.parent().offset().top - 354);
+                    var r = opBar.parent(".room");
+                    var nav = $("#room" + r.attr("roomId") + "-nav");
+                    nav.find('.navText').text(r.find('.roomName').text());
+                    nav.css('display', 'table');
+                    roomNav.show();
+					
+                }
+                // update each operation bar and its navigator
+                $(".roomOpBar").each(function() {
+					var p = $(this).parent();
+                    var offsetX = p.offset().left + $hMargin;
+                    if (offsetX <= 0) {
+						var showWidth = offsetX + p.width() - 2 * $hMargin;
+						if (showWidth > 0) {
+                            if (roomOpBarFixedTop == null) {
+                                roomOpBarFixedTop = $(this).offset().top;
+                            }
+                            var minWidth = $(this).children(".roomDetail").width() + 40;
+							if (showWidth > minWidth) {// float fixed
+                                $(this).css({
+                                    "width" : showWidth,
+                                    "position" : "fixed",
+                                    "left" : 0,
+                                    "right" : "inherit",
+                                    "top" : roomOpBarFixedTop - $(window).scrollTop(),
+                                    "bottom" : "inherit"
+                                });
+                            } else {
+                                // show right only
+                                $(this).css({
+                                    "width" : minWidth,
+                                    "position" : "absolute",
+                                    "left" : "inherit",
+                                    "right" : 10,
+                                    "top" : "inherit",
+                                    "bottom" : 10
+                                });
+                                addRoomNav($(this));
+                            }
+                        } else {
+                            addRoomNav($(this));
+
+                        }
+                    } else {// display as original
+                        $(this).css({
+                            "width" : p.width() - 2 * $hMargin,
+                            "position" : "absolute",
+                            "left" : 10,
+                            "right" : "inherit",
+                            "top" : "inherit",
+                            "bottom" : 10
+                        });
+                    }
+                });
+                // update navigators' height
+                var upper = 350, h = $(".roomOpBar").height();
+                var visible = $(".roomNavButton:visible");
+                var visibleH = visible.length * (h + 10);
+                if ((visible.length * (h + 10)) > upper) {
+                    visible.height(upper / visible.length - 10);
+                } else {
+                    visible.height(h);
+                }
+            })();
+        }
+
+        $(window).scroll(onDrag);
+        function initLayout() {
+            initHouseLayout();
+            initRoomLayout();
+            initDetailLayout();
+            initLandlordLayout();
+        }
+
+        $(window).resize(initDetailLayout);
+        $(function() {
+            // layouts
+            initLayout();
+            // events
+            initHouseMap();
+            initHouseDesc();
+            initRoomDrag();
+            #if(($suite.house.auditStatus == 0 || $suite.house.auditStatus == 1) && $suite.house.status == 0)
+            initActionButton();
+            initShareButton();
+            #end
+            initLandlord();
+            // jiathis
+            if (!_context.isTouch) {
+                $.getScript("http://v3.jiathis.com/code_mini/jia.js?uid=1815789");
+            }
+            // #if($embedded) //
+            setTimeout(function() {
+                room107.map.reset();
+            }, 100);
+            // #end //
+        });
+    }
+</script>
+
+#if($embedded)
+#statistic()
+#else
+<script>
+    (function() {
+        houseDetail();
+        $("body").mousewheel(function(e) {
+            if (!$(e.target).hasClass('BMap_mask')) {
+                e.preventDefault();
+            }
+        });
+        $("body,html").css("scrollTop", 0);
+        UI.scroll($(".banner").offset().top, 2000, room107.map.reset);
+    })();
+</script>
+#end

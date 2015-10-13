@@ -1,0 +1,104 @@
+## ---------------------- static resource ----------------------- ##
+#macro(staticUrl $path)
+#set($uri = $request.requestURL.toString())
+#set($isTest = $uri.contains('localhost'))
+#if($isTest)
+#springUrl("/static/$path")
+#else
+http://s107.qiniudn.com/static/$path#end
+#end
+
+## wrap #springUrl() with debug paramater when needed
+#macro(url $relativeUrl)
+#if(true)
+#springUrl($debugUtils.wrapDebug($relativeUrl))
+#else
+#springUrl($relativeUrl)
+#end
+#end
+
+#macro(statistic)
+#set($uri = $request.requestURL.toString())
+#set($isAdmin = $uri.contains('admin'))
+#set($isTest = $uri.contains('localhost'))
+#if(!$isAdmin && !$debug && !$isTest)
+#parse("_statistic.vm")
+#end
+#end
+
+## format description (user/house etc.)
+#macro(formatDesc $desc)
+#if($!stringUtils.isEmpty($desc)) 暂无描述 #else $!stringUtils.escpaeHtml($desc) #end
+#end
+
+## ---------------------- static imports ----------------------- ##
+## import function for containerHeight()
+#macro(function_containerHeight)
+#if(!$embedded)#set($embedded=false)#end
+<script type="text/javascript">
+    /**
+     * Reset a container's height (usually when opened in light-box model).
+     * @param {Object} container root div in a page
+     */
+    function containerHeight(container) {
+        if ($embedded) {
+            var pHeight = container.parent().height();
+            if (pHeight > 0) {
+                container.height(pHeight);
+            }
+        }
+        return container.height();
+    }
+</script>
+#end
+
+## ---------------------- mobile ----------------------- ##
+#macro(mobile)
+#set($layout = "layout/mobile.vm")
+#parse("mobile/_style.vm")
+#end
+
+#macro(code2 $staticCode2)
+#if($ticket)
+<img class="code2" src="https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=$ticket" style="display: block" />
+#else
+<img class="static code2" src="#staticUrl('image/mobile/code2/')$staticCode2" />
+<img class="dynamic code2" alt="二维码加载中..." />
+<p class="code2">
+    二维码加载中...
+</p>
+<script type="text/javascript">
+    function loadCode2() {
+        $.get("#url('/api/wx/ticket')", function(data) {
+            if (!data) {
+                var t = 1000;
+                log('empty ticket, retry after: ' + t + 'ms');
+                setTimeout(loadCode2, t);
+                return;
+            }
+            log('ticket: ' + data);
+            $('.code2').hide();
+            $('.dynamic.code2').attr('src', 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' + data).show();
+            // hard code
+            $('p.way2').hide();
+            $('p.way3').show();
+        });
+    }
+
+    $('.code2').hide();
+    //#set($auth = $userUtils.getAuthenticationStatus($request, $response))//
+    //#if($auth == 0)//
+    $('.static.code2').show();
+    
+    room107.bindLogin(function() {
+        $('.code2').hide();
+        $('p.code2').show();
+        loadCode2();        
+    });
+    //#else//
+    $('p.code2').show();
+    loadCode2();
+    //#end//
+</script>
+#end
+#end

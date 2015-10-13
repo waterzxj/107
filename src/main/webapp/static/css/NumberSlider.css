@@ -1,0 +1,63 @@
+.numberSlider {
+    position: absolute;
+    z-index: 200;
+    padding: 5px 20px;
+    color: white;
+    background-color: #75cbbc;
+}
+.numberSliderContent {
+    height: 100%;
+    cursor: pointer;
+}
+.numberSliderTop {
+    height: 25px;
+}
+.numberSliderMiddle {
+    position: relative;
+    height: 30px;
+    background-color: white;
+}
+.numberSliderBottom {
+    height: 25px;
+}
+.numberSliderDrag {
+    position: absolute;
+    width: 16px;
+    height: 36px;
+    background-color: #00ac97;
+    z-index: 201;
+    cursor: pointer;
+}
+.numberSliderDrag:hover {
+    opacity: 0.8;
+}
+.numberSection {
+    position: relative;
+    float: left;
+    height: 100%;
+}
+.numberMark {
+    position: absolute;
+    background-color: white;
+    width: 1px;
+    height: 5px;
+}
+.numberMark.top {
+    bottom: 0;
+}
+.numberMark.bottom {
+    top: 0;
+}
+.numberValue {
+    position: absolute;
+    width: 100px;
+    left: -50px;
+    font-size: 12px;
+    text-align: center;
+}
+.numberValue.top {
+    bottom: 5px;
+}
+.numberValue.bottom {
+    top: 5px;
+}

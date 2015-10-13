@@ -1,0 +1,4 @@
+#set($layout="layout/null.vm")
+<script>
+  window.close();
+</script>

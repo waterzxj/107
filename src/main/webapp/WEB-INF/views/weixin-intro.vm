@@ -1,0 +1,225 @@
+#set($pageTitle="微信找房")
+#set($bannerTitle="微信找房")
+#set($bannerDesc="最快的找房神器")
+#set($auth = $userUtils.getAuthenticationStatus($request, $response))
+
+#set($openId = true)
+#parse('_style.vm')
+<style>
+.card .contact {
+font-size: 15px;
+height: 330px;
+left: 50px;
+overflow: hidden;
+position: absolute;
+text-align: left;
+top: 70px;
+width: 240px;
+}
+
+.card .contact .icon {
+left: 0;
+position: absolute;
+top: 0;
+z-index: 10;
+}
+
+.card .contact .way1 {
+left: 70px;
+top: 5px;
+position: absolute;
+color: #c9c9c9;
+z-index: 10;
+}
+.card .contact .way1 span {
+color: #1fa38c;
+}
+.card .contact .way2, .contact .way3 {
+position: absolute;
+top: 30px;
+left: 60px;
+z-index: 10;
+}
+.card .contact .way2 {
+left: 73px;
+color: #c9c9c9;
+}
+.card .contact .way3 {
+color: ${secondColor};
+}
+.card .slogan {
+left: 350px;
+position: absolute;
+top: 76px;
+}
+.card .desc {
+left: 355px;
+position: absolute;
+top: 135px;
+width: 500px;
+}
+.card .feature {
+float: left;
+margin-right: 55px;
+width: 105px;
+}
+.card .feature .title {
+color: #c9c9c9;
+float: left;
+font-size: 16px;
+font-weight: normal;
+margin-right: 15px;
+padding-top: 38px;
+text-align: center;
+width: 38px;
+}
+.card .feature > p {
+font-size: 14px;
+float: left;
+line-height: 16px;
+width: 20px;
+word-wrap: break-word;
+}
+.card .subscribe {
+background: url("#staticUrl('image/icon/wx-subscribe.png')") no-repeat scroll center 0 transparent;
+}
+.card .voice {
+background: url("#staticUrl('image/icon/wx-voice.png')") no-repeat scroll center 0 transparent;
+}
+.card .position {
+background: url("#staticUrl('image/icon/wx-position.png')") no-repeat scroll center 0 transparent;
+}
+.code2 {
+position: absolute;
+top: 63px;
+left:0;
+background-color: #EEEEFF;
+display: none;
+height: 220px;
+line-height: 230px;
+text-align: center;
+width: 220px;
+}
+img.code2 {
+border: 1px solid #ccc;
+}
+.demo {
+bottom: -60px;
+position: absolute;
+right: -20px;
+width: 278px;
+height: 565px;
+}
+#screenBg {
+height: 100%;
+left: 20px;
+overflow: hidden;
+position: absolute;
+top: 81px;
+width: 238px;
+}
+#screenImg {
+position: relative;
+width: 99999px;
+}
+#screenImg img {
+float: left;
+position: relative;
+top: 45px;
+width: 236px;
+}
+#screenImg p {
+float: left;
+background-color: #EEBBCB;
+color: #F8F4E6;
+font-size: 50px;
+line-height: 264px;
+width: 100%;
+opacity: 0;
+}
+#screenFg {
+background: url("#staticUrl('image/mobile/demo/iphone.png')") no-repeat scroll 0 0 transparent;
+/*
+background-size: 520px 380px;
+*/
+height: 100%;
+position: relative;
+width: 100%;
+}
+#screenFg img {
+display: block;
+}
+</style>
+
+<div class="cardContainer">
+    <div class="card">
+        <div class="contact">
+            <img class="icon" src="#staticUrl('image/icon/wx-dark.png')" />
+            <p class="way1">
+                搜索公共号：<span>107间</span>
+            </p>
+            <p class="way2" #if($auth != 0) style="display: none" #end>
+                或 扫描二维码关注
+            </p>
+            <p class="way3" #if($auth == 0) style="display: none" #end>
+                扫码直接绑定107间账号
+            </p>
+
+            #code2("2_app-intro.jpg")
+        </div>
+        <img class="slogan" src="#staticUrl('image/mobile/wx-slogan.png')" />
+
+        <div class="desc">
+            <div class="feature">
+                <h4 class="title subscribe">订阅</h4>
+                <p>
+                    即可获得新房自动推送
+                </p>
+                <p>
+                    输入 ﹁地址﹂ ﹁地铁﹂ ﹁公交﹂
+                </p>
+            </div>
+            <div class="feature" style="margin-right: 40px;">
+                <h4 class="title voice">语音</h4>
+                <p>
+                    使用﹁语音﹂快速找房
+                </p>
+            </div>
+            <div class="feature">
+                <h4 class="title position">位置</h4>
+                <p>
+                    发送﹁位置﹂精确找房
+                </p>
+            </div>
+        </div>
+        <div class="demo">
+            <div id="screenBg">
+                <div id="screenImg">
+                    <img src="#staticUrl('image/mobile/demo/1.jpg')" />
+                    <img src="#staticUrl('image/mobile/demo/2.jpg')" />
+                    <img src="#staticUrl('image/mobile/demo/3.jpg')" />
+                    <img src="#staticUrl('image/mobile/demo/4.jpg')" />
+                </div>
+            </div>
+            <div id="screenFg"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function display() {
+        $("#screenImg").animate({
+            "left" : -$("#screenImg > *").width()
+        }, {
+            "duration" : 1000,
+            "complete" : function() {
+                var head = $("#screenImg > *:first");
+                var reer = $("#screenImg > *:last");
+                head.insertAfter(reer);
+                $("#screenImg").css("left", 0);
+            }
+        });
+    }
+
+    setInterval(display, 4000);
+</script>

@@ -1,0 +1,482 @@
+<style>
+  #addrCard .hide{
+    display: none !important;
+  }
+  #addrCard .beijing-district{
+    display: inline-block;
+    width: 370px;
+    margin-left: 30px;
+  }
+
+  #addrCard .title{
+    padding-top: 15px;
+  }
+
+  #addrCard .title .main{
+    color: $secondColor;
+    font-size: 18px;
+  }
+
+  #addrCard .title .sub{
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  #addrCard .data-region{
+    display: inline-block;
+    vertical-align: top;
+    width: 525px;
+  }
+
+  #addrCard .data-region .tips{
+    margin-top: 145px;    
+    margin-left: 65px;
+    font-size: 30px;
+    color: #ccc;
+  }
+
+  #addrCard .data-region .data .detail{
+    display: inline-block;
+    width: 263px;
+    padding-top: 90px;
+    padding-left: 5px;
+    vertical-align: top;
+  }
+
+  #addrCard .data-region .data .detail input.detailInput{
+    width: 180px;
+  }
+
+  #addrCard .data-region .data .addr{
+    display: inline-block;
+    width: 250px;
+    padding-top: 80px;
+  }
+
+  #addrCard .data-region .data .subscribing-info{
+    font-size: 14px;
+    text-align: center;
+  }
+
+  #addrCard .data-region .data .subscribing-info .num{
+    color: $secondColor;    
+    font-size: 30px;    
+  }
+
+  #addrCard .data-region .data .addr .finders{
+    padding-bottom: 15px;
+    height: 31px;
+    text-align: center;
+    font-size: 14px;
+  }
+  #addrCard .data-region .data .addr .finders .num{
+    color: $secondColor;
+    font-size: 32px;
+  }
+
+  #addrCard .data-region .data .addr input{
+    width:165px;
+  }
+
+  #addrCard .panel-btn-region{
+    display: inline-block;
+    width:120px;
+    vertical-align: top;
+    margin-top: 311px;
+  }
+
+  #addrCard .row{
+    text-align: left;
+  }
+  /*widget style*/
+  #addrCard .houseStructSelector{
+    top: 168px !important;
+  }
+  #addrCard .houseStructSelector .spinButton{
+    margin: 5px 0px 0px 0px;
+    font-size: 14px;    
+  }
+  #addrCard .area-wrap .numberSlider{
+    padding: 0 20px;
+    top: 237px !important;
+  }
+  #addrCard .floor-wrap .numberSlider{
+    padding: 0 20px;
+    top: 306px !important;
+  }
+  #addrCard .area-wrap .infoUnit{
+    right: 27px;
+  }
+  #addrCard .stand-in-box{
+    height: 0px;
+  }
+</style>
+## dependencies
+<link rel="stylesheet" href="#staticUrl('css/beijing-district.css?20150508')"/>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=$!webUtils.getBaiduAK($request)"></script>
+<script src="#staticUrl('js/beijing-district-map.js?20150508')"></script>
+<script src="#staticUrl('js/beijing-district.js?20150518')"></script>
+
+<div id="addrCard" class="card">
+  <div class="banner">
+    <span class="title">发布房间</span>
+    <span class="desc">第一步，房子基本信息</span>
+  </div>
+  <div class="title">
+    <h1 class="main">面向300万高素质年轻群体</h1>
+    <p class="sub">租客经过身份认证，无中介骚扰 | 发房直到租客入住，全程0费用</p>
+  </div>
+  <div class="row">
+    <div class="beijing-district">
+      <svg role="district-svg" width="360px" height="360px"></svg>
+    </div>
+    <div class="data-region">
+      <div role="tips" class="tips">
+        点击左侧地图选择区域
+      </div>
+      <div role="data" class="data hide">
+        <div role="addr" class="addr">        
+          <div class="finders">
+            <p class="hide"><span class="num"></span>名租客正在找房</p>
+          </div>
+          <div role="district" class="infoBox">
+            <span class="infoTitle">地区</span>
+            <input class="infoInput" role="districtInput" type="text" readonly />
+          </div>
+          <div role="addr-detail" class="infoBox">
+            <span class="infoTitle">地址</span>
+            <input validate="length1-" class="infoInput" role="addrInput" type="text"/>
+          </div>
+          <div role="subscribe-info" class="subscribing-info hide">
+            <p><span class="num"></span>人订阅了该地址</p>
+            <p>发布后即刻推送给他们</p>
+          </div>
+        </div>
+        <div role="detail" class="detail hide">
+          <div class="struct-wrap item-wrap">
+            <div role="struct" class="infoBox">
+              <span class="infoTitle">户型</span>
+              <input role="structInput" class="infoInput detailInput" validate='length1-' placeholder="点击选择" type="text" readonly />
+            </div>
+          </div>
+          <div class="area-wrap item-wrap">
+            <div role="area" class="infoBox">
+              <span class="infoTitle">面积</span>
+              <input role="areaInput" class="infoInput detailInput" validate='int0-' numberInput='0-' placeholder="点击选择" type="text" />
+              <span class="infoUnit">㎡</span>
+            </div>
+          </div>
+          <div class="floor-wrap item-wrap">
+            <div role="floor" class="infoBox">
+              <span class="infoTitle">楼层</span>
+              <input role="floorInput" class="infoInput detailInput" validate='int0-' numberInput='0-' placeholder="点击选择" type="text" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div role="next" class="panel-btn-region hide">
+      <a next="#detailCard" onNext="global.onAddrNext" validateFunction="global.validateAddr" class="next button buttonNormal" href="#?">下一步</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(window){
+    var e = $('#addrCard'),
+      tips = e.find('.tips'),
+      data = e.find('.data'),
+      detail = e.find('.detail'),
+      subscribe = e.find('[role="subscribe-info"]'),
+      districtInput = e.find('[role="districtInput"]'),
+      addrInput = e.find('[role="addrInput"]'),
+      finders = e.find('.finders'),
+      structInput = e.find('[role="structInput"]'),
+      areaInput = e.find('[role="areaInput"]'),
+      floorInput = e.find('[role="floorInput"]'),
+      next = e.find('[role="next"]'),
+      districtSvg = e.find('[role="district-svg"]');
+
+    var addrPoint = null,
+      originalPaddingTop = 90,
+      animatedPaddingTop = 56;
+
+    //functinos  
+    //get all datas in this page
+    var getData = function(){
+      var data = {};
+      data.district = districtInput.val();
+      data.position = addrInput.val();
+      var struct = structInput.val().split(' ');      
+      // parsing string with chinese characters is confused but convenient
+      data.roomCount = parseInt(struct[0]);
+      data.hallCount = parseInt(struct[1]);
+      data.kitchenCount = parseInt(struct[2]);
+      data.toiletCount = parseInt(struct[3]);
+      data.area = areaInput.val();
+      data.floor = floorInput.val();
+
+      log(data);
+      return data;
+    };
+
+    // We can't append a svg tag with jquery.
+    var makeSVG = function(tag, attrs){
+      var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for(var key in attrs){
+        el.setAttribute(key, attrs[key]);
+      }
+      return el;
+    };
+
+    // I would keep `global` as global object.
+    if(!window.global){
+      window.global = {};      
+    }
+    var global = window.global;
+    global.getAddrData = getData;
+
+    var selectedDistrict = null,
+      addrVal = null,
+      isEverythingShown = false;
+
+    // init
+    // init map svg
+    for(var districtName in global.district.beijing){
+      var item = global.district.beijing[districtName];
+
+      // append non-district tags
+      if(districtName === 'extra'){
+        for(var type in item){
+          var extraType = item[type];
+          for(var index=0; index<extraType.length; index++){
+            var extraItem = extraType[index];
+            var tag = makeSVG(type, {
+              'x': extraItem.position[0],
+              'y': extraItem.position[1]
+            });
+            tag.textContent = extraItem.content;
+            districtSvg[0].appendChild(tag);
+          }
+        }
+        continue;
+      }
+
+      // append district tags
+      var g = makeSVG('g', {
+        'class':'district-item',
+        'data-district-name':districtName        
+      });
+
+      var path = makeSVG('path', {
+        'data-district':'',
+        'id':districtName,
+        'fill':item.districtFill,
+        'd':item.districtD        
+      });
+
+      var text = makeSVG('text', {
+        'class':'text',
+        'x':item.position[0],
+        'y':item.position[1]      
+      });
+
+      text.textContent = item.text;
+
+      g.appendChild(path);
+      g.appendChild(text);
+      districtSvg[0].appendChild(g);
+    }
+
+    var dis = $('#addrCard .beijing-district').district('#staticUrl("")');
+    window.dis = dis;
+
+    // init struct popup
+    structInput.click(function(){
+      HouseStructSelector.create(structInput.parents('[role="struct"]'), {
+        'width' : 263,
+        'height' : 67,
+        'popupPosition': 'bottom',
+        'tipArrowClass':'tipArrowUp'
+      });
+    });
+
+    // init detail input popup animation    
+    var standInBox = $('<div class="stand-in-box"></div>');
+    detail.find('input.infoInput').click(function(e){
+      detail.stop();
+      standInBox.stop();    
+      var input = $(e.currentTarget);
+      input.addClass('clicked');
+      var target = input.parents('.item-wrap');
+      target.append(standInBox);
+      if(!detail.hasClass('active')){
+        detail.animate({
+          'padding-top': animatedPaddingTop
+        });        
+      }
+      standInBox.animate({
+        height: 65
+      });
+      detail.addClass('active');
+    });
+    // Here, we do not use blur event directly because
+    // of Popup UI doesn't follow blur events strictly.
+    $(document).click(function(e){
+      var target = $(e.target);
+      if((target.hasClass('detailInput') && target.hasClass('clicked')) || target.hasClass('popup') ||target.parents('.popup').length){
+        return ;
+      }
+      
+      log(target.parents('.popup').length);
+      mockBlurForAnimation();        
+    });
+    var mockBlurForAnimation = function(){
+      standInBox.animate({
+        height: '0px'
+      }, function(){
+        standInBox.remove();
+      });
+      detail.animate({
+        'padding-top': originalPaddingTop
+      });      
+      detail.removeClass('active');            
+    };
+
+    // init area NumberSlider
+    areaInput.click(function(){      
+      NumberSlider.create(areaInput.parents('[role="area"]'), {
+        'width' : 223,
+        'height' : 77,
+        'popupPosition': 'bottom',
+        'tipArrowClass':'tipArrowUp',
+        'sliderNumber' : {
+            '0-200' : 20
+        }
+      });
+    });
+
+    // show detail column when typing in addr
+    addrInput.keyup(function(){
+      addrVal = addrInput.val();
+      if (addrVal && selectedDistrict && detail.hasClass('hide')) {
+        next.removeClass('hide');
+        detail.css({
+          opacity: 0
+        });
+        detail.removeClass('hide');
+        detail.animate({
+          opacity: 1
+        });
+        isEverythingShown = true;
+      }
+    });
+
+
+    var showAddrSubscribers = function(count){
+      subscribe.find('.num').text(count);
+      subscribe.removeClass('hide');
+    };
+    var getSubscriberCount = function(position, callback){
+      var url = '#url("/house/search/subscribe/")';
+      $.getJSON(url, appendDebug({position:position})).success(function(data){
+        callback(data);
+      }).error(function(){        
+        log('REQUEST FAILED');
+      });
+    };
+    // get geolocation info when blured
+    var lastAddr = null;    
+    addrInput.blur(function(){
+      if(!addrInput.val()){
+        return;
+      }
+
+      var addr = districtInput.val() + addrInput.val().trim();
+      // return if address didn't change
+      if(addr===lastAddr){
+        return;
+      }
+      lastAddr = addr;
+      dis.clearOverlays();
+      // get subscribers and put their images into the map
+      getSubscriberCount(addr, function(subscribers){
+        model.lastSubscribers = subscribers;
+        dis.renderSubscribers(subscribers);
+        showAddrSubscribers(subscribers.length);
+      });
+      dis.setMapPosition(addr, function(){
+        log('Set address');
+      });      
+      // show maps when click
+      dis.showMap(function(){
+        // subscribe.removeClass('hide');
+      });
+    });
+
+    // init floor NumberSlider
+    floorInput.click(function(){
+      NumberSlider.create(floorInput.parents('[role="floor"]'), {
+          'width' : 223,
+          'height' : 77,
+          'popupPosition': 'bottom',
+          'tipArrowClass':'tipArrowUp',
+          'sliderNumber' : {
+              '0-10' : 1,
+              '10-30' : 5
+          },
+      });      
+    });
+
+    // set district when click on any district region
+    dis.setCallback(function(place){
+      selectedDistrict = place;
+      districtInput.val(place);
+    });
+
+    // display addr region if mouse enter any district region
+    dis.mouseEnter(function(place){
+      if(!!!selectedDistrict){
+        districtInput.val(place);
+      }
+    });
+
+    dis.click(function(place){
+      var finderCount = model.districtsCount[place];
+      if(finderCount){
+        finders.find('p').removeClass('hide').find('.num').text(finderCount);
+      }else{
+        finders.find('p').addClass('hide');
+      }
+      tips.addClass('hide');
+      data.removeClass('hide');
+    });
+
+    //for test, remove this latter
+    global.dis = dis;
+
+    // I have to dispose `onAddrNext` and `validateAddr` to global to make it 
+    // accessible to other functions.
+    global.onAddrNext = function(){
+      var data = getData();
+      rentOption.house = (rentOption.house)?rentOption.house:{};
+      $.extend(true, rentOption.house, data);
+      log("CURRENT rentOption: ");
+      log(rentOption);
+    };
+
+    global.validateAddr = function(){
+        var v = Input.validateAll(e);
+
+        if (parseInt(structInput.val()) < 1) {
+            structInput.addClass(Input.validateErrorClass);
+            v = false;
+        }
+        if (!v) {
+            showError('请检查错误提示');            
+        }
+        return v;
+    };
+
+  })(window);
+</script>

@@ -1,0 +1,44 @@
+{
+    "button": [
+        {
+            "name": "订阅",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "刷新信息",
+                    "key": "SUBSCRIBE"
+                },
+                {
+                    "type": "click",
+                    "name": "停止订阅",
+                    "key": "UNSUBSCRIBE"
+                }
+            ]
+        },
+        {
+            "name": "理房",
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "开放出租",
+                    "key": "HOUSE_OPEN"
+                },
+                {
+                    "type": "click",
+                    "name": "关闭出租",
+                    "key": "HOUSE_CLOSE"
+                },
+                {
+                    "type": "click",
+                    "name": "查看房间",
+                    "key": "HOUSE_VIEW"
+                }
+            ]
+        },
+        {
+            "type": "click",
+            "name": "帮助",
+            "key": "HELP"
+        },
+    ]
+}

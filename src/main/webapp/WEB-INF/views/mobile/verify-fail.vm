@@ -1,0 +1,16 @@
+#mobile()
+#set($layout = "layout/mobile-simple.vm")
+
+<style>
+    .title {
+        margin: 40% auto 20px auto;
+        color: ${lightColor}
+    }
+    .desc {
+        font-size: 14px;
+    }
+</style>
+<h2 class="title">认证未成功</h2>
+<p class="desc">
+    请回到微信选择重发邮件或更换邮箱
+</p>

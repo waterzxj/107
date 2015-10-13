@@ -1,0 +1,42 @@
+<style>
+  #descCard h2[title]{
+    border-bottom: none;
+  }
+
+  /*region-title*/
+  #descCard .region-title{
+    position: relative;
+    text-align: center;
+    margin: 0 10%;    
+  }
+
+  #descCard .region-title>hr{
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    top: 9px;
+    border-bottom: 1px solid $mainColor;
+  }
+
+  #descCard .region-title>.title{
+    position: relative;
+    background-color: #fff;
+    z-index: 2;
+    color:$mainColor;
+    font-size: 14px;
+    display: inline-block;
+    width: 65px;
+  }
+</style>
+<div id="descCard" class="card">
+    <h2 title="$!title">
+      $!title
+    </h2>    
+    <div class="region-title">
+      <span class="title">详情介绍</span>
+      <hr />
+    </div>
+    <p class="desc">
+        #formatDesc($house.description)
+    </p>
+</div>

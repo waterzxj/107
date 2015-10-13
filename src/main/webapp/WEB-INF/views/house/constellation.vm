@@ -1,0 +1,144 @@
+<style>
+.constellationWidget li {
+position: absolute;
+width: 12px;
+height: 12px;
+}
+</style>
+#if(!$constellationImgPath)
+#set($constellationImgPath="/static/image/userinfo")
+#end
+<div class="userinfoWidget" content="$!userConstellation">
+    <div class="key userinfoComponent">
+        <span>星座</span>
+    </div>
+    <div class="value">	
+        <ul class="constellationWidget" style='position:absolute; left:35px; top:5px;'>
+            <a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/白羊.png");' info="白羊" number="0">
+                </li>
+            </a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/金牛.png");' info="金牛" number="1">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/双子.png");' info="双子" number="2">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/巨蟹.png");' info="巨蟹" number="3">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/狮子.png");' info="狮子" number="4">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/处女.png");' info="处女" number="5">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/天秤.png");' info="天秤" number="6">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/天蝎.png");' info="天蝎" number="7">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/射手.png");' info="射手" number="8">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/摩羯.png");' info="摩羯" number="9">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/水瓶.png");' info="水瓶" number="10">
+                </li>
+        	</a>
+        	<a herf="javascript:;">
+                <li class="userinfoComponent" style='background:url("${constellationImgPath}/双鱼.png");' info="双鱼" number="11">
+                </li>
+        	</a>
+        	<div class="constellationDiv" style='position: absolute;'>
+                <input class="constellation" type="text" style='border: none !important; font-weight:bold;' value="$!userConstellation" validate="length1-" readonly/>
+        	</div>
+		</ul>
+	</div>
+</div>
+
+<script>
+function isConstellationAvailable() {
+	return ($(".constellationWidget").closest(".userinfoWidget").attr("content") != "");
+}
+function refreshCurrentConstellation() {
+	$(".constellationWidget").closest(".userinfoWidget").find(".key").css('opacity', '1');
+	var selectedV = $(".constellationWidget").closest(".userinfoWidget").attr("content");
+	$(".constellationWidget li").each(function(index){
+		if ($(this).attr("info") == selectedV) {
+			$(this).css('opacity', '1');
+		} else {
+			$(this).css('opacity', '0.1');
+		}
+	});
+}
+function initConstellation(radius, imgSize) {
+	$(".constellationWidget li[number=0]").css("top", 0).css("left", radius).css("width", imgSize);
+	$(".constellationWidget li[number=1]").css("top", 0.1339746 * radius).css("left", 1.5 * radius);
+	$(".constellationWidget li[number=2]").css("top", 0.5 * radius).css("left", 1.8660254 * radius);
+	$(".constellationWidget li[number=3]").css("top", radius).css("left", 2 * radius);
+	for (var i = 4; i <= 6; i++) {
+		var element = $(".constellationWidget li[number=" + (6 - i) + "]");
+		$(".constellationWidget li[number=" + i + "]").css("top", 2 * radius - parseInt(element.css("top"))).css("left", element.css("left"));
+	}
+	for (var i = 7; i <= 11; i++) {
+		var element = $(".constellationWidget li[number=" + (12 - i) + "]");
+		$(".constellationWidget li[number=" + i + "]").css("top", element.css("top")).css("left", 2 * radius - parseInt(element.css("left")));
+	}
+	for (var i = 0; i < 12; i++) {
+		$(".constellationWidget li[number=" + i + "]").css("width", imgSize).css("height", imgSize);
+	}
+	$(".constellationWidget .constellationDiv").css("left", 0.675 * radius + "px").css("top", 0.8 * radius + "px");
+	$(".constellationWidget .constellation").css("width", 1.0 * radius + "px").css("font-size", 0.5 * radius + "px");
+	if (isConstellationAvailable()) {
+		refreshCurrentConstellation();
+	}
+}
+function initConstellationEvents() {
+    //events for constellation
+    $(".constellationWidget li").hover(function(){
+    	$(this).css('opacity', '1');
+    	var v = $(this).attr("info");
+    	$(".constellationWidget input").val(v);
+    }, function(){
+		var selectedV = $(this).closest(".userinfoWidget").attr("content");
+    	var v = $(this).attr("info");
+		if (isConstellationAvailable()) {
+			if (v != selectedV) {
+    			$(this).css('opacity', '0.1');
+    		}
+		} else {
+  			$(this).css('opacity', '0.35');
+		}
+    	$(".constellationWidget input").val(selectedV);
+    });
+    $(".constellationWidget a").click(function(){
+    	var v = $(this).find("li").attr("info");
+    	$(this).closest(".userinfoWidget").attr("content", v);
+    	$(".constellationWidget input").val(v);
+		refreshCurrentConstellation();
+    });
+    //events for userinfoWidget
+    $(".constellationWidget").closest(".userinfoWidget").hover(function(){
+    	if (!isConstellationAvailable()) {
+    		$(this).find(".userinfoComponent").css('opacity', '0.35');
+    	}
+    }, function(){
+    	if (!isConstellationAvailable()) {
+    		$(this).find(".userinfoComponent").css('opacity', '0.15');
+    	}
+    });
+}
+</script>

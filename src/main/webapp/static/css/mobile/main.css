@@ -1,0 +1,172 @@
+@charset "utf-8";
+* {
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+html {
+    width: 100%;
+}
+body {
+    font-family: Arial, sans-serif, "冬青黑体简体中文", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", "黑体", "verdana";
+}
+input {
+    font-family: Arial, sans-serif, "冬青黑体简体中文", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", "黑体", "verdana";
+}
+a {
+    text-decoration: none;
+    color: white;
+}
+ul {
+    list-style-type: none;
+}
+li {
+    float: left;
+}
+#contentContainer {
+    width: 100%;
+    margin: 0 auto;
+}
+.bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+}
+.reactive:hover {
+    opacity: 0.8;
+}
+.active {
+    color: white;
+}
+.inactive {
+    color: #a8d6ce;
+}
+.cardView {
+    position: relative;
+    overflow: hidden;
+}
+.card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    display: none;
+}
+.line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid white;
+    opacity: 0.5;
+}
+/* place holder */
+input::-moz-placeholder {
+    color: white;
+}
+input::-webkit-input-placeholder {
+    color: white;
+}
+/* tip arrow */
+.tipArrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+.tipArrowLeft, .tipArrowRight {
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+.tipArrowUp, .tipArrowDown {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+}
+.tipArrowLeft {
+    left: -8px;
+    border-right: 8px solid white;
+}
+.tipArrowRight {
+    right: -8px;
+    border-left: 8px solid white;
+}
+.tipArrowUp {
+    top: -8px;
+    border-bottom: 8px solid white;
+}
+.tipArrowDown {
+    bottom: -8px;
+    border-top: 8px solid white;
+}
+/* submit */
+.submit {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+.submit a {
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto;
+    color: #00ac97;
+    -webkit-border-radius: 64px;
+    -moz-border-radius: 64px;
+    border-radius: 64px;
+    /*
+     -webkit-box-shadow: 0px 0px 20px white;
+     -moz-box-shadow: 0px 0px 20px white;
+     box-shadow: 0 0 20px white;
+     */
+    background-color: white;
+    background: url("/static/image/mobile/icon/common.png") no-repeat scroll 0 -97px transparent;
+}
+.submit a.highlight {
+    background-color: #A8D6CE;
+    /*
+     -webkit-box-shadow: #A8D6CE 0px 0px 20px;
+     -moz-box-shadow: #A8D6CE 0px 0px 20px;
+     box-shadow: #A8D6CE 0px 0px 20px;
+     */
+    background: url("/static/image/mobile/icon/common.png") no-repeat scroll -64px -97px transparent;
+}
+.submit a.loading {
+    font-size: 25px !important;
+    line-height: 50px !important;
+}
+.submit a.disabled {
+    background-color: #CCCCCC;
+}
+/* map */
+.map .mapContent {
+    width: 100%;
+    height: 100%;
+}
+.map .op {
+    cursor: pointer;
+    height: 40px;
+    opacity: 0.3;
+    position: absolute;
+    width: 40px;
+}
+.map .op:hover {
+    opacity: 0.5;
+}
+.map .zoomin {
+    bottom: 70px;
+    right: 20px;
+}
+.map .zoomout {
+    bottom: 20px;
+    right: 20px;
+}
+.map .BMap_cpyCtrl, .map .anchorBL {
+    display: none;
+}

@@ -1,0 +1,277 @@
+<style>
+#shareCard .hide{
+display: none;
+}
+#shareCard .panel {
+height: 100%;
+left: 0;
+position: absolute;
+top: 0;
+width: 100%;
+text-align: center;
+font-size: 16px;
+}
+#shareCard .desc, #shareCard .previewBox {
+font-size: 12px;
+}
+#shareCard .cardContent .title {
+margin: 60px 0 0px;
+height: 43px;
+}
+#shareCard .cardContent .titleIcon {
+width: 30px;
+height: 30px;
+position: absolute;
+left: 390px;
+}
+#shareCard .cardContent .titleDesc {
+font-size: 28px;
+line-height: 28px;
+font-weight: normal;
+position: absolute;
+left: 433px;
+}
+#shareCard .desc {
+display: inline-block;
+letter-spacing: 1px;
+width: 763px;
+}
+#shareCard .jiathis_style  {
+height: 100px;
+left: 366px;
+position: relative;
+width: 100%;
+padding: 18px 0 0 28px;
+}
+#shareCard .jiathis_style a span {
+width: 50px !important;
+height: 50px !important;
+}
+#shareCard .jiathis_button_tsina span {
+background: url("#staticUrl('image/icon/weibo_share.png')") no-repeat scroll center center transparent;
+}
+#shareCard .jiathis_button_douban span {
+background: url("#staticUrl('image/icon/douban_share.png')") no-repeat scroll center center transparent;
+}
+#shareCard .jiathis_button_renren span {
+background: url("#staticUrl('image/icon/renren_share.png')") no-repeat scroll center center transparent;
+}
+#shareCard .jiathis_button_weixin span{
+background: url("#staticUrl('image/icon/wechat_share.png')") no-repeat scroll center center transparent;
+}
+#shareCard .subscriber-imgs{
+position: relative;
+width: 1000px;
+height: 62px;
+margin: 0 auto;
+overflow: hidden;    
+text-align: center;
+padding-top: 28px;
+}
+#shareCard .subscriber-imgs .subscriber-img{
+width: 60px;
+height: 60px;
+border-radius: 50%;
+margin-left: 40px;
+}
+#shareCard .subscriber-imgs .subscriber-img.move-able{
+position: absolute;
+top:29px;
+left:0px;
+margin-left: 0;
+}
+#shareCard .subscriber-imgs .subscriber-img:first-child{
+margin-left: 0;
+}
+#shareCard .title-style{
+padding-top: 24px;
+color: $secondColor;
+font-size: 28px;
+}
+#shareCard .title-style.bottom{
+padding-top: 80px;
+}
+#shareCard .send-to-subscribers .num{
+font-size: 40px;
+padding: 0 8px;
+}
+</style>
+
+<div id="shareCard" class="card" onCardShow="global.showShareCard">
+    <div class="banner">
+        <span class="title">发布房间</span>
+        <span class="desc">发布成功！分享房子&完善资料</span>        
+    </div>
+    <div class="cardContent">
+        <div id="panel1" class="panel">
+        	<div class="title">
+        		<img class="titleIcon" src="#staticUrl('image/icon/ok.png')">
+            	<span class="titleDesc">恭喜你，发布成功</span>
+            </div>
+            <span class="desc">房间通过“龙猫中介识别系统”扫描，进入审核阶段，1个工作日内将邮件发送审核结果</span>
+            <p role="send-to-subscribers" class="desc send-to-subscribers">审核通过后，房间将自动推送给<span class="hide subscriber-count">大约<span class="num"></span>名</span>附近找房的租客</p>
+            <div role="subscriber-imgs" class="hide subscriber-imgs">
+            </div>
+            <p class="title-style">分享会让更多人看见哦</p>
+            <div class="icons">
+                <div class="jiathis_style">
+                    <a class="jiathis_button_tsina"></a>
+                    <a class="jiathis_button_douban"></a>
+                    <a class="jiathis_button_renren"></a>
+                    <a class="jiathis_button_weixin"></a>
+                </div>
+            </div>
+        </div>
+        <div class="rightPanel">
+            <a next='#usercenterCard' onNext="global.closeShareCard" class="next button buttonNormal">完善资料</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+(function(){
+    var INTERVAL = 1000;
+    var WIDTH = 100;
+    var MAX_SHOWN = 10;
+    var OFFSET = 15;
+
+    var shareCard = $('#shareCard'),
+        subscriberDesc = shareCard.find('[role="send-to-subscribers"]'),
+        subscriberImgs = shareCard.find('[role="subscriber-imgs"]');    
+
+    function showShareCard() {        
+        var shouldMove = true;
+
+        // oyyd: keep this mock for me to dev and test
+        // var mockLength=12;
+        // model.lastSubscribers = [];
+        // for(var i=0;i<mockLength;i++){
+        //     model.lastSubscribers.push({
+        //         username: 'testname',
+        //         faviconUrl: (i%2==1)?'http://7u2hvg.com2.z0.glb.qiniucdn.com/20150510/408348485@qq.com_1431230528363.jpg':'http://7u2hvg.com2.z0.glb.qiniucdn.com/20150510/excliber_1431230370950.jpg'
+        //     });
+        // }
+
+        function createImg(subscriber, index){
+            var img = null;
+            if(typeof index === 'undefined'){
+                img = $('<img class="subscriber-img" title="'+ subscriber.username
+                    +'" src="'+subscriber.faviconUrl+'"/>');
+            }else{
+                img = $('<img class="subscriber-img move-able" title="'+ subscriber.username
+                    +'" src="'+subscriber.faviconUrl+'" style="left:'+((index)*WIDTH+OFFSET)+'px" />');
+            }
+            subscriberImgs.append(img);
+        }
+
+        if(model.lastSubscribers && model.lastSubscribers.length>0){
+            var imgs = [];
+            var imgsLength = 0;
+
+            shareCard.find('.title-style').removeClass('bottom');
+            subscriberDesc.find('.num').text(model.lastSubscribers.length);
+            subscriberDesc.find('.subscriber-count').removeClass('hide');
+            subscriberImgs.removeClass('hide');
+            subscriberImgs.html('');
+            for(var i=0;i<model.lastSubscribers.length;i++){
+                var subscriber = model.lastSubscribers[i];
+                if(subscriber.faviconUrl){
+                    imgs.push(subscriber);
+                }
+            }
+
+            imgsLength = imgs.length;
+
+            // Need 'ZouMaDeng' if there are too much imgs.
+            if(imgsLength>10){
+                var next = MAX_SHOWN;
+                for(var i=0;i<MAX_SHOWN;i++){
+                    createImg(imgs[i], i);
+                }
+
+                function addNext(){
+                    if(next>=imgsLength){
+                        next -= imgsLength;
+                    }
+                    createImg(imgs[next], MAX_SHOWN);
+
+                    next ++;
+                    return ;
+                }
+
+                function slideOne(){
+                    if(!shouldMove){
+                        setTimeout(function(){
+                            slideOne();
+                        }, INTERVAL);
+                        return;
+                    }
+                    addNext();
+                    subscriberImgs.find('.subscriber-img').each(function(index){
+                        var e = $(this);
+                        var leftStr = e.css('left');
+                        var left = parseFloat(leftStr.slice(0, leftStr.length-2));
+                        var targetLeft = left - WIDTH;
+                        e.animate({
+                            left: targetLeft
+                        }, INTERVAL, 'swing', function(){
+                            if(index===0){
+                                e.remove();
+                                setTimeout(function(){
+                                    slideOne();                                    
+                                }, INTERVAL);
+                            }
+                        });
+                    });
+                    return;
+                }
+
+                slideOne();
+
+                subscriberImgs.mouseenter(function(){
+                    shouldMove = false;
+                });
+
+                subscriberImgs.mouseleave(function(){
+                    shouldMove = true;
+                });                
+            // Or just place them there.
+            }else{
+                for(var i=0;i<imgs.length;i++){
+                    createImg(imgs[i]);
+                }
+            }
+        }else{
+            shareCard.find('.title-style').addClass('bottom');
+            subscriberDesc.addClass('hide');
+            subscriberImgs.addClass('hide');
+        }
+
+        // share
+        $(".icons a").mouseenter(function() {
+            var b = $(this);
+            jiathis_config = {
+                url : b.hasClass('jiathis_button_weixin')?model.share.url(true):model.share.url(),
+                title : model.share.title(),
+                summary : model.share.summary(b),
+                pic : rentOption.cover,
+                title : model.share.title(),
+                summary : model.share.summary(b),
+                pic : rentOption.cover
+            }
+        });
+        $.getScript("http://v3.jiathis.com/code_mini/jia.js?uid=1815789");
+    }
+
+    function closeShareCard(){
+        // clear all elements in imgs
+        subscriberImgs.html('');
+        // close jia_this wechat card
+        jiathis_cancel && jiathis_cancel();
+    };
+
+    window.global = window.global || {};
+    window.global.showShareCard = showShareCard;
+    window.global.closeShareCard = closeShareCard;    
+})();
+</script>

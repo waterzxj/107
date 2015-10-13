@@ -1,0 +1,14 @@
+#set($layout = "layout/null.vm")
+#set($pageTitle = "最快的找房神器")
+
+<style>
+    img {
+        width: 100%;
+    }
+</style>
+
+<img src="#staticUrl('image/mobile/share.jpg')" />
+
+#if(!$disableStatistic)
+#statistic()
+#end

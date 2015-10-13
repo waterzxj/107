@@ -1,0 +1,1656 @@
+#parse("_style.vm")
+
+#set($pageTitle = "找房")
+#set($bannerTitle = "找房")
+#set($bannerDesc = "<span class='bannerDesc3'>安得广厦</span><span class='bannerDesc1'>10</span><sup class='bannerDesc2'>7</sup><span class='bannerDesc3'>间，大庇天下寒士俱欢颜</span>")
+#set($disableStatistic = true)
+
+## styles
+<link type="text/css" href="#staticUrl('css/jquery.jscrollpane.css')" rel="stylesheet" media="all" />
+#set($bg = "#F6F6F6")
+#set($boxHeight = "30px")
+<style>
+.bannerDesc3 {
+vertical-align: top;
+}
+.bannerDesc1 {
+font-size: 20px;
+font-family: arial;
+padding-left: 2px;
+vertical-align: top;
+}
+.bannerDesc2 {
+font-size: 15px;
+position: relative;
+bottom: 5px;
+}
+h1, h2, h3, h4 {
+font-weight: normal;
+}
+body {
+background-color: ${bg};
+}
+#contentContainer {
+background-color: ${bg};
+padding: 15px 0;
+}
+#contentContainer .fixedWithContainer {
+position: relative;
+text-align: left;
+}
+/* search result */
+#main {
+width: 675px;
+}
+#main .mask {
+position:absolute;
+top:0;
+right:0;
+width: 15px;
+height: 100%;
+background-color: ${bg};
+}
+#main .channel.default {
+display: block;
+min-height: 500px;
+}
+#main .channel.default .container {
+display: none;
+}
+#main .channel.favor .empty  {
+color: #C9C9C9;
+font-size: 16px;
+position: absolute;
+text-align: center;
+top: 150px;
+width: 100%;
+}
+/* operation */
+#operation {
+position: absolute;
+right: 0;
+top: 0;
+width: 396px;
+}
+#operation .box {
+position: relative;
+line-height: ${boxHeight};
+height: ${boxHeight};
+border: 1px solid white;
+margin-bottom: 6px;
+}
+#operation .button {
+position: absolute;
+height: ${boxHeight};
+line-height: ${boxHeight};
+font-size: 13px;
+background-color: transparent;
+color: #c9c9c9;
+text-align: center;
+-webkit-transition: none;
+-moz-transition: none;
+-ms-transition: none;
+-o-transition: none;
+transition: none;
+}
+#operation .button:hover {
+color: ${mainColor};
+}
+#operation .button.active {
+color: ${mainColor};
+}
+#operation .box .dragger {
+position: absolute;
+background-color: white;
+}
+#operation .map {
+height: 300px;
+border: 1px solid white;
+}
+#operation .channel.box {
+margin-bottom: 15px;
+}
+#operation .channel.box .default.button {
+background: url("#staticUrl('image/icon/house-search/list-gray.png')") no-repeat scroll 43px center transparent;
+}
+#operation .channel.box .default.button:hover {
+background: url("#staticUrl('image/icon/house-search/list.png')") no-repeat scroll 43px center transparent;
+}
+#operation .channel.box .default.button.active{
+background: url("#staticUrl('image/icon/house-search/list.png')") no-repeat scroll 43px center transparent;
+}
+#operation .channel.box .favor.button {
+background: url("#staticUrl('image/icon/house-search/favor-gray.png')") no-repeat scroll 43px center transparent;
+}
+#operation .channel.box .favor.button:hover {
+background: url("#staticUrl('image/icon/house-search/favor.png')") no-repeat scroll 43px center transparent;
+color: ${secondColor};
+}
+#operation .channel.box .favor.button.active  {
+background: url("#staticUrl('image/icon/house-search/favor.png')") no-repeat scroll 43px center transparent;
+color: ${secondColor};
+}
+#operation .channel.box .favor.button .count  {
+display: none;
+position:absolute;
+top: 0;
+right: 35px;
+width: 20px;
+height: 20px;
+line-height: 20px;
+font-family: Arial;
+font-size: 11px;
+color: white;
+letter-spacing: 0;
+background: url("#staticUrl('image/icon/house-search/favor-count-gray.png')") no-repeat scroll center center transparent;
+}
+#operation .channel.box .favor.button .count.active,#operation .channel.box .favor.button .count.hover  {
+background: url("#staticUrl('image/icon/house-search/favor-count.png')") no-repeat scroll center center transparent;
+}
+#operation .rentType.box .button {
+width: 132px;
+}
+#operation .gender-selector{
+margin-bottom: 6px;
+font-size: 0px;
+}
+#operation .gender-selector .selector .icon{
+width: 20px;
+height: 20px;
+margin: 0 22px 0 7px;
+display: inline-block;
+background-image: url('#staticUrl("image/detail/required_gender.png")');
+background-size: 60px 40px;
+vertical-align: middle;
+}
+#operation .gender-selector .selector .icon.boy{
+background-position: -20px -20px;
+}
+#operation .gender-selector .selector .icon.girl{
+background-position: 0px -20px;
+}
+#operation .gender-selector .selector.buttonSelected .icon.boy{
+background-position: -20px 0px;
+}
+#operation .gender-selector .selector.buttonSelected .icon.girl{
+background-position: 0px 0px;
+}
+#operation .gender-selector .selector{
+padding: 5px 0 0 37px;
+font-size: 13px;
+width: 159px;
+display: inline-block;
+height: 25px;
+cursor: pointer;
+}
+#operation .gender-selector .selector:hover{
+background-color: #FFF;
+/*color: $mainColor;*/
+}
+#operation .gender-selector .selector.buttonSelected:hover{
+background-color: $mainColor;
+/*color: #FFF;*/
+}
+#operation .gender-selector .selector:first-child{
+margin-right: 4px;
+}
+#operation .gender-selector .selector.buttonSelected .title{
+color: #FFF;
+}
+#operation .gender-selector .selector .title{
+color: #c9c9c9;
+letter-spacing: 1px;
+vertical-align: middle;
+}
+#operation .price.box .button {
+width: 36px;
+font-family: Arial;
+font-size: 12px;
+letter-spacing: -1px;
+}
+#operation .price.box .button.active {
+cursor: url("#staticUrl('image/icon/cursor_hand.cur') ") , move !important;
+}
+#operation .price.box .button.active:hover {
+opacity: 0.5;
+}
+#operation .price.box .mask {
+position: absolute;
+width: 0;
+background-color: ${bg};
+height: ${boxHeight};
+}
+#operation .price.box .mask .line {
+position: absolute;
+top: 50%;
+width: 100%;
+background-color: ${mainColor};
+height: 1px;
+}
+#operation .price.box .button.hover {
+color: ${mainColor};
+}
+#operation .query.box {
+border: 1px solid ${mainColor};
+}
+#operation .query.box input {
+width: 100%;
+height: 28px;
+line-height: ${boxHeight};
+border-width: 0;
+font-size: 13px;
+text-indent: 10px;
+color: ${mainColor};
+background-color: ${bg};
+}
+#operation .query.box input:hover {
+border-width: 0;
+}
+#operation .query.box a {
+position: absolute;
+top: 0;
+right: 0;
+display: inline-block;
+width: 35px;
+height: ${boxHeight};
+cursor: pointer;
+background: url("#staticUrl('image/icon/house-search/search.png')") no-repeat scroll center center ${mainColor};
+}
+#operation .query.box a:hover {
+background: url("#staticUrl('image/icon/house-search/search.png')") no-repeat scroll center center ${mainActiveColor};
+}
+#operation div {
+clear: both;
+}
+#operation h3 {
+line-height: 35px;
+text-align: left;
+padding-top: 5px;
+font-weight: normal;
+}
+#operation .panel {
+display: none;
+}
+#operation .panel.default .hint,#operation .panel.default .hint .bg,#operation .panel.default .hint p  {
+position: absolute;
+top:0;
+left:0;
+width: 100%;
+height: 100%;
+}
+#operation .panel.default .hint .bg {
+background-color: ${bg};
+opacity: 0.9;
+}
+#operation .panel.default .hint.hint1 {
+height: 174px;
+}
+#operation .panel.default .hint.hint2 {
+top: 210px;
+height: 307px;
+}
+#operation .panel.default .hint p {
+display:none;
+font-size: 20px;
+line-height: 307px;
+text-align: center;
+color: white;
+letter-spacing: 1px;
+}
+#operation.isStuck {
+top: 20px;
+}
+#operation>.selectors{
+padding-top: 14px;
+border-top: 1px solid #c8e5e1;
+}
+#operation>.selectors>.dot-container{
+background-color: #F6F6F6;
+display: inline-block;
+width: 9px;
+height: 9px;
+position: absolute;
+top: 43px;
+left: 195px;
+}
+#operation>.selectors>.dot-container>.dot{
+position: absolute;
+width: 1px;
+left: 3px;
+top: 3px;
+height: 1px;
+border: 1px solid #c8e5e1;
+display: inline-block;
+}
+/*
+* item
+*/
+.item {
+position: relative;
+float: left;
+width: 210px;
+cursor: pointer;
+text-align: center;
+margin: 0 15px 15px 0;
+z-index:0;
+}
+.item:hover {
+opacity: 0.8;
+}
+.item.template {
+display: none;
+}
+.item.active .title {
+background-color: #5cccb9 !important;
+}
+.item.active .tipArrow {
+border-bottom: 10px solid #5cccb9 !important;
+}
+.item .cover {
+display: none;
+width: 100%;
+margin-bottom: -5px;
+z-index:10;
+}
+.item .title {
+position: relative;
+color: white;
+font-size: 12px;
+line-height: 23px;
+padding: 4px 0;
+z-index:10;
+}
+.item .favicon{
+position:relative;
+float:left;
+z-index:20;
+border-radius:50%;
+margin-top:-40px;
+width:50px;
+height:50px;
+}
+.item .title .tipArrow {
+top: -8px;
+left: 8px;
+}
+.item .title h2 {
+font-size: 14px;
+padding: 0 8px;
+}
+.item .title h3 {
+font-size: 12px;
+}
+.item .desc, .item .desc-region{
+font-size: 12px;
+padding: 10px;
+text-align: left;
+line-height: 18px;
+background-color: white;
+}
+.item .desc.house-desc{
+padding: 10px 10px 0 10px;
+}
+.item .desc-region{
+padding: 0 10px 5px 0;
+color: $secondColor;
+text-align: right;
+}
+.item .op {
+position: absolute;
+top: 10px;
+right: 10px;
+width: 40px;
+height: 40px;
+cursor: pointer;
+}
+.item .op.favor {
+display: none;
+background: url("#staticUrl('image/icon/house-search/favor-empty.png')") no-repeat scroll center center transparent;
+z-index: 11;
+}
+.item .op .host{
+display:block;
+background: url("#staticUrl('image/icon/house-search/favor-empty.png')") no-repeat scroll center center transparent;
+}
+.item .op.favor.active  {
+background: url("#staticUrl('image/icon/house-search/favor.png')") no-repeat scroll center center transparent;
+}
+.item .op.favor:hover {
+opacity: 0.5;
+}
+/*
+* weixin item
+*/
+.weixin.item {
+height: 350px;
+color: white;
+text-align: center;
+background-color: ${mainColor};
+}
+.weixin.item .code2, .emptyResult .code2 {
+display: none;
+height: 190px;
+line-height: 190px;
+margin: 10px;
+padding: 0;
+text-align: center;
+width: 190px;
+}
+.weixin.item .code2 {
+background-color: #0DB9A4;
+}
+.weixin.item .desc0 {
+bottom: 0;
+left: 0;
+position: absolute;
+width: 100%;
+}
+.weixin.item .title0 {
+font-size: 36px;
+height: 50px;
+letter-spacing: 2px;
+line-height: 50px;
+}
+.weixin.item img {
+margin: 0 auto;
+}
+.weixin.item .desc1 {
+padding: 10px 0;
+position: relative;
+top: -5px;
+width: 130px;
+}
+.weixin.item .desc2 {
+position: relative;
+top: -5px;
+width: 180px;
+}
+.weixin.item .desc3 {
+position: relative;
+width: 100%;
+height: 30px;
+top: -5px;
+}
+.weixin.item .desc3 span {
+font-size: 13px;
+letter-spacing: 0;
+position: absolute;
+}
+.weixin.item .subscribe {
+left: 20px;
+}
+.weixin.item .voice {
+left: 92px;
+}
+.weixin.item .location {
+left: 164px;
+}
+.noFurtherResult {
+bottom: -70px;
+display: none;
+padding-bottom: 15px;
+position: absolute;
+text-align: center;
+width: 100%;
+}
+.noFurtherResult .desc2 {
+font-size: 15px;
+}
+.noFurtherResult .desc2 span {
+color: ${mainColor};
+}
+.noFurtherResult .desc3 {
+height: 40px;
+}
+.emptyResult {
+display: none;
+clear: both;
+position: relative;
+width: 300px;
+height: 400px;
+margin: 0 auto;
+text-align: center;
+font-size: 18px;
+color: #939393;
+top: 40px;
+}
+.emptyResult .code2 {
+background-color: #E8F8F7;
+}
+.emptyResult .desc {
+padding-bottom: 20px;
+font-size: 15px;
+padding: 5px 0;
+}
+.emptyResult .weixin {
+width: 190px;
+color: #1fa38c;
+background-color: #DEEEED;
+overflow: hidden;
+padding: 10px;
+margin: 0 auto;
+}
+.emptyResult .weixin:hover {
+background-color: #9bdad2;
+}
+.emptyResult .weixin .slogan {
+color: #828282;
+padding-bottom: 10px;
+}
+.emptyResult .weixin .code2 {
+margin: 0;
+padding: 0;
+}
+.emptyResult .weixin .number {
+font-size: 14px;
+height: 20px;
+line-height: 20px;
+color: ${fontColor};
+}
+.emptyResult .weixin .number span {
+font-size: 14px;
+color: ${mainColor};
+}
+/*
+* misc
+*/
+.searchLoading {
+display:none;
+position: fixed;
+height: 80px;
+/*left: 450px;*/
+/*top: 35%;*/
+width: 120px;
+}
+.searchLoading > * {
+position: absolute;
+}
+.searchLoading .bg {
+width: 100%;
+height: 100%;
+filter: alpha(opacity=60);
+opacity: 0.6;
+background-color: ${mainColor};
+}
+.searchLoading .logo, .searchLoading .hint {
+width: 100%;
+height: 100%;
+}
+.searchLoading .logo  {
+background: url("#staticUrl('image/logo2.png')") no-repeat scroll center 15px transparent;
+}
+.searchLoading .hint {
+background: url("#staticUrl('image/icon/loading.gif')") no-repeat scroll 16px 52px transparent;
+opacity: 0.7;
+}
+</style>
+
+<div id="main" class="slideContainer">
+    <div name="default" class="channel default slide">
+        <div class="container">
+            #if(!$userUtils.getWxUser($request, $response))
+            <a href="#url('/weixin/')" target="_blank">
+            <div class="item weixin">
+                #code2("1_house-search.jpg")
+                <div class="desc0">
+                    <h3 class="title0">微信找房</h3>
+                    <img class="desc1" src="#staticUrl('image/mobile/wx-slogan-white.png')?20140601" />
+                    <img class="desc2" src="#staticUrl('image/mobile/wx-batch.png')?20140805" />
+                    <div class="desc3">
+                        <span class="subscribe">订阅</span>
+                        <span class="voice">语音</span>
+                        <span class="location">位置</span>
+                    </div>
+                </div>
+            </div> </a>
+            #end
+        </div>
+
+        ## no further result
+        <div class="noFurtherResult">
+            <p class="desc1">
+                已显示全部符合搜索条件的房间
+            </p>
+            <p class="desc2">
+                所有房间均发布于<span>3周内</span>
+            </p>
+            <p class="desc3">
+                以上是部分真实房间，去右侧开始找房吧！
+            </p>
+        </div>
+
+        ## empty result
+        <div class="emptyResult">
+            <p class="desc">
+                没找到合适的结果，试试更改搜索条件
+            </p>
+            <p style="font-size: 13px;padding:5px 0;">
+                或
+            </p>
+            <p class="desc">
+                关注微信APP随时获取新房
+            </p>
+            <a href="#url('/weixin/')" target="_blank">
+            <div class="weixin">
+                #code2("1_house-search.jpg")
+                <p class="number">
+                    公众号：<span>107间</span>
+                </p>
+            </div> </a>
+        </div>
+    </div>
+    <div name="favor" class="channel favor slide">
+        <div class="container"></div>
+        <p class="empty">
+            暂未收藏房间
+        </p>
+    </div>
+    <div class="mask"></div>
+    ## item template
+    <div class="item lazy template" itemId="$id" type="$type" channel="$channel">
+        <div class="op favor"></div>
+        <div class="op host" ></div>
+        <img class="cover" src="" for="" alt="" border="0">
+        <img class="favicon" src="" for="" alt="" border="0" >
+        <div class="title transition">
+            <div class="tipArrow tipArrowUp transition">
+            </div>
+            <h2>$district_$position</h2>
+            <h3>$name__$price元/月</h3>
+        </div>
+        <p class="desc house-desc">
+            $description
+        </p>
+        <p role="last-modified-time" class="desc-region"></p>
+    </div>
+
+    ## search loading
+    <div class="searchLoading">
+        <div class="bg"></div>
+        <div class="logo"></div>
+        <div class="hint"></div>
+    </div>
+</div>
+
+<div id="operation">
+    <div class="channel box singleChoice">
+        <a for="default" class="default button" mapInit="true">全部结果</a>
+        <a for="favor" class="favor button">我的收藏<span class="count">0</span></a>
+    </div>
+    <div class="!slideContainer selectors">
+        <!-- this is just a styled dot -->
+        <div class="dot-container">
+            <div class="dot"></div>            
+        </div>
+        <div class="default panel !slide">
+            <div class="gender-selector">
+                <div class="selector" data-required-gender="male"><span class="icon boy"></span><span class="title">男生找房</span></div><!--
+                --><div class="selector" data-required-gender="female"><span class="icon girl"></span><span class="title">女生找房</span></div>
+            </div>
+            <div class="rentType box singleChoice">
+                <a rentType="1" class="room button">单&nbsp;&nbsp;&nbsp;间</a>
+                <a rentType class="all button active">不&nbsp;&nbsp;&nbsp;限</a>
+                <a rentType="2" class="house button">整&nbsp;&nbsp;&nbsp;租</a>
+            </div>
+            <div class="price box">
+                #foreach($i in [0..10])
+                #set($p = $i * 1000)
+                <a price="$p" class="button #if($p==1000 || $p==6000) active #end">$p</a>
+                #end
+                <div class="mask">
+                    <div class="line"></div>
+                </div>
+            </div>
+            <div class="query box">
+                <input type="text" placeholder="输入地址或地铁/公交线路（可多个）" />
+                <a></a>
+            </div>
+            <div class="map">
+                <div class="mapContent"></div>
+                <img class="op zoomin" src="#staticUrl('image/icon/map/zoomin.png')">
+                <img class="op zoomout" src="#staticUrl('image/icon/map/zoomout.png')">
+            </div>
+            <div class="hint hint1">
+                <div class="bg"></div>
+            </div>
+            <div class="hint hint2">
+                <div class="bg"></div>
+                <p>
+                    输入地址或地铁/公交线路开始找房！
+                </p>
+            </div>
+        </div>
+        <div class="favor panel">
+            <div class="map">
+                <div class="mapContent"></div>
+                <img class="op zoomin" src="#staticUrl('image/icon/map/zoomin.png')">
+                <img class="op zoomout" src="#staticUrl('image/icon/map/zoomout.png')">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="#staticUrl('js/jquery.imagesloaded.min.js')"></script>
+<script src="#staticUrl('js/jquery.jscrollpane.min.js')"></script>
+<script>
+    (function() {
+        // water flow
+        var flows = {};
+        $('#operation .channel.box .button').each(function() {
+            var name = $(this).attr('for');
+            var channel = $('#main .channel.' + name);
+            flows[name] = Flow107.create(channel, {
+                callback : function() {
+                    var current = $('#operation .channel.box .button.active').attr('for');
+                    if (current == name) {
+                        // channel
+                        var h = channel.height();
+                        if (name == 'default') {
+                            h += channel.find('.noFurtherResult').outerHeight();
+                        }
+                        // operation
+                        h = Math.max(h, $('#operation').height());
+                        $('#main').height(h);
+                    }
+                }
+            });
+        });
+
+        function initLayout() {
+            var h = $('.channel.' + $('#operation .channel.box .button.active').attr('for')).height();
+            h = Math.max(h, $(window).height() - $("#contentContainer").offset().top - 30);
+            $('#main').height(h);
+            LazyImage.reset();
+        }
+
+        function initChannel() {
+            var w = $('#main').width(), left = 0;
+            $('#main .channel').each(function() {
+                $(this).css('left', left);
+                left += w;
+            });
+        }
+
+        function initOperation() {
+            var width = $('#operation').width();
+            function addDragger(box, i) {
+                var w = width / box.find('.button').length;
+                var dragger = $('<div class="dragger"></div>');
+                dragger.css({
+                    width : w,
+                    height : box.height()
+                });
+                var active = box.find('.active.button').eq(i);
+                if (active.length) {
+                    var left = 0;
+                    box.find('.button').each(function() {
+                        if ($(this)[0] == active[0]) {
+                            return false;
+                        }
+                        left += w;
+                    });
+                    dragger.css('left', left);
+                }
+                box.prepend(dragger);
+            }
+
+            // buttons
+            $('#operation .box').not('.query').each(function() {
+                var box = $(this);
+                var buttons = box.find('.button').not('.dragger');
+                var left = 0, w = width / buttons.length;
+                buttons.width(w).each(function() {
+                    $(this).css('left', left);
+                    left += w;
+                    if (box.hasClass('channel')) {
+                        var indent = 30;
+                        $(this).width(w - indent).css('paddingLeft', indent);
+                    }
+                });
+                if (box.hasClass('price')) {
+                    // 2 draggers
+                    addDragger(box, 1);
+                }
+                addDragger(box, 0);
+            });
+            /*
+             * switch active
+             */
+            $('#operation .singleChoice.box .button').click(function() {
+                if ($(this).hasClass('active')) {
+                    return;
+                }
+                // auth
+                if ($(this).hasClass('favor')) {
+                    var button = $(this);
+                    if (!Auth.assertLogin(function() {
+                        getFavors(function() {
+                            button.click();
+                        });
+                    })) {
+                        return;
+                    }
+                }
+                // update button
+                var box = $(this).closest('.box');
+                var old = box.find('.active.button');
+                box.find('.active').removeClass('active');
+                $(this).addClass('active');
+                box.find('.dragger').animate({
+                    left : $(this).position().left
+                });
+                // post process
+                if (box.hasClass('channel')) {
+                    var channelName = $(this).attr('for');
+                    var newChannel = '.' + channelName, oldChannel = '.' + old.attr('for');
+                    var map = $('#operation .panel.' + channelName + ' .map');
+                    if (!box.data('init')) {
+                        search(true);
+                        box.data('init', true);
+                    } else {// slide
+                        var dir = old.position() && (old.position().left < $(this).position().left) ? 1 : 2;
+                        if (map.data('update')) {
+                            map.css('opacity', 0);
+                        }
+                        UI.slide(dir, $('#main'), $('.channel').filter(newChannel), $('.channel').filter(oldChannel), function() {
+                            initLayout();
+                            if (map.data('update')) {
+                                map.data('update', false);
+                                updateMap(channelName);
+                            }
+                            map.css('opacity', 1);
+                        });
+                    }
+                    $('#operation .panel').hide().filter(newChannel).show();
+                } else if (box.hasClass('rentType')) {
+                    search();
+                }
+            });
+
+        }
+
+        function initOperationDefault() {
+            var d = $('#operation .panel.default');
+            /*
+             * mask
+             */
+            $('#operation .panel.default').hover(function() {
+                var h = $('#operation .panel.default .hint');
+                if (h.is(':visible')) {
+                    h.fadeOut(function() {
+                        var a = $('#operation .panel.default .box.query a');
+                        a.animate({
+                            opacity : 0.2
+                        }, 200, function() {
+                            a.animate({
+                                opacity : 1
+                            }, 200);
+                        })
+                    });
+                }
+            });
+            /*
+             * price
+             */
+            (function() {
+                var box = d.find('.price.box'), buttons = d.find('.price.box .button');
+                $(drawLine);
+                function drawLine() {
+                    var bound = d.find('.price.box .dragger');
+                    var lefts;
+                    if (bound.eq(0).position().left <= bound.eq(1).position().left) {
+                        lefts = [bound.eq(0).position().left, bound.eq(1).position().left];
+                    } else {
+                        lefts = [bound.eq(1).position().left, bound.eq(0).position().left];
+                    }
+                    var w = bound.width();
+                    box.find('.mask').css({
+                        left : lefts[0] + w,
+                        width : lefts[1] - lefts[0] - w
+                    })
+                }
+
+                // click
+                buttons.click(function() {
+                    if ($(this).hasClass('active')) {
+                        return;
+                    }
+                    var active = box.find('.button.active');
+                    var i = parseInt($(this).attr('price')) < parseInt(active.eq(0).attr('price')) ? 0 : 1;
+                    var dragger = box.find('.dragger').eq(i);
+                    active.eq(i).removeClass('active');
+                    $(this).addClass('active');
+                    dragger.animate({
+                        left : $(this).position().left
+                    }, {
+                        step : drawLine,
+                        always : drawLine
+                    });
+                    search();
+                });
+                // hover
+                function getHoverBound(b) {
+                    var min = b.position().left, max = box.find('.dragger').eq(0).position().left;
+                    if (min > max) {
+                        max = min;
+                        min = box.find('.dragger').eq(1).position().left;
+                    }
+                    return [min, max];
+                }
+
+
+                buttons.hover(function() {
+                    buttons.removeClass('hover');
+                    var bound = getHoverBound($(this));
+                    if (bound[0] == bound[1])
+                        return;
+                    buttons.each(function() {
+                        var left = $(this).position().left;
+                        if (left >= bound[0] && left <= bound[1]) {
+                            $(this).addClass('hover');
+                        }
+                    });
+                }, function() {
+                    buttons.removeClass('hover');
+                });
+                // drag
+                var dragging = false, p, offsetX, w = buttons.width(), mouseX;
+                var dragger, minLeft, maxLeft;
+                function getDropButton(e) {
+                    return buttons.eq(parseInt((mouseX + getPosition(e).x - p.x) / w));
+                }
+
+
+                buttons.bind("mousedown touchstart", function(e) {
+                    var t = $(e.target);
+                    if (!t.hasClass('active') || dragging) {
+                        return;
+                    }
+                    e.preventDefault();
+                    dragging = true;
+                    p = getPosition(e);
+                    offsetX = t.position().left;
+                    mouseX = p.x - box.offset().left;
+                    t.removeClass('active');
+                    var draggers = box.find('.dragger');
+                    if (t.position().left == draggers.eq(0).position().left) {
+                        dragger = draggers.eq(0);
+                        minLeft = 0;
+                        maxLeft = draggers.eq(1).position().left - draggers.width();
+                    } else {
+                        dragger = draggers.eq(1);
+                        minLeft = draggers.eq(0).position().left + draggers.width();
+                        maxLeft = box.width() - draggers.width();
+                    }
+                });
+                $(document).bind("mousemove touchmove", function(e) {
+                    if (!dragging)
+                        return;
+                    e.preventDefault();
+                    var left = offsetX + getPosition(e).x - p.x;
+                    if (left < minLeft || left > maxLeft)
+                        return;
+                    buttons.removeClass('hover');
+                    var b = getDropButton(e).addClass('hover');
+                    var buttonLeft = b.position().left;
+                    if (left != buttonLeft) {
+                        dragger.stop().animate({
+                            left : buttonLeft,
+                            width : b.width()
+                        }, {
+                            duration : 100,
+                            step : drawLine,
+                            easing : 'linear'
+                        });
+                    }
+                }).bind("mouseup touchend", function(e) {
+                    if (!dragging)
+                        return;
+                    var lefts = {};
+                    box.find('.dragger').each(function() {
+                        lefts[$(this).position().left] = $(this);
+                    });
+                    buttons.each(function() {
+                        if (lefts[$(this).position().left]) {
+                            $(this).addClass('active');
+                        } else {
+                            $(this).removeClass('active');
+                        }
+                    });
+                    dragging = false;
+                    var b = getDropButton(e);
+                    if (b.position().left != offsetX) {
+                        b.addClass('active');
+                        search();
+                    }
+                });
+            })();
+            /*
+             * query
+             */
+            PlaceHolder.init(d.find('.box.query input'));
+            d.find('.box.query input').keydown(function(e) {
+                if (e.which == 13) {
+                    search();
+                }
+            });
+            d.find('.box.query a').click(function() {
+                search();
+            });
+        }
+
+        function initOperationFavor() {
+            // channel
+            $('#operation .channel.box .favor.button').click(function() {
+                $(this).find('.count').addClass('active');
+            });
+            $('#operation .channel.box .favor.button').hover(function() {
+                $(this).find('.count').addClass('hover');
+            }, function() {
+                $(this).find('.count').removeClass('hover');
+            });
+        }
+
+        var LazyImage = {
+            lastTop : -1,
+            reset : function() {
+                this.lastTop = -1;
+            }
+        };
+        function initMisc() {
+            // top navigation
+            var navTop = $("#navTop");
+            $(window).scroll(function() {
+                if ($(window).scrollTop() > 600) {
+                    updateNavTop();
+                    navTop.show();
+                } else {
+                    navTop.hide();
+                }
+            });
+            navTop.click(function() {
+                $("body,html").animate({
+                    "scrollTop" : $("#contentContainer").offset().top + 1
+                }, 500);
+            });
+            // scroll
+            $(window).scroll(function() {
+                updateOperation();
+            });
+            // lazy image
+            LazyImage.reset();
+            var top = $(window).scrollTop(), lock = false;
+            setInterval(function() {
+                if (lock)
+                    return;
+                lock = true;
+                var t = $(window).scrollTop();
+                var delta = Math.abs(t - top);
+                top = t;
+                if (LazyImage.lastTop < 0 || (delta == 0) || (delta > 200 && delta < 500)) {
+                    if (delta == 0) {
+                        LazyImage.lastTop = top;
+                    }
+                    var c = $('#operation .channel.box .button.active').attr('for');
+                    var container = $('#main .channel.' + c);
+                    var loaded = false;
+                    container.find('.item.lazy').each(function() {
+                        var a = $(this).offset().top;
+                        if (a >= top && a < (top + $(window).height())) {
+                            var cover = $(this).find('.cover:hidden');
+                            loaded = true;
+                            $(this).removeClass('lazy');
+                            var src = cover.attr('for');
+                            log('lazy load: ' + src);
+                            cover.addClass('lazy').attr('src', src).removeAttr('for').show();
+                            var favicon=$(this).find('.favicon');
+                            if (favicon) {
+                                var src=favicon.attr('for');
+                                favicon.addClass('lazy').attr('src',src).removeAttr('for');
+                                // do not show imgs if loading failed
+                                favicon.load(function(){
+                                    favicon.show();
+                                });
+                            }
+                       }
+                    });
+                    loaded && container.imagesLoaded(function() {
+                        flows[c].flow();
+                    });
+                }
+                lock = false;
+            }, 500);
+        }
+
+        /**
+         * @return jquery item objetcs
+         */
+        function addItems(channelName, itemObjects) {
+            var channel = $('#main .channel.' + channelName);
+            var container = channel.find(".container");
+            // reset
+            // UI.scroll($("#contentContainer").offset().top, 1000);
+            container.find('.item').not('.weixin').remove();
+            // display
+            var colors = ["#ee9c53", "#e8c061", "#dc8674", "#c97586"];
+            for (var i = 0; i < itemObjects.length; i++) {
+                var item = itemObjects[i];
+                console.log("ITEM", item);
+                // model
+                var c = $('.item.template').clone().removeClass('template');
+                c.attr('id', 'item' + item.channel + '-' + item.type + '-' + item.id);
+                c.attr('itemId', item.id).attr('channel', item.channel).attr('type', item.type);
+                c.attr('x', item.x).attr('y', item.y);
+                c.find('.title h2').text($.trim(item.district) + ' ' + $.trim(item.position));
+                c.find('.title h3').text($.trim(item.name) + '  ' + $.trim(item.price) + '元/月');
+                c.find('.cover').attr('for', _image.thumbSearch($.trim(item.cover)));
+                c.find('.desc').html($.trim(item.description));
+                var modifiedDate = new Date(item.timestamp);
+                var dateString = modifiedDate.getMonth() + 1 +"月"+ modifiedDate.getDate() +"日";
+                c.find('[role="last-modified-time"]').html(dateString);
+                var hostImageId=_image.thumbSearch($.trim(item.faviconUrl));
+                if(hostImageId=="/static/user/house/"){
+                c.find('.favicon').remove();
+                } else {
+                c.find(".title").css("padding-top", "14px");
+                }
+                c.find('.favicon').attr('for',hostImageId);
+                c.find('.favicon').hide();
+                // style
+                var color = colors[i % colors.length];
+                c.find('.title').css('backgroundColor', color);
+                c.find('.tipArrow').css('borderBottom', '10px solid ' + color);
+                c.find('.favicon').css('border', "2px solid " + color);
+                container.append(c);
+            }
+            var items = container.find('.item');
+            if (!items.length)
+                return items;
+            $(function() {
+                flows[channelName].flow();
+            })
+            // event
+            items.hover(function() {
+                $(this).find('.op.favor').show();
+            }, function() {
+                $(this).find('.op.favor').hide();
+            });
+            items.click(function() {
+                if ($(this).hasClass('weixin')) {
+                    return;
+                }
+                var id = $(this).attr("itemId"), itemType = $(this).attr("type");
+                var type = itemType === "1" ? "r" : "h";
+                var param = {
+                    'itemType' : itemType
+                };
+                var url = '#springUrl("/house/")' + type + id;
+                Lightbox.open(url, appendDebug(param), function(data) {
+                    houseDetail();
+                }, {
+                    "showClose" : true,
+                    "showLoading" : true,
+                    "showLoadingAlways" : true
+                });
+            });
+            // op
+            items.find('.op').click(function(e) {
+                e.stopPropagation();
+            });
+            items.find('.op.favor').click(function() {
+                // auth
+                var button = $(this);
+                if (!Auth.assertLogin(function() {
+                    getFavors(function() {
+                        button.click();
+                    });
+                })) {
+                    return;
+                }
+                
+                var remove = $(this).hasClass('active');
+                var item = $(this).closest('.item');
+                var similarItems = $('#main .channel').find('#' + item.attr('id'));
+                if (remove) {
+                    similarItems.find('.op.favor').removeClass('active');
+                } else {
+                    similarItems.find('.op.favor').addClass('active');
+                }
+                $.post('#url("/house/favor/update")', {
+                    channel : item.attr('channel'),
+                    type : item.attr('type'),
+                    itemId : item.attr('itemId'),
+                    value : $(this).hasClass('active')
+                }, function(data) {
+                    log(data);
+                });
+                // update channel
+                var c = $(this).closest('.channel');
+                var isFavor = c.hasClass('favor');
+                if (isFavor) {
+                    item.remove();
+                    var channelNames = {};
+                    similarItems.each(function() {
+                        var n = $(this).closest('.channel').attr('name');
+                        n && (channelNames[n] = true);
+                    });
+                    for (var n in channelNames) {
+                        if (n != 'favor') {
+                            updateMap(n, true);
+                        }
+                    }
+                } else {
+                    var f = $('.channel.favor .container');
+                    if (remove) {
+                        $('.channel.favor #' + item.attr('id')).remove();
+                    } else {
+                        var copy = item.clone(true, true);
+                        f.prepend(copy).find('.op.favor').hide();
+                    }
+                }
+                flows['favor'].flow();
+                updateFavorCount(!isFavor);
+            });
+            return items;
+        }
+
+        var loading = {
+            show : function() {
+                var l = $('.searchLoading');
+                if (l.is(':hidden')) {
+                    l.show();
+                } else {
+                    l.fadeOut().fadeIn();
+                }
+            },
+            hide : function() {
+                $('.searchLoading').hide();
+            }
+        };
+        var token = 0;
+        function search(firstTime) {
+            loading.show();
+            var noResult = $('#main .channel.default .noFurtherResult');
+            noResult.find('p').hide();
+            if (firstTime) {
+                noResult.find('.desc3').show();
+            } else {
+                noResult.find('.desc1,.desc2').show();
+            }
+            var male = $('#operation .gender-selector .selector[data-required-gender="male"]').hasClass('buttonSelected');
+            var female = $('#operation .gender-selector .selector[data-required-gender="female"]').hasClass('buttonSelected');
+            var param = {
+                rentType : $('#operation .rentType.box .button.active').attr('rentType'),
+                price1 : firstTime ? 0 : $('#operation .price.box .button.active').eq(0).attr('price'),
+                price2 : firstTime ? 999999 : $('#operation .price.box .button.active').eq(1).attr('price'),
+                query : $('#operation .query.box input').val(),
+                count : firstTime ? 17 : '',
+                token : ++token
+            };
+            if(male){
+                param.male = '';
+            }
+            if(female){
+                param.female = '';
+            }
+            if (param.query == $('#operation .query.box input').attr('placeholder')) {
+                param.query = '';
+            }
+            log('search:');
+            log(param);
+            $.getJSON('#url("/house/search/json")', param).always(function(data) {
+                log('search result:');
+                log(data);
+                if (data.token != token) {// deprecated
+                    loading.hide();
+                    return;
+                }
+                var channel = $('#main .channel.default');
+                if (data.items.length) {
+                    updateDefault(data.items, data.locations);
+                    channel.find(".emptyResult").hide();
+                    channel.find('.container, .noFurtherResult').show();
+
+                } else {// empty
+                    channel.find('.container, .noFurtherResult').hide();
+                    channel.find(".emptyResult").show();
+                }
+                loading.hide();
+                !firstTime && UI.scroll($('#content').offset().top - 15, 1000);
+            });
+        }
+
+        function getFavors(callback) {
+            $.getJSON('#url("/house/favor/")', appendDebug({}), function(data) {
+                updateFavor(data);
+                callback && callback();
+            });
+        }
+
+        function updateDefault(items, locations) {
+            items = addItems('default', items);
+            // favor tag
+            $('#main .channel.favor .item').each(function() {
+                $('#main .channel.default #' + $(this).attr('id')).find('.op.favor').addClass('active');
+            });
+            updateMap('default', undefined, locations);
+        }
+
+        function updateFavor(items) {
+            var lazy = false;
+            if (!items) {
+                items = eval('$!favorsJson') || [];
+                lazy = true;
+            }
+            log('favors:' + items.length);
+            addItems('favor', items).find('.op.favor').addClass('active').each(function() {
+                $('#main .channel').not('.channel.favor').find('#' + $(this).attr('id') + ' .op.favor').addClass('active');
+                ;
+            });
+            updateFavorCount();
+        }
+
+        function updateFavorCount(lazy) {
+            // count
+            var c = $('#operation .box.channel .button.favor .count');
+            var items = $('#main .channel.favor .item');
+            if (items.length) {
+                if (!c.hasClass('active')) {
+                    c.addClass('active');
+                    setTimeout(function() {
+                        c.removeClass('active');
+                    }, 500);
+                }
+                c.text(items.length).show();
+                $('#main .channel.favor .empty').hide();
+            } else {// empty
+                c.hide().text(0);
+                $('#main .channel.favor .empty').show();
+            }
+            updateMap('favor', lazy);
+        }
+
+        function updateOperation() {
+            opAbsTop = $(window).scrollTop() - opTop;
+            if ($(window).height() < $('#operation').height()) {
+                $('#operation').css({
+                    position : 'absolute',
+                    right : 0,
+                    top : 0
+                });
+                return ;
+            }
+            if ($(window).width() >= parseInt($('body').css('min-width'))) {
+	            if ($(window).scrollTop() > opTop) {
+	                $('#operation').css({
+	                    position : 'fixed',
+	                    right : opRight,
+	                    top : 15
+	                });
+	            } else {
+	                $('#operation').css({
+	                    position : 'absolute',
+	                    right : 0,
+	                    top : 0
+	                });
+	            }
+            } else if ($(window).width() < parseInt($('body').css('min-width'))) {
+	            if ($(window).scrollTop() > opTop) {
+	                $('#operation').css({
+	                    position : 'absolute',
+	                    right : 0,
+	                    top : opAbsTop
+	                });
+	            } else {
+	                $('#operation').css({
+	                    position : 'absolute',
+	                    right : 0,
+	                    top : 0
+	                });
+	            }
+            }
+        }
+
+        var opTop = 0, opRight = 0, opAbsTop = 0;
+        function onResize() {
+            opTop = $('#content').offset().top - 15;
+            opRight = ($(window).width() - 1070) / 2;
+            opAbsTop = $(window).scrollTop() - opTop;
+            updateOperation();
+            // nav top
+            updateNavTop();
+            // loading
+            var l = $('.searchLoading');
+            l.css({
+                left : ($(window).width() - l.width()) / 2,
+                top : ($(window).height() - l.height()) / 2
+            });
+        }
+
+        function updateNavTop() {
+            var f = $('#footer'), n = $('#navTop');
+            var position = 'fixed';
+            if (f.length) {
+                if ($(window).scrollTop() + $(window).height() > f.offset().top) {
+                    position = 'absolute';
+                }
+            }
+            n.css({
+                position : position,
+                left : $('#operation').offset().left
+            });
+        }
+
+        function initGender(){
+            var genderSelectors = $('#operation .gender-selector .selector');
+            Input.checkboxGroup(genderSelectors);
+            genderSelectors.click(function(){
+                search();
+            });
+        }
+
+        $('#content').css('opacity', 0);
+        initLayout();
+        initChannel();
+        initOperation();
+        initOperationDefault();
+        initOperationFavor();
+        updateFavor();
+        initMisc();
+        initGender();
+        $(window).resize(onResize);
+        onResize();
+        $('#operation .box.channel .button.default').click();
+        // $('#operation .box.query input').focus();
+        $('#content').css('opacity', 1);
+        $(function() {
+            onResize();
+        });
+    })();
+
+    function updateMap(channelName, lazy, locations) {
+        var map = $('#operation .panel.' + channelName + ' .map');
+        if (lazy) {
+            map.data('update', true);
+            return;
+        }
+        var m = Map.maps[map.find('.mapContent').attr('id')];
+        if (!m)
+            return;
+        var r = m.room107;
+        r.clear();
+        // point
+        var points = [];
+        $('#main .channel.' + channelName + ' .item').each(function() {
+            var x = $(this).attr('x'), y = $(this).attr('y');
+            if (x && y) {
+                var p = new BMap.Point(x, y);
+                p['itemId'] = $(this).attr('id');
+                points.push(p);
+            }
+        });
+        if (!points.length)
+            return;
+        
+        if (locations) {
+            if (locations.length) {
+                // point_location
+                var points_location = [];
+                for (var k = 0; k < locations.length; k++) {
+                    var x = locations.get(k).x, y = locations.get(k).y;
+                    if (x && y) {
+                        var p = new BMap.Point(x, y);
+                        points_location.push(p);
+                    }
+                }
+    
+                // icon_location
+                var icons_location;
+                var normalImage_location = '#staticUrl("image/icon/map/add-normal.png")';
+                var activeImage_location = '#staticUrl("image/icon/map/add-active.png")';
+                icons_location = {
+                    normal: new BMap.Icon(normalImage_location, new BMap.Size(24, 31), {
+                    }),
+                    active: new BMap.Icon(activeImage_location, new BMap.Size(24, 31), {
+                    })
+                }
+    
+                // marker_location, label_location
+                for (var k = 0; k < points_location.length; k++) {
+                    // icon
+                    var marker = new BMap.Marker(points_location[k], {
+                        icon: icons_location.normal
+                    });
+    
+                    var opts = {
+                        position : points_location[k],
+                        offset : new BMap.Size(-30, -35)
+                    };
+                    var label = new BMap.Label(locations.get(k).address, opts);
+                    label.hide();
+    
+                    marker.label = label;
+                    marker.addEventListener('mouseover', function (e) {
+                        if (e.target.active)
+                            return;
+                        e.target.setIcon(icons_location.active);
+                        e.target.setAnimation(null);
+                        e.target.setTop(true);
+    
+                        e.target.label.show();
+                    });
+                    marker.addEventListener('mouseout', function (e) {
+                        if (e.target.active)
+                            return;
+                        e.target.setIcon(icons_location.normal);
+                        e.target.setAnimation(BMAP_ANIMATION_BOUNCE);
+                        e.target.setTop(false);
+    
+                        e.target.label.hide();
+                    });
+                    r.addMarker(marker);
+                    marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+                    r.addMarker(label);
+                }
+                
+            }
+        }
+        
+        // icon
+        var icons;
+        var markerIndex = channelName == 'favor' ? 2 : 1;
+        if (points.length > 30) {
+            var normalImage = '#staticUrl("image/icon/map/marker' + markerIndex + '-small.png")';
+            var activeImage = '#staticUrl("image/icon/map/marker-small-active.png")';
+            icons = {
+                normal : new BMap.Icon(normalImage, new BMap.Size(20, 20), {
+                }),
+                normalShadow : new BMap.Icon(normalImage, new BMap.Size(0, 0)),
+                active : new BMap.Icon(activeImage, new BMap.Size(24, 31), {
+                    anchor : new BMap.Size(16, 16)
+                }),
+                activeShadow : new BMap.Icon(activeImage, new BMap.Size(24, 33), {
+                    imageOffset : new BMap.Size(-27, 16)
+                })
+            }
+        } else {
+            var normalImage = '#staticUrl("image/icon/map/marker' + markerIndex + '-normal.png")';
+            var activeImage = '#staticUrl("image/icon/map/marker-normal-active.png")';
+            icons = {
+                normal : new BMap.Icon(normalImage, new BMap.Size(24, 31), {
+                    anchor : new BMap.Size(16, 16)
+                }),
+                normalShadow : new BMap.Icon(normalImage, new BMap.Size(0, 0)),
+                active : new BMap.Icon(activeImage, new BMap.Size(30, 43), {
+                    anchor : new BMap.Size(18, 20)
+                }),
+                activeShadow : new BMap.Icon(activeImage, new BMap.Size(30, 45), {
+                    imageOffset : new BMap.Size(-32, 22)
+                })
+            }
+        }
+        // marker
+        for (var i = 0; i < points.length; i++) {
+            // icon
+            var marker = new BMap.Marker(points[i], {
+                icon : icons.normal
+            });
+            marker.setShadow(icons.normalShadow);
+            marker.addEventListener('mouseover', function(e) {
+                if (e.target.active)
+                    return;
+                e.target.setIcon(icons.active);
+                e.target.setTop(true);
+            });
+            marker.addEventListener('mouseout', function(e) {
+                if (e.target.active)
+                    return;
+                e.target.setIcon(icons.normal);
+                e.target.setShadow(icons.normalShadow);
+                e.target.setTop(false);
+            });
+            marker.addEventListener('click', function(e) {
+                var t = e.target;
+                t.setTop(true);
+                for (var i = 0; i < r.markers.length; i++) {
+                    var o = r.markers[i];
+                    if (o.active) {// rollback
+                        o.active = null;
+                        o.setIcon(icons.normal);
+                        o.setShadow(icons.normalShadow);
+                    }
+                }
+                t.active = true;
+                // style
+                t.setIcon(icons.active);
+                t.setShadow(icons.activeShadow);
+                // channel
+                var c = $('#main .channel.' + marker.channel);
+                var item = c.find('#' + t.itemId);
+                c.find('.item.active').removeClass('active');
+                UI.scroll(item.offset().top - 15, 500, function() {
+                    item.addClass('active');
+                });
+            });
+            marker.channel = channelName;
+            marker.itemId = points[i].itemId;
+            r.addMarker(marker);
+        };
+        // view
+        m.setViewport(points);
+    }
+    
+</script>
+<script src="http://api.map.baidu.com/api?v=2.0&ak=$!webUtils.getBaiduAK($request)"></script>
+<script>
+    $($('#operation .channel.box .button').toArray().reverse()).each(function() {
+        // reverse to hack map style bug: only the last set map is normal
+        var name = $(this).attr('for');
+        var channel = $('#main .channel.' + name), panel = $('#operation .panel.' + name);
+        var map = panel.find('.map');
+        var m = Map.create(map, {
+            styleSubwayWeight : 1
+        });
+        updateMap(name, name != 'default');
+    });
+</script>

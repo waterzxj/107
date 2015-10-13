@@ -1,0 +1,11 @@
+## --------------------- size --------------------- ##
+
+## --------------------- color -------------------- ##
+## common
+
+#set($mainColor = "#00AC97") ## green
+#set($secondColor = "#EBAC40") ## orange
+#set($lightColor = "#A8D6CE")
+#set($shadowColor = "#EEEEEE")
+#set($textColor = "#136557")
+#set($warnColor = "#F75454")

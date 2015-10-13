@@ -1,0 +1,41 @@
+#set($pageTitle="联系方式")
+
+<style>
+    .contact span {
+        padding: 0 5px;
+    }
+    .message textarea {
+        min-width: 600px;
+    }
+    #contactDiv table {
+        border: 1px solid;
+    }
+    #contactDiv tr > * {
+        padding: 0 5px;
+        border: 1px solid;
+    }
+
+</style>
+
+<div id="contactDiv">
+    <table>
+        <tbody>
+            <tr>
+                <th>时间</th>
+                <th>类型</th>
+                <th>用户名</th>
+                <th>联系方式</th>
+                <th>留言</th>
+            </tr>
+            #foreach($c in $contacts)
+            <tr>
+                <td>$!c.createdTime</td>
+                <td>#if($c.type==0)联系我们#elseif($c.type==1)房源#elseif($c.type==2)认证#end</td>
+                <td>$!c.username</td>
+                <td class="contact"><span>$!c.contact1</span><span>$!c.contact2</span></td>
+                <td class="message">                <textarea readonly>$!c.message</textarea></td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>

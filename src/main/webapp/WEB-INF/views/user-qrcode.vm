@@ -1,0 +1,74 @@
+#parse("_style.vm")
+
+#set($layout="layout/null.vm")
+
+<style>
+#qrCodeContainer .panel {
+	width: 240px;
+	height: 270px;
+	background-color: white;
+	text-align: center;
+	display: block;
+	position: relative;
+	top: 30%;
+	left: 30%;
+}
+#qrCodeContainer .panel .qrCode {
+	position: relative;
+	top: 25px;
+}
+#qrCodeContainer .panel .qrCode .code2 {
+	width: 200px;
+	height: 200px;
+}
+#qrCodeContainer .panel .qrCode p.code2 {
+	top: 70px;
+} 
+#qrCodeContainer .panel .note {
+	position: relative;
+	top: 25px;
+	margin: 0px 20px 0px 20px;
+}
+#qrCodeContainer .normal {
+	font-size: 13px;
+	color: ${mainColor};
+}
+#qrCodeContainer .highlight {
+	font-size: 13px;
+	color: ${secondColor};
+}
+#qrCodeContainer .panel .close {
+	cursor: pointer;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+</style>
+
+<div id="qrCodeContainer" class="cardContainer">
+	<div class="panel">
+		<div class="qrCode">
+			#code2("2_app-intro.jpg")
+		</div>
+		<div class="note">
+			<span class="normal">扫码即可自动生成 </span>
+			<span class="highlight">头像/昵称/性别</span>
+		</div>
+		<div class="close">
+			<img src="http://s107.qiniudn.com/static/image/icon/close_14x15.png">
+		</div>
+	</div>
+</div>
+
+<script>
+	function initLayout(){
+		windowHeight = $(window).height(); 
+		windowWidth = $(window).width();
+		panelTop = (windowHeight - 300)/2; 
+		panelLeft = (windowWidth - 250)/2; 
+		$("#qrCodeContainer .panel").css({"left": panelLeft + "px","top": panelTop + "px"});
+	}
+	initLayout();
+	$("#qrCodeContainer .close").click(Lightbox.close);
+	$(window).resize(initLayout);
+</script>

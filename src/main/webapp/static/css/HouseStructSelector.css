@@ -1,0 +1,7 @@
+.houseStructSelector {
+    position: absolute;
+    z-index: 200;
+    padding: 8px 0;
+    color: white;
+    background-color: #75cbbc;
+}

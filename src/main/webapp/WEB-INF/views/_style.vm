@@ -1,0 +1,25 @@
+## --------------------- size --------------------- ##
+#set($contentHeight = 435)
+#set($contentHeightPx = "${contentHeight}px")
+
+## --------------------- color -------------------- ##
+## common
+#set($fontColor = "#939393") ## gray
+#set($fontWeakColor = "#DADADA")
+#set($backgroundColor = "#EEEEEE") ## gray
+#set($disabledColor = "#cccccc")
+
+#set($mainColor = "#00ac97") ## green
+#set($mainActiveColor = "#14c0ab")
+#set($secondColor = "#EBAC40") ## orange
+#set($secondActiveColor = "#F1BF53")
+#set($thirdColor = "#55BEEC") ## blue
+#set($thirdActiveColor = "#5FC8F6")
+
+#set($warnColor = "#E74C3C") ## red
+#set($warnWeakColor = "#fb6050")
+
+## input
+#set($inputBorderColor = "#BDC3C7")
+#set($inputBorderActiveColor = "#16A085")
+#set($radioActiveColor = "#16A085")

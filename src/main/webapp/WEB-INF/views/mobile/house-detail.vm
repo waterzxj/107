@@ -1,0 +1,719 @@
+#parse("_constant.vm")
+#mobile()
+
+#set($pageTitle = "微信找房")
+#set($title = "$!{house.city} $!{house.position}")
+#set($user = $userUtils.getUser($request, $response))
+#set($auth = $userUtils.getAuthenticationStatus($request, $response))
+##set($auth = 2)
+
+## rent type
+#if($room)
+#set($rentType = $houseUtils.getRoomType($room.type))
+#else
+#set($rentType = "整租")
+#end
+
+## cover image for share
+#if(!$roomPreviews.isEmpty())
+#set($imageIds = $roomPreviews.get(0).imageIds)
+#if(!$imageIds.isEmpty())
+#set($imageId = $imageIds.get(0))
+#end
+#end
+
+#set($isSimpleHouse = true)
+#foreach($room in $roomPreviews)
+    #if(!$room.imageIds.isEmpty())
+        #set($isSimpleHouse = false)
+        #break
+    #end
+#end
+
+<style>
+/* menu */
+.header {
+height: 10%;
+line-height: 10%;
+}
+.header .line {
+top: 35px;
+}
+.nav {
+height: 30px;
+left: 0;
+line-height: 30px;
+position: relative;
+text-align: center;
+top: 20px;
+width: 100%;
+}
+.nav a {
+background-color: ${mainColor};
+display: inline-block;
+margin: 0 34px;
+width: 60px;
+}
+.nav .blur {
+color: #a8d6ce !important;
+}
+/* input box */
+.inputBox {
+position: absolute;
+margin: 0 auto;
+width: 70% !important;
+top: 30%;
+left: 15%;
+}
+.inputBox .inputLine {
+border-bottom: 1px solid white;
+height: 30px;
+margin-bottom: 20px;
+}
+.inputBox  label {
+display: inline-block;
+height: 22px;
+width: 22px;
+}
+.inputBox  input {
+background-color: ${mainColor};
+vertical-align: bottom;
+color: white;
+font-size: 18px;
+width: 85%;
+height: 100%;
+}
+.error {
+color: ${warnColor};
+top: 58%;
+font-size: 13px;
+line-height: 16px;
+position: absolute;
+text-align: center;
+width: 100%;
+}
+label.username {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -110px 0px transparent;
+}
+label.password {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -88px 0px transparent;
+}
+label.email {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -110px 0px transparent;
+}
+input.email {
+font-size: 16px;
+}
+/*
+* card
+*/
+#houseCard {
+font-family: Arial, sans-serif, "微软雅黑", "黑体";
+position: relative;
+min-height: 300px;
+}
+#houseCard .title {
+font-size: 22px;
+font-weight: normal;
+margin: 0 auto;
+padding-top: 20px;
+text-align: center;
+width: 80%;
+font-weight: bold;
+}
+#houseCard .desc1 {
+border: 3px solid white;
+-webkit-border-radius: 120px;
+-moz-border-radius: 120px;
+border-radius: 120px;
+bottom: 43%;
+height: 120px;
+left: 16%;
+position: absolute;
+text-align: center;
+width: 120px;
+}
+#houseCard .price {
+font-size: 40px;
+position: relative;
+top: 35px;
+letter-spacing: -2px;
+}
+#houseCard .price .yuan {
+bottom: -10px;
+font-size: 10px;
+position: absolute;
+right: 22px;
+width: 30px;
+letter-spacing: 1px;
+}
+#houseCard .area {
+background-color: ${mainColor};
+left: 80px;
+top: 5px;
+position: absolute;
+font-size: 23px;
+}
+#houseCard .area .m2 {
+background-color: ${mainColor};
+bottom: 1px;
+font-size: 18px;
+position: absolute;
+}
+#houseCard .area .m2 sup {
+font-size: 12px;
+}
+#houseCard .rentType {
+background-color: ${mainColor};
+bottom: 20px;
+font-size: 19px;
+font-weight: bold;
+left: -4px;
+line-height: 24px;
+position: absolute;
+}
+#houseCard .desc2, #houseCard .desc3 {
+position: absolute;
+right: 12%;
+text-align: right;
+font-size: 14px;
+line-height: 20px;
+}
+#houseCard .desc2 {
+bottom: 34%;
+}
+#houseCard .desc3 {
+bottom: 16%;
+}
+#houseCard .desc3 span {
+display: inline-block;
+margin-left: 10px;
+}
+#houseCard .desc3 span.not {
+color: #CCCCCC;
+opacity: 0.5;
+}
+#houseCard .desc4 {
+bottom: -8%;
+font-size: 14px;
+left: 0;
+position: absolute;
+text-align: center;
+width: 100%;
+height: 60px;
+}
+#houseCard .desc4 .line1 {
+float: left;
+position: relative;
+text-align: left;
+text-indent: 12%;
+top: 0;
+width: 100%;
+}
+#houseCard .desc4 .icon {
+display: inline-block;
+height: 25px;
+width: 25px;
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll 0 -22px transparent;
+}
+#houseCard .desc4 .landlord {
+position: relative;
+left: -10px;
+}
+#houseCard .desc4 .hint {
+font-size: 12px;
+left: -12px;
+position: relative;
+}
+#houseCard .desc4 .logout {
+color: ${lightColor};
+display: inline-block;
+font-size: 13px;
+position: absolute;
+right: 12%;
+top: 13px;
+}
+#mapCard {
+min-height: 300px;
+}
+#mapCard .map, #mapCard .map .loadingMask {
+position: absolute;
+top: 0;
+width: 100%;
+height: 100%;
+}
+#mapCard .map .loadingMask {
+background-color: white;
+opacity: 0.9;
+}
+#mapCard .map .loadingMask .maker{
+width: 24px;
+height: 31px;
+margin: 45% auto;
+background: url("#staticUrl('image/icon/map/marker1-full.png')") no-repeat scroll 0 0 transparent;
+}
+#mapCard .map .loadingMask p{
+color: ${mainColor};
+bottom: 10px;
+font-size: 14px;
+letter-spacing: 1px;
+position: absolute;
+text-align: center;
+width: 100%;
+}
+#descCard {
+background-color: white;
+height: auto;
+}
+#descCard h2 {
+color: ${mainColor};
+border-bottom: 1px solid ${mainColor};
+font-size: 22px;
+margin: 20px auto 0;
+text-align: center;
+width: 80%;
+}
+#descCard .desc {
+color: ${textColor};
+font-size: 14px;
+line-height: 24px;
+padding: 20px 10%;
+}
+#photoCard .room {
+position: relative;
+}
+#photoCard {
+background-color: white;
+}
+#photoCard .title {
+position: absolute;
+line-height: 40px;
+height: 40px;
+width: 30%;
+left: 35%;
+text-align: center;
+overflow: hidden;
+font-weight: bold;
+}
+#photoCard .title .bg {
+-webkit-border-radius: 100%;
+-moz-border-radius: 100%;
+border-radius: 100%;
+position: absolute;
+left: 0;
+top: -100%;
+width: 100%;
+height: 200%;
+}
+#photoCard .title p {
+position: absolute;
+top: -5px;
+left: 0;
+width: 100%;
+height: 100%;
+}
+#photoCard .photo {
+width: 100%;
+display: block;
+border-bottom: 1px solid white;
+}
+#houseCard .contact {
+height: 36px;
+background-color: #36c0a9;
+border-radius: 18px;
+margin: 0 auto;
+position: relative;
+top: 20px;
+clear: both;
+}
+#houseCard .contact.active {
+background-color: #41cbb4;
+}
+#houseCard .contact.inactive {
+background-color: #36c0a9;
+}
+#houseCard .contact .button {
+position: absolute;
+top: 0px;
+border-radius: 18px;
+cursor: pointer
+}
+#houseCard .contact .contactInfo {
+position: absolute;
+top: 0px;
+left: 36px;
+margin: 4px 10px 4px 10px;
+font-size: 24px;
+width: 172px;
+text-align: center;
+color: white;
+}
+
+#houseCard .region-title{
+position: relative;
+text-align: center;
+margin: 0 10%;    
+}
+
+#houseCard .region-title>hr{
+z-index: 1;
+position: absolute;
+width: 100%;
+top: 9px;
+border-bottom: 1px solid #fff;
+}
+
+#houseCard .region-title>.title{
+padding-top: 0;
+position: relative;
+background-color: $mainColor;
+z-index: 2;
+color:#fff;
+font-size: 14px;
+display: inline-block;
+width: 65px;
+}
+</style>
+<div id="content" class="cardView">
+    <div id="houseCard" class="card">
+        <h1 class="title" title="$!title">$!title</h1>
+        <div class="region-title">
+            <span class="title">房间信息</span>
+            <hr />
+        </div>
+        <div class="desc1">
+            <p class="area">
+                $!area<span class="m2">m<sup>2</sup></span>
+            </p>
+            <p class="price">
+                #if($status)
+                $!price
+                <span class="yuan">元/月</span>
+                #else
+                <span style="font-size: 24px">已租</span>
+                #end
+            </p>
+            <p class="rentType">
+                $!{rentType}
+            </p>
+        </div>
+
+        <div class="desc2">
+            #if($requiredGender)
+            <p class="requiredGender">
+                #if($requiredGender == 1)限男
+                #elseif($requiredGender == 2)限女
+                #else
+                #end
+            </p>
+            #end
+            #if($orientation)
+            <p class="orientation">
+                朝$!orientation
+            </p>
+            #end
+            <p class="floor">
+                #if(${floor})第$!{floor}层#end#if(${house.area})&nbsp;&nbsp;${house.area}m<sup>2#end
+            </p>
+            <p class="struct">
+                $!struct
+            </p>
+        </div>
+        <div class="desc3">
+            <div>
+                <span>宽带</span><span>空调</span><span>冰箱</span><span>电视</span>
+            </div>
+            <div>
+                <span>洗衣机</span><span>热水器</span><span>阳台</span><span>电梯房</span>
+            </div>
+        </div>
+        <div class="desc4">
+            <div class="line1">
+                #if($status)
+                <label class="icon"></label><span class="landlord">房东</span>
+                #if($auth == 0)
+                <span class="hint">「登录后可查看号码」</span>
+                #elseif($auth == 1)
+                <span class="hint">「认证即可查看号码」</span>
+                #end
+                #end
+            </div>
+            #if($auth != 0)
+            <a class="logout reactive" href="javascript:;">[退出]</a>
+            #end
+            #if($auth==2 && $status)
+            <div class="contact">
+            </div>
+            #end
+        </div>
+
+    </div>
+    #parse('mobile/house-map.vm')
+    #parse('mobile/house-desc.vm')
+    #if(!$isSimpleHouse)
+    #parse('mobile/house-photo.vm')
+    #end
+    #if($name)
+    #parse('mobile/house-landlord.vm')
+    #end
+
+    #if($auth != $auth_verified)
+    #parse('mobile/verify.vm')
+    #if($auth == $auth_notLogIn)
+    #parse('mobile/login-register.vm')
+    #end
+    #end
+</div>
+
+<script type="text/javascript">
+    // init weixin
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        WeixinJSBridge.call('hideToolbar');
+    });
+    var dataForWeixin = {
+        //appId : "107room",
+        //fakeid : "107room",
+        url : location.href,
+        title : "107间 - 微信找房",
+        desc : "$!{house.city}区$!{house.position} $!{price}元/月  $!{rentType}",
+        MsgImg : _image.thumbWeixin('$!imageId'),
+        TLImg : _image.thumbWeixin('$!imageId'),
+        callback : function(res) {
+        }
+    };
+
+    (function() {
+        var onBridgeReady = function() {
+            WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+                WeixinJSBridge.invoke('sendAppMessage', {
+                    "appid" : dataForWeixin.appId,
+                    "img_url" : dataForWeixin.MsgImg,
+                    "img_width" : "120",
+                    "img_height" : "120",
+                    "link" : dataForWeixin.url,
+                    "desc" : dataForWeixin.desc,
+                    "title" : dataForWeixin.title
+                }, function(res) {
+                    (dataForWeixin.callback)(res);
+                });
+            });
+            WeixinJSBridge.on('menu:share:timeline', function(argv) {
+                (dataForWeixin.callback)();
+                WeixinJSBridge.invoke('shareTimeline', {
+                    "img_url" : dataForWeixin.TLImg,
+                    "img_width" : "120",
+                    "img_height" : "120",
+                    "link" : dataForWeixin.url,
+                    "desc" : dataForWeixin.desc,
+                    "title" : '【107间】' + dataForWeixin.desc
+                }, function(res) {
+                    (dataForWeixin.callback)(res);
+                });
+            });
+            WeixinJSBridge.on('menu:share:weibo', function(argv) {
+                WeixinJSBridge.invoke('shareWeibo', {
+                    "content" : dataForWeixin.title,
+                    "url" : dataForWeixin.url
+                }, function(res) {
+                    (dataForWeixin.callback)(res);
+                });
+            });
+            WeixinJSBridge.on('menu:share:facebook', function(argv) {
+                (dataForWeixin.callback)();
+                WeixinJSBridge.invoke('shareFB', {
+                    "img_url" : dataForWeixin.TLImg,
+                    "img_width" : "120",
+                    "img_height" : "120",
+                    "link" : dataForWeixin.url,
+                    "desc" : dataForWeixin.desc,
+                    "title" : dataForWeixin.title
+                }, function(res) {
+                    (dataForWeixin.callback)(res);
+                });
+            });
+        };
+        if (document.addEventListener) {
+            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        } else if (document.attachEvent) {
+            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+        }
+    })();
+
+    var cardList = [
+        '#descCard', 
+        ['#houseCard', '#mapCard', '#houseCard', '#logRegCard', '#verifyCard']
+        #if(!$isSimpleHouse)
+        ,'#photoCard'
+        #end
+        #if($name)
+        ,'#landlordCard'
+        #end
+    ];
+
+    var mainLayout = CardLayout.create(
+        '#content', 
+        cardList
+    );
+
+    $(function() {
+        // layout
+        (function() {
+            // logout
+            $('#houseCard a.logout').click(function() {
+                if (confirm('确认退出？')) {
+                    $.get('#url("/user/unbind")', function() {
+                        location.reload();
+                    });
+                }
+            });
+            // facility
+            var f = '$!house.facilities'.split('|');
+            if (f.length > 0) {
+                var fMap = {};
+                for (var i = 0; i < f.length; i++) {
+                    fMap[f[i]] = true;
+                }
+                $('#houseCard .desc3 span').each(function() {
+                    if (!fMap[$(this).text()]) {
+                        $(this).addClass('not');
+                    }
+                });
+            }
+            // telephone
+            var contactTrigger = new SlideButtonTrigger($("#houseCard .contact"));
+            contactTrigger.animateTime = 500;
+            #if($house.telephone)
+            var telephoneButton = new SlideButton("#staticUrl('image/mobile/phone.png')", "$houseUtils.formatTelephone($house.telephone)");
+            contactTrigger.addButton(telephoneButton);
+            #end
+            #if($house.wechat)
+            var wechatButton = new SlideButton("#staticUrl('image/mobile/wechat.png')", "$houseUtils.formatWechat($house.wechat)");
+            contactTrigger.addButton(wechatButton);
+            #end
+            #if($house.qq)
+            var qqButton = new SlideButton("#staticUrl('image/mobile/qq.png')", "$houseUtils.formatQQ($house.qq)");
+            contactTrigger.addButton(qqButton);
+            #end
+            contactTrigger.click(0);
+            UI.reactive($("#houseCard .contact"), function() {
+                $("#houseCard .contact").removeClass('inactive').addClass('active');
+            }, function() {
+                $("#houseCard .contact").removeClass('active').addClass('inactive');
+            });
+            
+            // photo title
+            var colors = ["#00A0E9", "#F39800", "#21C1BA", "#D64CAA", "#FCB215", "#9CCB3B", "#25B0E6", "#8151A1"], i = 0;
+            var photoCard = $('#photoCard');
+            photoCard.find('.title').each(function() {
+                $(this).find('.bg').css({
+                    'background-color' : colors[(i++) % colors.length]
+                });
+            });
+            /*
+             * card layout
+             */
+            var houseChildren = $('#houseCard > *');
+            mainLayout.hLoop = true;
+            mainLayout.onMove = function(id) {
+                if (id == '#mapCard') {
+                    houseChildren.css('opacity', 1);
+                }
+            }
+            mainLayout.beforeShow = function(id) {
+                var bottomNav = mainLayout.cardView().find('.cardNav.bottom');
+                if (id == '#houseCard') {
+                    bottomNav.addClass('disabled');
+                } else {
+                    bottomNav.removeClass('disabled');
+                }
+            }
+            mainLayout.onShow = function(id) {
+                var c = $(id);
+                // menu
+                $('.card .nav a').addClass('blur');
+                $('.card .nav .tipArrow').hide();
+                function showMenu(c) {
+                    c.find('.nav a').removeClass('blur');
+                    c.find('.nav .tipArrow').show();
+                }
+
+                showMenu(c);
+
+                // show
+                if (id == '#photoCard') {
+                    var rooms = c.find('.room');
+                    function layout() {
+                        // height
+                        var h = 0;
+                        rooms.each(function() {
+                            h += $(this).height();
+                        });
+                        c.height(h);
+                    }
+
+                    layout();
+                    c.find('.photo').each(function() {
+                        if (!$(this).attr('src')) {// init
+                            $(this).attr('src', _image.thumbDetailMobile($(this).attr('img')));
+                            rooms.imagesLoaded(function() {
+                                layout();
+                            });
+                        }
+                    });
+                    return;
+                } else if(id == '#landlordCard'){                    
+                    //add extral value to the bottom to prevent CardLayout from eatting the bottom.
+                    c.height(c.find('.holderInfoApp').height() + 40);
+                } else if (id == '#mapCard') {
+                    // keep title and card description when showing map
+                    houseChildren.not('#houseCard .title').not('#houseCard .region-title').css('opacity', 0);
+                    bmap._107.reset();
+                }
+                // remove
+                $('.card.disabled').remove();
+            }
+            // resize
+            function layout() {
+                var w = $(window);
+                $('#content').height(w.height());
+                $('#houseCard').height(w.height() - 80);
+
+                // oyyd: It seems that this sentence doesn't work.
+                $('#mapCard').height(w.height() - $('#houseCard .title').outerHeight(true) - 45);
+
+                mainLayout.show(mainLayout.currentId());
+                // input
+                if (w.height() < 250) {
+                    $('.card .submit').hide();
+                } else {
+                    $('.card .submit').show();
+                }
+                // map
+                bmap._107.reset();
+            }
+
+            layout();
+            $(window).resize(layout);
+            // show
+            var showVerify = false;
+            //#if($auth == 1)//
+            if (location.href.indexOf('showVerify') >= 0) {
+                showVerify = true;
+            }
+            //#end//
+            if (showVerify) {
+                mainLayout.show('#verifyCard');
+            } else {
+                mainLayout.show('#houseCard');
+            }
+            /*
+            * post handle
+            */
+            // init and load map
+            // give map card an extral 25px to prevent bottom arrow from overlapping in the title
+            $('#mapCard').height($(window).height() - $('#houseCard .title').outerHeight(true) - 45);
+            bmap._107.reset();
+        })();
+    });
+</script>

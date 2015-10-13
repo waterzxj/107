@@ -1,0 +1,262 @@
+#set($layout = "layout/null.vm")
+#set($transition = "2")
+#set($placeholder = "输入豆瓣昵称（或手机号）")
+#parse("_style.vm")
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>龙猫中介搜索</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="keywords" content="中介搜索 中介查询 中介举报 北京租房 豆瓣租房 豆瓣北京租房 房产中介查询 租房中介 中介骗子 黑中介" />
+        <meta name="description" content="龙猫中介搜索是107间推出的中介搜索引擎，可查询、举报可疑豆瓣昵称或手机号码，帮助大家在租房时准确识别中介，豆瓣租房必备！">
+        <meta name="author" content="龙猫中介搜索">
+        <meta name="viewport" content="width=600">
+        <link rel="shortcut icon" href="#staticUrl('favicon.ico')" type="image/ico">
+        <link rel="stylesheet" type="text/css" href="#staticUrl('css/main.css')?20140614">
+        <script src="#staticUrl('js/jquery-1.9.1.min.js')"></script>
+        <script src="#staticUrl('js/common.js')?20140614"></script>
+        <script src="#staticUrl('js/main.js')?20140614"></script>
+        <style>
+body {
+min-width: 600px;
+min-height: 300px;
+color: white;
+background-color: ${mainColor};
+-webkit-transition: all ${transition}s;
+-moz-transition: all ${transition}s;
+-ms-transition: all ${transition}s;
+-o-transition: all ${transition}s;
+transition: all ${transition}s;
+}
+h1 {
+color: white;
+font-size: 40px;
+font-weight: normal;
+margin-bottom: 30px;
+}
+h1 span {
+display:inline-block;
+padding-left: 65px;
+background: url("#staticUrl('image/icon/icon-totoro.png') ") no-repeat scroll 0 center transparent;
+}
+#content {
+margin-top: 150px;
+}
+#searchBox {
+height: 50px;
+margin: 0 auto;
+width: 500px;
+position: relative;
+}
+#q {
+border: 1px solid white;
+font-size: 26px;
+height: 50px;
+padding-left: 20px;
+line-height: 50px;
+width: 480px;
+}
+#q:hover {
+border-color: #FFE478;
+}
+#searchButton {
+height: 100%;
+position: absolute;
+right: -2px;
+top: 0;
+width: 60px;
+background: url("#staticUrl('image/icon/search_48.png') ") no-repeat scroll center center ${secondColor}; border : 1px solid ${secondColor};
+}
+#searchButton:hover {
+background-color: ${secondActiveColor};
+border: 1px solid ${secondActiveColor};
+}
+#searchResult {
+background-color: #FFFFFF;
+padding: 20px 0;
+text-align: left;
+margin-top: 20px;
+position: relative;
+width: 100%;
+display: none;
+height:30px;
+line-height:30px;
+text-indent: 20px;
+color: ${fontColor};
+}
+#searchResult .tipArrow {
+border-bottom: 10px solid #FFFFFF;
+left: 20px;
+}
+#searchResult .loading {
+left: -20px;
+position: relative;
+}
+#searchResult .msg {
+display: none;
+text-indent: 0;
+}
+#searchResult #reported {
+color: ${warnColor};
+}
+#searchResult .reportCount {
+padding: 0 5px;
+font-weight: bold;
+}
+#searchResult .reportButton, #report3 {
+margin-left: 20px;
+font-size: 14px;
+color: ${secondColor};
+}
+a:hover {
+opacity: 0.8;
+}
+#report3 {
+color: ${mainColor};
+}
+#report3 .reportTime {
+font-size: 12px;
+}
+#logo {
+color: #FFFFFF;
+font-size: 14px;
+left: 100px;
+position: absolute;
+text-decoration: none;
+top: 50px;
+}
+#logo img {
+height: 30px;
+}
+/* place holder */
+::-webkit-input-placeholder {/* WebKit browsers */
+font-size: 20px;
+letter-spacing: 1px;
+}
+:-moz-placeholder {/* Mozilla Firefox 4 to 18 */
+font-size: 20px;
+letter-spacing: 1px;
+}
+::-moz-placeholder {/* Mozilla Firefox 19+ */
+font-size: 20px;
+letter-spacing: 1px;
+}
+:-ms-input-placeholder {/* Internet Explorer 10+ */
+color: #CCC;
+letter-spacing: 1px;
+}
+        </style>
+    </head>
+    <body>
+        <a id="logo" href="#url('/')" target="_blank"><img src="#staticUrl('image/logo-totoro.png')" /></a>
+        <div id="contentContainer">
+            <div id="content">
+                <div>
+                    <h1><span>龙猫中介搜索</span></h1>
+                    <div id="searchBox">
+                        <input id="q" type="text" placeholder="$placeholder" />
+                        <div id="searchButton" class="button"></div>
+                        <div id="searchResult">
+                            <div class="tipArrow tipArrowUp"></div>
+                            <img class="loading" src="#staticUrl('image/icon/loading.gif')" />
+                            <span id="noReport" class="msg">该信息尚未被举报过</span>
+                            <span id="reported" class="msg">该信息已被举报<span class="reportCount">?</span>次</span>
+                            <a id="report1" class="reportButton msg" href="javascript:;">我要举报</a>
+                            <a id="report2" class="reportButton msg" href="javascript:;">我也举报</a>
+                            <span id="report3" class="msg">我的举报时间：<span class="reportTime"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            PlaceHolder.init();
+            $(':input').attr('spellcheck', 'false');
+            _ie(6, 7, function() {
+                $('#searchButton').css('top', 1);
+            });
+            function layout() {
+                var m = ($(window).height() - $('#content').height()) / 2 - 50;
+                if (m > 0) {
+                    $('#content').css('margin-top', m);
+                }
+            }
+
+            layout();
+            $(window).resize(layout);
+            function updateSearchResult(data, time) {
+                time = time || 1000;
+                setTimeout(function() {
+                    var s = $('#searchResult');
+                    s.find('.loading').hide();
+                    if (data.length == 0) {
+                        $('#noReport').add('#report1').show();
+                    } else {
+                        var id = data[0];
+                        s.find('.reportCount').text(id.reportCount);
+                        $('#reported').show();
+                        if (id.reportTime) {// once reported
+                            $('#report3').find('.reportTime').text(_time(id.reportTime));
+                            $('#report3').show();
+                        } else {
+                            $('#report2').show();
+                        }
+                    }
+                    $('#q').focus();
+                }, time);
+            }
+
+
+            $('#searchButton').click(function() {
+                var q = $.trim($('#q').val());
+                if (q.length === 0 || q === '$placeholder') {
+                    return false;
+                }
+                var s = $('#searchResult');
+                s.find('.msg').hide();
+                s.find('.loading').show();
+                s.show();
+                $.get('#url("/broker/search")', {
+                    'q' : q
+                }, function(data) {
+                    data = _json(data);
+                    log('Search broker result:');
+                    log(data);
+                    updateSearchResult(data);
+                });
+            });
+            function report() {
+                var s = $('#searchResult');
+                s.find('.msg').hide();
+                s.find('.loading').show();
+                $.post('#url("/broker/report")', {
+                    'q' : $.trim($('#q').val())
+                }, function(data) {
+                    data = _json(data);
+                    data.reportTime = data.modifiedTime;
+                    data = [data];
+                    log('Report broker result:');
+                    log(data);
+                    updateSearchResult(data);
+                });
+            }
+
+
+            $('#report1').click(report);
+            $('#report2').click(report);
+            $('#q').keyup(function(e) {
+                if (e.which == 13)
+                    $('#searchButton').click();
+            }).bind('input propertychange', function() {
+                $('#searchResult').hide();
+            });
+            _ie(0, 107, null, function() {
+                $('#q').focus();
+            });
+        </script>
+
+        #statistic()
+    </body>
+</html>

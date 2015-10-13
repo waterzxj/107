@@ -1,0 +1,74 @@
+#parse("mobile/_style.vm")
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        #if($pageTitle0)
+        <title>$pageTitle0</title>
+        #else
+        #if($pageTitle)
+        <title>107间 - $pageTitle</title>
+        #else
+        <title>107间</title>
+        #end
+        #end
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="x-rim-auto-match" content="none">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="keywords" content="107间 北京租房 白领租房 毕业生租房 无中介 找室友 北京合租 个人出租 转租 海淀租房 朝阳租房" />
+        <meta name="description" content="107间免费为年轻人在北京找到直租房和高素质的租客。每间房都经过智能核实，每位租客均通过身份认证，畅享真实无中介的租房新体验。107间，让租房真实而简单！">
+        <meta name="author" content="107间">
+        <meta name="viewport" content="width=320,initial-scale=1.0,user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=10" />
+        <link rel="shortcut icon" href="#staticUrl('favicon.ico')" type="image/ico">
+        <link rel="stylesheet" type="text/css" href="#staticUrl('css/mobile/main.css')?20140618">
+        <script type="text/javascript" src="#staticUrl('js/jquery-1.9.1.min.js')"></script>
+        <script type="text/javascript" src="#staticUrl('js/common.js')?20150410"></script>
+        <script type="text/javascript" src="#staticUrl('js/mobile/plugin.js')?20140331"></script>
+        <script type="text/javascript" src="#staticUrl('js/mobile/main.js')?20150525"></script>
+    </head>
+    <body>
+        $!debugDetail
+        <style>
+            body {
+                background-color: ${mainColor};
+                color: white;
+            }
+            .cardNav {
+                width: 22px;
+                height: 22px;
+                position: absolute;
+                display: none;
+            }
+            .cardNav.left {
+                left: 6px;
+                background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll 0 0px transparent;
+            }
+            .cardNav.right {
+                right: 6px;
+                background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -22px 0px transparent;
+            }
+            .cardNav.top {
+                top: 4px;
+                background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -44px 0px transparent;
+            }
+            .cardNav.bottom {
+                bottom: 4px;
+                background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -44px 0px transparent;
+                -moz-transform: scaleY(-1);
+                -webkit-transform: scaleY(-1);
+                -o-transform: scaleY(-1);
+                transform: scaleY(-1);
+            }
+        </style>
+
+        <div id="contentContainer">
+            ##<a id="logoutMenuItem" class="navItem" href="#url('/user/logout')" style="position:absolute;left:100px;z-index:9">[退出]</a>
+            $screen_content
+        </div>
+
+        #if(!$disableStatistic)
+        #statistic()
+        #end
+    </body>
+</html>

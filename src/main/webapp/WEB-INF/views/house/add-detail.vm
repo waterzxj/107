@@ -1,0 +1,393 @@
+## set default rent type
+#set($rentType="1")
+<style>
+  #detailCard{
+    text-align: left;
+  }
+
+  #detailCard .hide{
+    display: none;
+  }
+
+  #detailCard .row{
+    width: 860px;
+    display: inline-block;
+  }
+
+  #detailCard .row .left{
+    width: 350px;
+    height: 140px;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  #detailCard .row .right{
+    width: 490px;
+    display: inline-block;
+  }
+
+  #detailCard .row .infoBox.price{
+    width: 333px;
+  }
+
+  #detailCard .row .infoBox.price input{
+    width: 246px;
+  }
+
+  #detailCard .row .infoBox.price .infoUnit{
+    right: 28px;
+  }
+
+  #detailCard .row .right .infoBox.contact{
+    height: 104px;
+    width: 505px;
+  }
+
+  #detailCard .row .right .infoBox.contact input{
+    width:136px;
+    margin-left: 20px;
+    text-align: center;
+  }
+
+  #detailCard .row .right .infoBox.contact .contactHint{}
+
+  #detailCard .row .right .infoBox.contact .contactHint .contactArea{
+    display: inline-block;
+    font-size: 15px;
+    height: 29px;
+    text-indent: 20px;
+    margin-right: 107px;
+    text-align: left;
+  }
+
+  #detailCard .item{
+    width: 313px;  
+    padding: 10px 0px 10px 20px;
+    text-align: center;    
+  }
+
+  #detailCard .item.disabled{
+    opacity: 0.3;
+  }
+
+  #detailCard .item>.button{
+    width: 88px;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 10px;
+  }
+
+  #detailCard .item.rent-type>.button{
+    width: 135px;
+  }
+
+  #detailCard .item.disabled>.button{
+    cursor: default;    
+  }
+
+  #detailCard .description{
+    background-color: #EEE;
+    padding: 15px 20px;
+    height: 226px;
+    width: 820px;
+  }
+
+  #detailCard .description .infoTitle{
+    text-indent: 0;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  #detailCard .description .comment{
+    display: inline-block;
+  }
+
+  #detailCard .description .facility{
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: top;
+  }
+  #detailCard .description .facility .facility-selector{
+    height: 65px;
+    width: 313px;  
+    padding: 0px 0px 6px 7px;
+    margin: 15px 0px 0px 13px;
+    /*set font-size as 0 to trim extral spaces between tags*/
+    font-size: 0;
+    line-height: 0px;
+  }
+  #detailCard .description .facility .facility-selector .button{
+    background-color: #fff;
+    color: #939393;
+    font-size: 12px;
+    width: 60px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    overflow: hidden;
+    vertical-align: top;
+  }
+
+  #detailCard .description .facility p.title{
+    text-indent: 19px;
+  }
+
+  #detailCard .description textarea{
+    width: 430px;
+    height: 172px;
+    padding: 10px;
+  }
+</style>
+
+<div id="detailCard" class="card" onCardShow="global.onDetailShow">
+  ## banner info will be required and set as banner
+  <div class="banner">
+    <span class="title">发布房间</span>
+    <span class="desc">第二步，房子详细信息</span>
+  </div>
+  <div class="cardContent">
+    <div class="row">
+      <div class="left">
+        <div role="rentType" class="infoBox rent-type item" validate="select">
+          <a rent-type="2" class="infoInput button" href="#?">整租</a>
+          <a rent-type="1" class="infoInput button" href="#?">合租</a>
+        </div>
+        <div role="gender" class="infoBox item hide" validate="select">
+          <a required-gender="0" class="infoInput button" href="#?">不限</a>        
+          <a required-gender="1" class="infoInput button" href="#?">限男</a>
+          <a required-gender="2" class="infoInput button" href="#?">限女</a>
+        </div>
+        <div role="price" class="infoBox price hide">
+          <span class="infoTitle">月租</span>
+          <input class="infoInput numberInput" validate='int0-' numberInput='0-' placeholder="点击选择或直接输入" type="text" />
+          <span class="infoUnit">元/月</span>
+        </div>
+      </div>
+      <div class="right">
+        <div role="contact" class="infoBox contact">
+          <span class="infoTitle">联系方式</span>
+          <span class="infoTitleHint">至少填一项</span>
+          <div role="contactHint" class="contactHint">
+            <span class="contactArea">手机</span>
+            <span class="contactArea">ＱＱ</span>
+            <span class="contactArea">微信</span>
+          </div>
+          <div role="contactInput" multi-choice-container="contact">
+            <input id="phoneInput" class="infoInput contactArea" validate="length7-" multi-choice-validate="contact" placeholder="点击输入" type="text" />
+            <input id="qqInput" class="infoInput contactArea" validate="length5-" multi-choice-validate="contact" placeholder="点击输入" type="text" />
+            <input id="wechatInput" class="infoInput contactArea" validate="length5-" multi-choice-validate="contact" placeholder="点击输入" type="text" />
+          </div>
+        </div>
+      </div>    
+    </div>
+    <div role="description" class="description row">
+      <div class="comment">
+        <span class="infoTitle">描述</span>
+        <textarea role="detail-desc" class="scrollbar" validate='length1-' placeholder="介绍下你的房子，例如：房子吸引人的地方、交通和周边生活、入住时间、对租客的具体要求、注意事项等（卧室信息将在下一步添加）" maxlength="2048"></textarea>        
+      </div>
+      <div role="facility" class="facility">
+        <p class="title">可多选标签</p>
+        <div role="facility-selector-unselected" class="infoBox facility-selector">
+          #set($facilityItems=["电梯房","宽带","空调","冰箱","热水器","阳台","洗衣机","电视"])
+          #foreach($item in $facilityItems)<a class="infoInput button" href="#?">$item</a>#end
+        </div>
+        <p class="title">已选标签</p>
+        <div role="facility-selector-selected" class="infoBox facility-selector">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rightPanel">
+    <a previous='#addrCard' class="previous" href="#?">上一步</a>
+    <a next="#roomCard" onNext="global.onDetailNext" validateFunction="global.validateDetailInfo" class="next button buttonNormal" href="#?">下一步</a>
+  </div>
+
+</div>
+
+<script>
+  (function(window){
+    // init params
+    window.global = window.global || {};
+    var rentTypeValue = $rentType,
+      isOneRoom = false;    
+
+    var  e = $('#detailCard'),
+      rentType = e.find('[role="rentType"]'),
+      facilityBtns = e.find('[role="facility-selector"] .button'),
+      gender = e.find('[role="gender"]'),
+      price = e.find('[role="price"]'),
+      priceInput = price.find('input'),
+      unselectedFacility = e.find('[role="facility-selector-unselected"]'),
+      selectedFacility = e.find('[role="facility-selector-selected"]');
+
+    init();
+
+    function init(){
+      // init widget
+
+      Input.radioGroup('#detailCard [role="rentType"] .button');
+      Input.select(rentType.find('.button[rent-type="'+rentTypeValue+'"]'));
+
+      $('#detailCard [role="rentType"] .button').click(function(){
+        rentTypeValue = parseInt($(this).attr('rent-type'));
+        setItemByRentType();
+      });
+      Input.radioGroup('#detailCard [role="gender"] .button');
+      Input.checkboxGroup('#detailCard [role="facility-selector"] .button', function(){
+        log(getSelectedItems(selectedFacility.find('.button')));
+      });
+
+      // gender set `不限` as default
+      Input.select(gender.find('.button[required-gender="0"]'));
+
+      // init house price NumberSlider
+      price.find('input').click(function() {
+        NumberSlider.create(price, {
+          'width' : 500,
+          'height' : 80,
+          'sliderNumber' : {
+              '0-2000' : 2000,
+              '2000-6000' : 500,
+              '6000-10000' : 1000
+          },
+          'delta' : 100,
+          'paddingRight' : '30px'
+        });
+      });
+
+      // facility animation
+      function clickTrigger(event, target){
+        var e = $(event.target);
+        if(!e.hasClass('button')){
+          return;
+        }
+        e.css({
+          width:'0px'          
+        }, 500);        
+
+        setTimeout(function(){
+          e.remove();
+          log(e);
+          target.append(e);
+          e.width(60);
+        }, 500);
+      }
+
+      unselectedFacility.click(function(e){
+        clickTrigger(e, selectedFacility);
+      });
+
+      selectedFacility.click(function(e){
+        clickTrigger(e, unselectedFacility);
+      });      
+
+      // init rent type
+      setItemByRentType();      
+    }
+
+    function setItemByRentType(){
+      // 分租
+      if (rentTypeValue === 1) {
+        gender.removeClass('hide');
+        price.addClass('hide');
+      // 整租或均可
+      } else if (rentTypeValue === 0 || rentTypeValue === 2) {
+        price.removeClass('hide');        
+        gender.addClass('hide');        
+      } else {
+        throw Error('invalid rent type: ' + rentTypeValue);
+      }
+    }
+
+    function getSelectedItems(elements){
+      var str = '';
+      elements.each(function() {
+        if (str){
+          str += '、';
+        }
+        str += $(this).text();
+      });
+      return str;          
+    }
+
+    function getDetailData(){
+      var data = {};
+      data.rentType = rentTypeValue;//outer
+      data.price = parseInt(priceInput.val());//house
+      data.requiredGender = gender.find('.button.buttonSelected').attr('required-gender');//rooms
+      data.telephone = e.find('#phoneInput').val();//house
+      data.qq = e.find('#qqInput').val();//house
+      data.wechat = e.find('#wechatInput').val();//house
+      data.description = e.find('textarea[role="detail-desc"]').val();//house      
+      // data.facility = getSelectedItems(facilityBtns);//house
+      data.facility = getSelectedItems(selectedFacility.find('.button'));
+      data.elevator = (~data.facility.indexOf('电梯房'))?true:false;
+
+      log("DETAIL INFO:");
+      log(data);
+      return data;
+    }
+
+    function checkRoomCount(){
+      // check room count to set the behavior of rent type
+      if(rentOption.house && rentOption.house.roomCount === 1){
+        isOneRoom = true;
+      } else {
+        isOneRoom = false;
+      }
+
+      if(isOneRoom){
+        rentTypeValue = 2;
+      }      
+
+      setRentTypeBehavior();
+      Input.unselect(rentType.find('.button[rent-type]'));
+      Input.select(rentType.find('.button[rent-type="'+rentTypeValue+'"]'));      
+      setItemByRentType();
+    }
+
+    function setRentTypeBehavior(){
+      if(isOneRoom) {
+        rentType.addClass('disabled');
+      } else {
+        rentType.removeClass('disabled');
+      }
+      setItemByRentType();      
+
+      // unbind every functions firstly
+      rentType.find('[rent-type]').unbind('click');        
+      if (isOneRoom) {
+        return;
+      }else{
+        // bind click again if not one room
+        Input.radioGroup('#detailCard [role="rentType"] .button');
+        $('#detailCard [role="rentType"] .button').click(function(){
+          rentTypeValue = parseInt($(this).attr('rent-type'));
+          setItemByRentType();
+         });
+      }
+    }
+
+    window.global.validateDetailInfo = function(){
+      var v = Input.validateAll(e);
+      if (!v) {
+          showError('请检查错误提示');            
+      }
+      return v;
+    };
+
+    window.global.onDetailNext = function(){
+      var data = getDetailData();
+      rentOption.rentType = data.rentType;
+      delete data.rentType;
+      rentOption.house = rentOption.house || {};
+      $.extend(true, rentOption.house, data);
+
+      log('CURRENT rentOption:');
+      log(rentOption);
+    };
+
+    window.global.onDetailShow = function(){
+      checkRoomCount();
+    };
+  })(window);
+</script>

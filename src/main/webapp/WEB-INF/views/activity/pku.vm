@@ -1,0 +1,68 @@
+<style>
+  .activity{
+    position: relative;
+  }
+  .activity img{
+    width: 100%;
+    position: relative;
+    z-index: 0;
+  }
+  .activity .click-mask{
+    position: absolute;
+    z-index: 1;
+    left: 0px;
+    top: 0px;
+    cursor: pointer;
+    /* for fixing the bug in IE*/
+    background-color: white;
+    opacity: 0;
+  }
+  /*rewrite parent style here*/
+  #content{
+    width: 100% !important;
+  }
+</style>
+<div class="activity">
+  <img src="#staticUrl('image/activity/pku.jpg')"/>
+  <div role="link" class="click-mask" data-link="http://tech.sina.com.cn/i/2015-04-22/doc-ichmifpy9204633.shtml" 
+    data-left="840" data-top="600" data-width="400" data-height="20">
+  </div>
+  <div role="link" class="click-mask" data-link="http://funds.hexun.com/2015-04-22/175200569.html"
+    data-left="840" data-top="645" data-width="305" data-height="20">
+  </div>
+  <div role="link" class="click-mask" data-link="http://36kr.com/p/532052.html"
+    data-left="840" data-top="691" data-width="183" data-height="20">
+  </div>
+  <div role="link" class="click-mask" data-link="http://weibo.com/3596021320/Ck680gsWQ?from=page_1006063596021320_profile&wvr=6&mod=weibotime"
+    data-left="1004" data-top="464" data-width="119" data-height="20">
+  </div>
+</div>
+<script>
+  (function(){
+    var activity = $('.activity');
+    var imgEle = activity.find('img'); //1476
+    activity.find('[role="link"]').click(function(){
+      location.href = $(this).attr('data-link');
+    });
+
+    function resizeMask(ele){
+      var r = imgEle.width() / 1476;
+      ele.css({
+        width: parseInt(ele.attr('data-width')) * r,
+        height: parseInt(ele.attr('data-height')) * r,
+        left: parseInt(ele.attr('data-left')) * r,
+        top: parseInt(ele.attr('data-top')) * r
+      });
+    }
+
+    activity.find('.click-mask').each(function(){
+      resizeMask($(this));
+    });
+
+    $(window).resize(function(){
+      activity.find('.click-mask').each(function(){
+        resizeMask($(this));
+      });
+    });
+  })();
+</script>

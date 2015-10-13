@@ -1,0 +1,20 @@
+#mobile()
+#set($layout = "layout/mobile-simple.vm")
+
+<style>
+    .title {
+        color: ${secondColor};
+    }
+    .desc {
+        font-size: 14px;
+        line-height: 30px;
+    }
+</style>
+<h2 class="title">已订阅地址</h2>
+<div class="desc">
+    #foreach($p in $positions)
+    <p>
+        $p
+    </p>
+    #end
+</div>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+  <table-filter match-catalog="107room" match-name="admin"/>
+  <table-filter match-catalog="107room" match-name="user"/>
+  <table-filter match-catalog="107room" match-name="house"/>
+  <table-filter match-catalog="107room" match-name="house_favor"/>
+  <table-filter match-catalog="107room" match-name="room"/>
+  <table-filter match-catalog="107room" match-name="position_location"/>
+  <table-filter match-catalog="107room" match-name="poi_house"/>
+  <table-filter match-catalog="107room" match-name="contact"/>
+  <table-filter match-catalog="107room" match-name="verify_email"/>
+  <table-filter match-catalog="107room" match-name="verify_email_record"/>
+  <table-filter match-catalog="107room" match-name="sniff_url"/>
+  <table-filter match-catalog="107room" match-name="sniff_url_result"/>
+  <table-filter match-catalog="107room" match-name="broker_id"/>
+  <table-filter match-catalog="107room" match-name="broker_id_report"/>
+  <table-filter match-catalog="107room" match-name="wx_user"/>
+  <table-filter match-catalog="107room" match-name="wx_subscribe"/>
+  <table-filter match-catalog="107room" match-name="douban_poster"/>
+</hibernate-reverse-engineering>

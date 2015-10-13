@@ -1,0 +1,1455 @@
+<script>
+    window.global = window.global || {};
+    window.global.uptoken = "$!uptoken";
+</script>
+<!--[if lte IE 9]>
+<script>
+window.global.uptoken = '$!redirectuptokenHouse';
+</script>
+<![endif]-->
+<style>
+.addBox {
+cursor: pointer;
+text-align: center;
+background: url("#staticUrl('image/icon/add.png')") no-repeat scroll center center ${backgroundColor};
+color: inherit;
+}
+#if($isAdd)
+.addBox .tag {
+height: 100%;
+width: 100%;
+background: url("#staticUrl('image/icon/tag-optional.png')") no-repeat scroll right 0 transparent;
+}
+.addBox.bedroom.required .tag {
+background: url("#staticUrl('image/icon/tag-required.png')") no-repeat scroll right 0 transparent;
+}
+#end
+.addBox .name {
+position: absolute;
+bottom: 0;
+width: 100%;
+height: 50px;
+line-height: 50px;
+z-index: 201;
+}
+.addBox:hover {
+opacity: 0.7;
+}
+.addBox, .roomBox, .houseBox {
+position: relative;
+float: left;
+width: 184px;
+height: 184px;
+margin-right: 30px;
+}
+.roomBox {
+overflow: hidden;
+position: relative;
+float:left;
+background-color: #F8F8F8;
+color: white;
+}
+#roomCard .up {
+display: none;
+}
+#roomCard .up .hint {
+position: absolute;
+text-align: center;
+top: 55px;
+width: 100%;
+}
+#roomCard .roomBox .op {
+display: table;
+}
+#roomCard .roomBox .op .content {
+display: table-cell;
+position: relative;
+vertical-align: middle;
+}
+#roomList .houseBox .statusBox {
+display: none;
+position: absolute;
+opacity: 0.9;
+height: 139px;
+background-color: #EEEEEE;
+}
+#roomList .houseBox .statusBox .hint {
+display: table-cell;
+font-size: 35px;
+letter-spacing: 5px;
+text-align: center;
+vertical-align: middle;
+color: #F6B96F;
+}
+#roomList .houseBox .statusBox .refusehint2 {
+position: absolute;
+left: 26px;
+top: 75%;
+font-size: 13px;
+color: #96928D;
+text-align: center;
+}
+#roomList .houseBox .statusBox .audithint2 {
+position: absolute;
+left: 14px;
+top: 75%;
+font-size: 13px;
+color: #96928D;
+text-align: center;
+}
+#roomList .roomBox .op .content > a{
+display: block;
+font-size: 15px;
+margin: 8px auto 8px;
+position: relative;
+text-align: right;
+width: 85px;
+}
+#roomList .roomBox .op .edit {
+background: url("#staticUrl('image/icon/edit.png')") no-repeat scroll 0 center transparent;
+}
+#roomList .roomBox .op .status {
+}
+#roomList .roomBox .op .status.lock {
+background: url("#staticUrl('image/icon/lock.png')") no-repeat scroll 0 center transparent;
+}
+#roomList .roomBox .op .status.lock:before {
+content: '关闭出租';
+}
+#roomList .roomBox .op .status.unlock {
+background: url("#staticUrl('image/icon/unlock.png')") no-repeat scroll 0 center transparent;
+}
+#roomList .roomBox .op .status.unlock:before {
+content: '开放出租';
+}
+#roomList .roomBox .op .delete {
+background: url("#staticUrl('image/icon/trash.png')") no-repeat scroll 0 center transparent;
+}
+#roomList .roomBox .name {
+position: absolute;
+bottom: 10px;
+font-size: 18px;
+left: 20px;
+}
+#roomList .roomBox .statusBox {
+display: table;
+opacity: 0.9;
+height: 139px;
+background-color: ${backgroundColor};
+}
+#roomList .roomBox .statusBox .hint {
+display: table-cell;
+font-size: 35px;
+letter-spacing: 5px;
+text-align: center;
+vertical-align: middle;
+color: ${fontColor};
+}
+#roomList .roomBox .unrentedTag {
+display: none;
+}
+#roomCard #roomPannel1 {
+top: 20px;
+}
+#roomCard #roomPannel2 {
+bottom: 20px;
+}
+#roomList .panel {
+max-height: 200px;
+overflow: hidden;
+position: absolute;
+}
+#roomCard .panel {
+width: 890px;
+height: auto;
+}
+#roomCard .up, #roomCard .op, #roomCard .op .content,#roomCard .statusBox, #roomCard .roomImg {
+position: absolute;
+width: 100%;
+height: 100%;
+top:0;
+left:0;
+font-size: 14px;
+}
+#roomCard .roomImg {
+width: auto;
+height: auto;
+max-height: 150%;
+max-width: 150%;
+min-height: 100%;
+min-width: 100%;
+}
+#roomCard .coverBox {
+position: absolute;
+top:0;
+right:0;
+width: 50px;
+height: 50px;
+}
+#roomCard .bg {
+opacity: 0.5;
+}
+#roomCard .bottomBg  {
+bottom: 0;
+height: 45px;
+position: absolute;
+}
+#roomCard .bottomBgStatus  {
+bottom: 0;
+height: 45px;
+position: absolute;
+width: 100%;
+background-color: #eeeeee;
+opacity: 0.9;
+z-index: 10;
+}
+#roomCard .op  {
+display: none;
+letter-spacing: 1px;
+height: 139px;
+}
+#roomCard .op a,#roomCard .op span {
+color: white;
+position: absolute;
+display: inline-block;
+}
+#roomCard .op a:hover {
+opacity: 0.8;
+}
+#roomCard .houseStatusButton {
+position: absolute;
+bottom: 80px;
+padding-left: 23px;
+width: 107px;
+}
+#roomCard .houseStatusButton.lock {
+background: url("#staticUrl('image/icon/lock-16.png')") no-repeat scroll 21px 13px ${warnColor};
+}
+#roomCard .houseStatusButton.lock:hover {
+background: url("#staticUrl('image/icon/lock-16.png')") no-repeat scroll 21px 13px ${warnWeakColor};
+}
+#roomCard .houseStatusButton.lock:before {
+content: '关闭整租';
+}
+#roomCard .houseStatusButton.unlock {
+background: url("#staticUrl('image/icon/unlock-16.png')") no-repeat scroll 21px 13px ${secondColor};
+}
+#roomCard .houseStatusButton.unlock:hover {
+background: url("#staticUrl('image/icon/unlock-16.png')") no-repeat scroll 21px 13px ${secondActiveColor};
+}
+#roomCard .houseStatusButton.unlock:before {
+content: '开放整租';
+}
+#roomCard .houseStatusButton:hover {
+background-color: ${secondActiveColor};
+}
+#roomCard .quickStatusButton {
+position: absolute;
+bottom: 80px;
+padding-left: 20px;
+width: 110px;
+background: url("#staticUrl('image/icon/lock-16.png')") no-repeat scroll 5px 12px ${warnColor};
+}
+#roomCard .quickStatusButton.disabled {
+background: url("#staticUrl('image/icon/lock-16.png')") no-repeat scroll 5px 12px ${warnColor};
+}
+#roomCard .quickStatusButton:hover {
+background-color: ${warnWeakColor};
+}
+#roomCard .viewButton {
+background: url("#staticUrl('image/icon/view.png')") no-repeat scroll 22px 12px ${mainColor};
+padding-left: 23px;
+width: 107px;
+}
+#roomCard .viewButton:hover {
+background-color: ${mainActiveColor};
+}
+/* room content*/
+#roomContent {
+position: absolute;
+left: 0;
+top: 0;
+width: 1010px;
+height: 395px;
+z-index: 202;
+background-color: white;
+}
+#roomContent .disabled {
+opacity: 0.1;
+}
+#roomContent .infoBox .button {
+margin-right: 7px;
+width: 129px;
+}
+#roomContent .mask1 {
+top: 0;
+height: 60px;
+left: 0;
+}
+#roomContent .panel {
+float: left;
+height: 100%;
+margin-right: 20px;
+}
+#roomContent .panel1 {
+width: 350px;
+}
+#roomContent .panel2 {
+width: 470px;
+padding: 0 10px;
+overflow: auto;
+background-color: ${backgroundColor};
+}
+#roomContent .panel22 {
+background: url("#staticUrl('image/icon/photo.png')?20131206") no-repeat scroll center center ${backgroundColor};
+}
+#roomContent .panel21 {
+height: 20px;
+padding: 20px;
+position: relative;
+}
+#roomContent .panel22 {
+height: 290px;
+padding: 20px 10px;
+}
+#roomContent #upload.button {
+width: 100px;
+font-size: 15px;
+}
+.orientationLogo {
+position: absolute;
+background: url("#staticUrl('image/icon/compass.png')") no-repeat scroll center center transparent;
+display: inline-block;
+width: 84px;
+height: 50px;
+cursor: default;
+}
+.uploadPreview {
+margin: 10px;
+width: 130px;
+height: 130px;
+position: relative;
+}
+.roomBox .preview{
+max-height: 150%;
+max-width: 150%;
+min-height: 100%;
+min-width: 100%;
+}
+.uploadStatus {
+bottom: 0;
+display: inline-block;
+font-size: 12px;
+position: absolute;
+right: 20px;
+color: ${warnColor};
+}
+.uploadPreview .progress{
+width: 100%;
+height: 100%;
+position: absolute;
+top:0;
+left:0;
+font-family: arial;
+line-height: 130px;
+text-align: center;
+color:${fontColor};
+}
+.uploadPreview .cover {
+background: url("#staticUrl('image/icon/cover.png')") no-repeat scroll right 0 transparent;
+}
+.uploadPreview .coverOp {
+position: absolute;
+text-align: center;
+top: 55px;
+width: 100%;
+}
+.uploadPreview .delOp {
+font-size: 12px;
+bottom: 17px;
+display: inline-block;
+position: absolute;
+right: 10px;
+text-align: right;
+width: 40px;
+background: url("#staticUrl('image/icon/trash.png')") no-repeat scroll 0 center transparent;
+}
+.houseBox .name {
+display: inline-block;
+width: 100%;
+font-weight: bold;
+letter-spacing: 1px;
+color: ${mainColor};
+height: 30px;
+line-height: 30px;
+overflow: hidden;
+}
+.houseBox .desc {
+font-size: 13px;
+line-height: 20px;
+word-wrap: break-word;
+}
+.houseBox .edit {
+height: 20px;
+bottom: 12px;
+font-size: 14px;
+overflow: hidden;
+position: absolute;
+right: 0;
+text-align: right;
+width: 98px;
+background: url("#staticUrl('image/icon/edit-left.png')") no-repeat scroll 0 center transparent;
+}
+.houseBox .editText {
+display: inline-block;
+overflow: hidden;
+width: 84px;
+}
+.houseBox .edit:hover {
+color:${mainColor};
+background: url("#staticUrl('image/icon/edit_28x14.png')") no-repeat scroll -14px center transparent;
+}
+.houseBox .shareBox {
+bottom: 12px;
+font-size: 14px;
+left: 0;
+position: absolute;
+text-align: right;
+overflow: hidden;
+width: 50px;
+}
+.houseBox .shareButton {
+display: inline-block;
+padding-left: 20px;
+background: url("#staticUrl('image/icon/share_15x14.png')") no-repeat scroll 0 center transparent;
+cursor: default;
+}
+.houseBox .shareIcons {
+position: absolute;
+right: 50px;
+width: 130px;
+}
+.houseBox .jiathis_style .jtico {
+height: 20px !important;
+line-height: 20px !important;
+margin-right: 20px;
+}
+.shareIcons .jiathis_button_tsina span {
+background: url("#staticUrl('image/icon/sina-round.png')") no-repeat scroll center center transparent;
+}
+.shareIcons .jiathis_button_douban span {
+background: url("#staticUrl('image/icon/douban-round.png')") no-repeat scroll center center transparent;
+}
+.shareIcons .jiathis_button_renren span {
+background: url("#staticUrl('image/icon/renren-round.png')") no-repeat scroll center center transparent;
+}
+.uploadBox .button {
+font-size: 15px;
+width: 100px;
+background-color: ${secondColor};
+}
+.uploadDesc {
+bottom: 0;
+font-size: 12px;
+left: 145px;
+position: absolute;
+}
+#roomCard .favicon {
+position: absolute;
+top: 40px;
+right: 20px;
+text-align: center;
+font-size: 13px;
+width: 130px;
+}
+#price.hide{
+display: none !important;
+}
+</style>
+<div id="roomCard" class="card" onCardShow="showRoomCard">
+    <div class="banner roomBanner">
+        #if($isAdd)
+        <span class="title">发布房间</span>
+        <span class="desc">第三步，添加房间信息</span>
+        #else
+        <span class="title">管理房间</span>
+        <span class="desc">修改房间信息，更新出租状态</span>
+        #end
+    </div>
+    <div class="banner roomContentBanner" style="display: none">
+        #if($isAdd)
+        <span class="title">发布房间</span>
+        <span class="desc">第三步，添加房间信息</span>
+        #else
+        <span class="title">管理房间</span>
+        <span class="desc">修改房间信息</span>
+        #end
+    </div>
+    <div id="roomList" class="cardContent">
+        <div id="roomPannel1" class="panel">
+            #if($house)
+            <div class="houseBox">
+                <span title="$!house.city$!house.position" class="name">$!stringUtils.abbreviate("$!house.city$!house.position",10)</span>
+                <p class="desc">
+                    $stringUtils.abbreviate("$!house.description", 82)
+                </p>
+                <div class="statusBox" id="auditBox">
+                    <p class="hint">
+                        审核中
+                    </p>
+					<p class="audithint2">
+                        房间通过审核后将邮件通知
+                    </p>                   
+                </div>
+                <div class="statusBox" id="refuseBox">
+                    <p class="hint">
+                        未通过
+                    </p>
+                    <p class="refusehint2">
+                        有疑问可邮件联系我们
+                    </p> 
+                </div>
+                <div class="bottomBgStatus"></div>
+                <div class="shareBox">
+                    <div class="jiathis_style shareIcons">
+                        <a class="jiathis_button_tsina"></a><a class="jiathis_button_douban"></a><a class="jiathis_button_renren"></a>
+                    </div>
+                    <span class="shareButton"> 分享 </span>
+                </div>
+                <a class="edit" href="#?"><span class="editText">修改基本信息</span></a>
+            </div>
+            #end
+            <div class="roomBox template" style="display: none">
+                <img class="roomImg">
+                <div class="statusBox" >
+                    <p class="hint">
+                        已关闭
+                    </p>
+                </div>
+                <div class="op">
+                    <div class="bg"></div>
+                    <div class="content">
+                        <a class="edit transition" href="#?">修改信息</a>
+                        <a class="status transition lock" href="#?"></a>
+                        <a class="delete transition" href="#?">删除房间</a>
+                    </div>
+                </div>
+                <div class="bottomBg bg"></div>
+                <span class="name transition"></span>
+            </div>
+        </div>
+        <div id="roomPannel2" class="panel"></div>
+        <div class="rightPanel">
+            #if($isAdd)
+                <a previous='#detailCard' class="previous" href="#?">上一步</a>
+                <a onNext="onRoomNext" next="#registerCard" validateFunction="validateRooms" validateTitle="" class="next button buttonNormal" href="#?">下一步</a>                                
+            #else
+            #if($house.rentType == 2)
+            #if($house.status==0)
+            <a status="$!house.status" class="button buttonNormal houseStatusButton lock" href="#?"></a>
+            #else
+            <a status="$!house.status" class="button buttonNormal houseStatusButton unlock" href="#?"></a>
+            #end
+            #else
+            <a class="button buttonNormal quickStatusButton" href="#?">关闭所有出租</a>
+            #end
+            <a class="button buttonNormal viewButton" href='#url("/house/h$!house.id")' target="_blank">查看房间</a>
+            #end
+        </div>
+        #if (!$isAdd)
+        <div class="favicon">
+        	<a class="previous" previous="#usercenterCard" href="#?">
+        		<img id="faviconUrl" src="#staticUrl('image/userinfo/empty_favicon.png')">
+        	</a>
+        	<span id="nickname" style="color: ${mainColor}">
+        	个人信息
+        	</span>
+        </div>
+        #end
+    </div>
+    <div id="roomContent" class="cardContent" style="display:none">
+        <div class="panel panel1">
+            <div id="status" class="infoBox" validate='select'>
+                <span class="infoTitle">状态</span>
+                <a status="0" class="infoInput button" href="#?">开放出租</a>
+                <a status="1" class="infoInput button" href="#?">关闭出租</a>
+            </div>
+            <div id="type" class="infoBox" validate='select'>
+                <span class="infoTitle">类型</span>
+                <a type="1" class="infoInput button" href="#?">主卧</a>
+                <a type="2" class="infoInput button" href="#?">次卧</a>
+            </div>
+            <div id="price" class="infoBox">
+                <span class="infoTitle">月租</span>
+                <input class="infoInput numberInput" validate='int0-' numberInput='0-' placeholder="点击选择或直接输入" type="text" />
+                <span class="infoUnit">元/月</span>
+            </div>
+            <div id="area" class="infoBox">
+                <span class="infoTitle">面积</span>
+                <input class="infoInput numberInput" validate='int0-' numberInput='0-' placeholder="点击选择或直接输入" type="text" />
+                <span class="infoUnit">m<sup>2</sup></span>
+            </div>
+            <div id="orientation" class="infoBox">
+                <span class="infoTitle">朝向</span>
+                <input class="infoInput" validate='length1-' placeholder="点击选择" type="text" readonly />
+            </div>
+            <div class="disableMask mask1" title="仅在“分租”状态下可填写"></div>
+        </div>
+        <div class="panel panel2 uploadDropZone">
+            <div class="panel21">
+                <span class="uploadBox"><span class="button buttonBig" href="#?">上传图片</span>
+                    <input class="uploadButton" type="file" name="file" data-url="http://up.qiniu.com/" multiple />
+                </span>
+                <span class="uploadDesc">最多6张，每张最大5MB
+                    <br/>
+                    支持格式：JPG/JPEG、PNG和GIF</span>
+                <span class="uploadStatus"></span>
+            </div>
+            <div class="panel22"></div>
+        </div>
+        <div class="rightPanel">
+            <a onCancel="onRoomCancel" class="cancel" href="#?">取消</a>
+            <a onSave="onRoomSave" validateFunction="validateRoom" class="save button buttonNormal" href="#?">保存</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var room = {// current opened room
+        type : -1,
+        id : null, // DOM ID
+        roomId : null, // DB ID
+        isBedroom : function() {
+            return model.isBedroom(this);
+        }
+    };
+
+    var inAdd = ("$!isAdd" === "true");
+
+    (function() {
+        function initLayout() {
+            var types = {
+                0 : '卧室',
+                1 : '主卧',
+                2 : '次卧',
+                3 : '客厅',
+                4 : '厨房',
+                5 : '卫生间',
+                6 : '其他'
+            };
+            function createAddBox(type, option) {
+                var r = $('<div class="addBox"><div class="tag"></div><div class="name" /></div>');
+                r.attr('type', type);
+                r.find('.name').text(types[type]);
+                if (parseInt(type) < 3) {
+                    r.addClass('bedroom');
+                } else {
+                    r.addClass('nonbedroom');
+                }
+                return r;
+            }
+            
+            if (!$isAdd) {
+	            if ($house.auditStatus == 1) {
+		            $("#roomList .houseBox .statusBox").eq(0).css("display", "table");
+		        }
+		        else if ($house.auditStatus == 2) {
+		            $("#roomList .houseBox .statusBox").eq(1).css("display", "table");
+		        }
+	        }
+
+            $('#roomPannel1').append(createAddBox(0));
+            for (var i = 3; i < 7; i++) {
+                $('#roomPannel2').append(createAddBox(i));
+            };
+            $('#roomCard .roomBox .op').hide();
+            // room content
+            Input.radioGroup('#roomContent #status .button');
+            Input.select('#roomContent #status .button[status=0]');
+            Input.radioGroup('#roomContent #type .button');
+            $('#roomContent #price input').click(function() {
+                NumberSlider.create($('#roomContent #price'), {
+                    'width' : 400,
+                    'height' : 80,
+                    'sliderNumber' : {
+                        '0-3000' : 500,
+                        '3000-6000' : 1000
+                    },
+                    'delta' : 50
+                });
+            });
+            $('#roomContent #area input').click(function() {
+                NumberSlider.create($('#roomContent #area'), {
+                    'width' : 400,
+                    'height' : 80
+                });
+            });
+            $('#roomContent #orientation input').click(function() {
+                EasySelector.create($('#roomContent #orientation'), {
+                    'width' : 247,
+                    'height' : 130,
+                    'singleSelection' : true,
+                    'selections' : ['西北', '北', '东北', '西', '', '东', '西南', '南', '东南'],
+                    'onShow' : function() {
+                        $(".popup .button[i=4]").attr('class', 'orientationLogo');
+                        $(".popup .button[i=3]").css("margin", "10px 5px");
+                        $(".popup .button[i=5]").css("margin", "10px 5px 10px 87px");
+                    }
+                });
+            }).click();
+            
+            $(".houseBox .shareIcons a").click(function() {
+                var b = $(this);
+                jiathis_config = {
+                    url : model.share.url(),
+                    title : model.share.title(),
+                    summary : model.share.summary(b)
+                }
+            });
+            $.getScript("http://v3.jiathis.com/code_mini/jia.js?uid=1815789");
+        }
+
+        function initEvent() {
+            function openRoomContent() {
+                var roomBox = $(this);
+                if (!roomBox.hasClass('roomBox') && !roomBox.hasClass('addBox')) {
+                    roomBox = roomBox.parents('.roomBox');
+                }
+                room.type = parseInt(roomBox.attr('type'));
+                var v = roomBox.attr('id');
+                room.id = v || null;
+                v = parseInt(roomBox.attr('roomId'))
+                room.roomId = v || null;
+                // update UI
+                var r = getRoomModel(roomBox), c = $('#roomContent');
+                c.find('#price input').val(r.price || '');
+                c.find('#area input').val(r.area || '');
+                c.find('#orientation input').val(r.orientation || '');
+                var b = c.find('#status .button');
+                Input.unselect(b).select(b.filter('[status=' + r.status + ']'));
+                b = c.find('#type .button');
+                Input.unselect(b).select(b.filter('[type=' + r.type + ']'));
+                // image
+                c.find('.uploadPreview').remove();
+                if (r.images) {
+                    $.each(r.images, function(i, imageId) {
+                        var iid = '_' + i;
+                        onUpload(iid, imageId);
+                        afterUpload(iid, imageId);
+                    });
+                }
+                // show
+                $('#roomContent .' + Input.validateErrorClass).removeClass(Input.validateErrorClass);
+                showRoomContent(r);
+                showError();
+                $('#roomContent').show();
+            }
+            
+            // audit refuse
+            if (!$isAdd) {
+				if ($house.auditStatus == 0) {
+					$('.bottomBgStatus').css("display", "none");
+				} else if ($house.auditStatus == 1) {
+	                $('.houseBox').bind('mouseenter', function(){
+            	        $('#auditBox').fadeOut('slow');
+            	        $('.bottomBgStatus').fadeOut('slow');
+                    });
+		            $('.houseBox').bind('mouseleave', function(){
+            	        $('#auditBox').fadeIn('slow');
+            	        $('.bottomBgStatus').fadeIn('slow');
+                    });
+		        } else if ($house.auditStatus == 2) {
+		            $('.houseBox').bind('mouseenter', function(){
+            	        $('#refuseBox').fadeOut('slow');
+            	        $('.bottomBgStatus').fadeOut('slow');
+                    });
+		            $('.houseBox').bind('mouseleave', function(){
+            	        $('#refuseBox').fadeIn('slow');
+            	        $('.bottomBgStatus').fadeIn('slow');
+                    });
+		        }
+	        }
+
+            // add room
+            $('#roomCard .addBox').click(openRoomContent);
+            // open room
+            $('#roomCard .roomBox .op .edit').click(openRoomContent);
+            $('#roomCard .roomBox .op .delete').click(function() {
+                var box = $(this).closest('.roomBox');
+                var isBedroom = box.hasClass('bedroom');
+                var open = box.find('.op .status').hasClass('lock');
+                if (isBedroom) {
+                    if ($('#roomList .roomBox.bedroom').length == 1) {
+                        if (open) {
+                            alert('最后一个卧室不可删除。若该房间已租出，请点击“关闭出租”。');
+                        } else {
+                            alert('最后一个卧室不可删除。该房间已经关闭出租，房间信息和联系方式已不再对外显示。');
+                        }
+                        return;
+                    }
+                }
+                var hint = '删除后将不可恢复，确认删除？';
+                if (isBedroom) {
+                    hint = open ? '若该房间已租出，请点击“关闭出租”。\n\n删除后将不可恢复，确认删除？' : '该房间已经关闭出租，房间信息和联系方式已不再对外显示。\n\n删除后将不可恢复，确认删除？'
+                }
+                if (confirm(hint)) {
+                    var box = $(this).closest('.roomBox');
+                    var r = getRoomModel(box);
+                    var param = {
+                        rid : r.roomId
+                    };
+                    log('Delete room:')
+                    log(param);
+                    $.post('#url("/house/manage/delete/")', appendDebug(param), function(data) {
+                        var json = _json(data);
+                        if (json.status == 200) {
+                            model.deleteRoom(r.roomId);
+                            box.remove();
+                            if (model.isBedroom(r)) {
+                                checkAddBox();
+                            } else {
+                                $('.nonbedroom.addBox[type=' + r.type + ']').show();
+                            }
+                        } else {
+                            alert('删除失败：' + data);
+                        }
+                    });
+                }
+            });
+            $('#roomContent #status .button').click(function() {
+                onRoomStatusChange($(this).attr('status'));
+            });
+            // op visibility
+            $('#roomCard .op').parent().hover(function() {
+                $(this).find('.statusBox').css('zIndex', -1);
+                $(this).find('.op').show();
+            }, function() {
+                $(this).find('.op').hide();
+                $(this).find('.statusBox').css('zIndex', 0);
+            });
+            // status button
+            $('#roomCard .op .status').click(function() {
+                var box = $(this).closest('.roomBox');
+                var r = getRoomModel(box);
+                if (r.status === 0) {// to close
+                    if (!confirm("房间信息和联系方式将不再对外显示，确认关闭出租？")) {
+                        return;
+                    }
+                    $(this).toggleClass("lock").toggleClass("unlock");
+                    var statusBox = $(this).closest('.roomBox').find('.statusBox');
+                    statusBox.toggleClass("rentedTag").toggleClass("unrentedTag");
+                    if (statusBox.hasClass('rentedTag')) {
+                        statusBox.show();
+                    }
+                    r.status ^=1;
+                    var param = {
+                        'rid' : r.roomId,
+                        'status' : r.status
+                    };
+                    log('Update room status:')
+                    log(param);
+                    $.post('#url("/house/manage/update/status")', appendDebug(param), function(data) {
+                        log(data)
+                    });
+                    _updateCloseAllButton();
+                } else {// to open
+                    $('.quickStatusButton').removeClass('disabled');
+                    box.find('.op .edit').click();
+                    var c = $('#roomContent');
+                    c.find('#status [status=0]').click();
+                    c.find('.save.button').click();
+
+                }
+            });
+            // house
+            //#if($house)//
+            // house edit
+            $('.houseBox .edit').click(function() {
+                $('#roomCard').hide();
+                $('#houseCard').show();
+            });
+            // house share
+            $('.houseBox .shareBox').hover(function() {
+                $('.houseBox .edit').hide();
+                $(this).stop().animate({
+                    'width' : 180
+                });
+            }, function() {
+                $(this).stop().animate({
+                    'width' : 50
+                }, function() {
+                    $('.houseBox .edit').show();
+                });
+            });
+            // house status
+            function closeAll() {
+                $('.roomBox.bedroom .statusBox').removeClass('unrentedTag').addClass('rentedTag').show();
+                $('.roomBox.bedroom .op .status').each(function() {
+                    $(this).removeClass('lock').addClass('unlock');
+                    var box = $(this).closest('.roomBox');
+                    var r = getRoomModel(box);
+                    r.status = 1;
+                });
+            }
+
+            function openAll() {
+                $('.roomBox.bedroom .statusBox').removeClass('rentedTag').addClass('unrentedTag');
+            }
+
+
+            $('.quickStatusButton').click(function() {
+                if ($(this).hasClass('disabled'))
+                    return;
+                if (!confirm("所有房间信息和联系方式将不再对外显示，确认关闭出租？")) {
+                    return;
+                }
+                var param = {
+                    'hid' : '$!house.id'
+                };
+                log('Close house:')
+                log(param);
+                $(this).addClass('disabled');
+                closeAll();
+                $.post('#url("/house/manage/close")', appendDebug(param));
+            });
+            $('.houseStatusButton').click(function() {
+                var status = parseInt($(this).attr('status'));
+                if (status === 0) {
+                    if (!confirm("所有房间信息和联系方式将不再对外显示，确认关闭整租？")) {
+                        return;
+                    }
+                    closeAll();
+                } else {
+                    openAll();
+                }
+                status ^=1;
+                var button = $(this);
+                var param = {
+                    'hid' : '$!house.id',
+                    'status' : status
+                };
+                log('Update house status:')
+                log(param);
+                $.post('#url("/house/manage/update/status")', appendDebug(param), function(data) {
+                    log(data)
+                    button.attr('status', status);
+                    if (status === 0) {
+                        button.removeClass('unlock').addClass('lock');
+                    } else {
+                        button.removeClass('lock').addClass('unlock');
+                    }
+                });
+            });
+            //#end//
+        }
+
+        function initUploadEvent() {
+            var maxNumberOfFiles = 6, maxFileSize = 5*1024*1024;
+            var iid = 0, uploadFailCount = 0;
+            // upload
+            function uploadFailed() {
+                $('.uploadStatus').text((++uploadFailCount) + ' 张上传失败');
+            }
+
+
+            var uploadTime, uploadIndex=0;
+            $('.uploadButton').fileupload({
+                dataType : 'json',
+                //singleFileUploads : false,
+                acceptFileTypes : '/(\.|\/)(gif|jpe?g|png)$/i',
+                maxFileSize : maxFileSize,
+                maxNumberOfFiles : maxNumberOfFiles,
+                submit : function(e, data) {
+                    // check count
+                    if ($('#roomContent .uploadPreview').length >= maxNumberOfFiles) {
+                        log('dont send: maxNumberOfFiles=' + maxNumberOfFiles);
+                        return false;
+                    }
+                    var f = data.files[0];
+                    if (f) {
+                        log(f)
+                        // check size
+                        if (f.size && f.size > maxFileSize) {
+                            log('error size: ' + f.size);
+                            uploadFailed();
+                            return false;
+                        }
+                        // check type
+                        if (f.type && !f.type.match(/(\.|\/)(gif|jpe?g|png)$/i)) {
+                            log('error type: ' + f.type);
+                            uploadFailed();
+                            return false;
+                        }
+                    }
+                    var postfix = f.name;
+                    var i = postfix.lastIndexOf('.');
+                    if(i >= 0) {
+                        postfix= postfix.substr(i);
+                    }
+                    var day = new Date().format('yyyyMMdd');
+                    var name = day + '/' + day + new Date().format("-hhmmss-S-") + (uploadIndex++) + '_' + room107.username + postfix;
+                    data.formData = {
+                        'x:iid' : iid,
+                        key: name,
+                        accept: 'text/plain',
+                        token: window.global.uptoken
+                    };
+                    log('Upload param:');
+                    log(data.formData);
+                    onUpload(iid++, data.files[0].name);
+                    _updateBackground();
+                },
+                progress : function(e, data) {
+                    if (!data.realTotal) {
+                        data.realTotal = data.total * (1 + Math.random() / 5) / 100;
+                    }
+                    var iid = data.formData.iid;
+                    var p = $('.uploadPreview[iid=' + iid + '] .progress');
+                    var progress = parseInt(data.loaded / data.realTotal, 10);
+                    p.text(progress + '%');
+                },
+                always : function(e, data) {
+                    var result = data.result;
+                    log('Upload result:');
+                    log(result);
+                    var imageId = 'http://'+result.bucket+'.qiniudn.com/' + result.key;
+                    if (result.key) {
+                        var iid = result.iid;
+                        log('Upload success: iid='+iid+", imageId="+imageId);
+                        afterUpload(iid, imageId);
+                    } else {// error
+                        $.each(data.files, function(i, file) {
+                            $('.uploadPreview').each(function() {
+                                if ($(this).attr('originalname') === file.name) {
+                                    $(this).remove();
+                                }
+                            });
+                        });
+                        uploadFailed();
+                    }
+                    _updateBackground();
+                },
+                dropZone : $('.uploadDropZone')
+            }).click(function() {
+                uploadFailCount = 0;
+                $('.uploadStatus').empty();
+            });
+            // upload drop zone
+            $(document).bind('dragover', function(e) {
+                var dropZone = $('.uploadDropZone'), timeout = window.dropZoneTimeout;
+                if (!timeout) {
+                    dropZone.addClass('in');
+                } else {
+                    clearTimeout(timeout);
+                }
+                var found = false, node = e.target;
+                do {
+                    if (node === dropZone[0]) {
+                        found = true;
+                        break;
+                    }
+                    node = node.parentNode;
+                } while (node != null);
+                if (found) {
+                    dropZone.addClass('hover');
+                } else {
+                    dropZone.removeClass('hover');
+                }
+                window.dropZoneTimeout = setTimeout(function() {
+                    window.dropZoneTimeout = null;
+                    dropZone.removeClass('in hover');
+                }, 100);
+            });
+        }
+
+        function onUpload(iid, fileName) {
+            $('#roomContent .panel2').removeClass('validateError');
+            var p = $('<div class="uploadPreview roomBox"><img class="preview" /><p class="progress">上传中...</p><div class="up"><div class="bg"></div><p class="hint">上传成功</p></div><div class="op"><div class="bg"></div><div class="content"><a class="coverOp transition" href="#?">设为封面</a><a class="delOp transition" href="#?">删除</a></div></div><div class="coverBox"></div></div>');
+            p.attr('iid', iid).attr('originalName', fileName);
+            p.find('.preview').hide();
+            // events
+            p.hover(function() {
+                p.find('.op').show();
+            }, function() {
+                p.find('.op').hide();
+            });
+            p.find('.coverOp').hide().click(function() {
+                $('.uploadPreview .cover').removeClass('cover');
+                p.find('.coverBox').addClass('cover');
+                rentOption.cover = p.attr('imageId');
+            });
+            p.find('.delOp').click(function() {
+                var isCover = p.find('.cover').length > 0;
+                p.remove();
+                if (isCover) {// is cover
+                    var t = $('.uploadPreview:first');
+                    if (t.length > 0) {
+                        t.find('.coverBox').addClass('cover');
+                        rentOption.cover = t.attr('imageId');
+                    } else {
+                        rentOption.cover = null;
+                    }
+                }
+                _updateBackground();
+            });
+            $('.panel22').append(p);
+        }
+
+        /**
+         * @param del
+         */
+        function afterUpload(iid, imageId, del) {
+            var p = $('.uploadPreview[iid=' + iid + ']').attr('imageId', imageId);
+            if (del) {
+                p.remove();
+                return;
+            }
+            p.addClass('valid');
+            p.find('.progress').remove();
+            p.find('.up').show();
+            p.find('.coverOp').show();
+            p.find('.op').hide();
+            // set success hint
+            p.hover(function() {
+                p.find('.up').hide();
+            }, function() {
+                p.find('.up').show();
+            });
+            //set imageId
+            p.find('.preview').attr('src', _image.thumbManageUpload(imageId)).show().imagesLoaded(function() {
+                p.find('.up').remove();
+            });
+            // cover
+            if (rentOption.cover) {
+                if (rentOption.cover === imageId) {
+                    p.find('.coverBox').addClass('cover');
+                }
+            } else if ($('.uploadPreview .cover').length == 0) {
+                p.find('.coverBox').addClass('cover');
+                rentOption.cover = imageId;
+            }
+        }
+
+        initLayout();
+        initEvent();
+        initUploadEvent();
+    })();
+
+    function _updateBackground() {
+        if ($('#roomContent .uploadPreview').length > 0) {
+            $('#roomContent .panel22').css('backgroundImage', 'inherit');
+        } else {
+            $('#roomContent .panel22').css('background', 'url("#staticUrl('image/icon/photo.png')") no-repeat scroll center center #EEEEEE');
+        }
+    }
+
+    function _updateCloseAllButton() {
+        if ($('.roomBox .rentedTag').length == $('.roomBox.bedroom').length) {
+            $('.quickStatusButton').addClass('disabled');
+        } else {
+            $('.quickStatusButton').removeClass('disabled');
+        }
+    }
+
+    function validateRooms() {
+        if ($('.bedroom.roomBox').length > 0) {
+            return true;
+        } else {
+            $('.bedroom.addBox').addClass(Input.validateErrorClass);
+            showError('请至少添加一间卧室');
+            return false;
+        }
+    }
+
+    function validateRoom() {
+        var v = Input.validateAll($('#roomContent'));
+        if (room.isBedroom() && $('.uploadPreview.valid').length == 0) {
+            $('#roomContent .panel2').addClass(Input.validateErrorClass);
+            v = false;
+        }
+        if (!v) {
+            showError('请检查错误提示');
+        }
+        return v;
+    }
+
+    function getRoomModel(roomBox) {
+        return getRoomModelById(roomBox.attr('id'));
+    }
+
+    function getRoomModelById(id) {
+        return rentOption.rooms[id] || {
+            status : 0,
+            type : 0,
+            images : []
+        };
+    }
+
+    function showRoomCard() {
+        $('.roomContentBanner').hide();
+        $('.roomBanner').show();
+        var r = $('#roomContent');
+        if ((rentOption.rentType & 1) === 1) {// by room
+            r.find('.disableMask').hide();
+            r.find('[validate]').removeAttr('immutable');
+        } else {// by house            
+            r.find('.disableMask').show();
+            // r.find('[validate]').not('#roomContent #type').attr('immutable', '');
+            r.find('[validate]').not('#roomContent #type, #area .infoInput, #orientation .infoInput').attr('immutable', '');
+        }
+        checkAddBox();
+        $('#roomCard #faviconUrl').attr("src", $('#usercenterCard .faviconUrl').attr("src"));
+        var nickname = $('#usercenterCard .nickname').val();
+        if (nickname != null && nickname != undefined && nickname != "") {
+        	$('#roomCard #nickname').text(nickname);
+        } else {
+        	$('#roomCard #nickname').text("个人信息");
+        }
+    }
+
+    function showRoomContent(roomModel) {
+        $('.roomBanner').hide();
+        $('.roomContentBanner').show();
+        // type
+        if (room.type > 2) {
+            $('#roomContent .panel1').hide();
+            $('#roomContent .panel2').width(840);
+        } else {//bedrooms
+            $('#roomContent .panel2').width(470);
+            $('#roomContent .panel1').show();
+            // check show price
+            // oyyd: this seems not work at all
+            if (model.isByRoom()) {
+                $('#roomContent #price').removeClass('hide');
+            } else {
+                $('#roomContent #price').addClass('hide');
+            }
+        }
+        PlaceHolder.init();
+        _updateBackground()
+        // status
+        onRoomStatusChange(roomModel.status);
+    }
+
+    function onRoomStatusChange(status) {
+        var boxes = $('#roomContent .infoBox').not('#roomContent #status,#roomContent #type');
+        var inputs = boxes.find('[validate]');
+        if (parseInt(status) == 0) {
+            boxes.removeClass('disabled').show();
+            inputs.removeClass('disabled').show();
+        } else {
+            boxes.addClass('disabled').hide();
+            inputs.addClass('disabled').hide();
+        }
+    }
+
+    function onRoomSave() {
+        if (!room.id && $('.uploadPreview.valid').length == 0) {
+            onRoomCancel();
+        } else {
+            updateRoom(null, true);
+            updateCover();
+        }
+        _updateCloseAllButton();
+    }
+
+    function updateRoom(roomModel, sync) {
+        var r = roomModel || {}, c = $('#roomContent');
+        if (roomModel) {
+            room.type = roomModel.type;
+            room.id = null;
+            room.roomId = roomModel.roomId;
+        }
+        var box;
+        // box DOM
+        if (room.id) {// update
+            box = $('#roomCard .roomBox[id=' + room.id + ']')
+            room.roomId = getRoomModelById(room.id).roomId;
+        } else {// new
+            room.id = randomId();
+            var template = $('#roomCard .roomBox.template');
+            box = template.clone(true).removeClass('template');
+            if (room.isBedroom()) {
+                box.addClass('bedroom').insertBefore(template).show();
+            } else {
+                var addBox = $('.nonbedroom.addBox[type=' + room.type + ']').hide();
+                box.addClass('nonbedroom').insertBefore(addBox).show();
+            }
+        }
+        // model
+		r.houseId = model.houseId;
+		if ("$house.status" == "1") r.status = 1;
+        if (!roomModel) {
+            if (room.roomId) {
+                r.roomId = room.roomId;
+            }
+            if (room.isBedroom()) {// bedroom
+                r.status = parseInt(c.find('#status .buttonSelected').attr('status'));
+				r.type = parseInt(c.find('#type .buttonSelected').attr('type'));
+                r.price = parseInt(c.find('#price input').val());
+                r.area = parseInt(c.find('#area input').val());
+                r.orientation = c.find('#orientation input').val();
+                if (r.orientation == '点击选择') {
+                    r.orientation = '';
+                }
+                r.requiredGender = 0;
+            } else {
+                r.type = room.type;
+            }
+            // preview images
+            var images = $('.uploadPreview').map(function() {
+                return $(this).attr('imageId');
+            }).get();
+            log(images)
+            if (images && images.length > 0) {
+                r.images = images;
+                box.children('img').attr('src', _image.thumbManageCover(images[0]));
+            } else if (!room.isBedroom()) {// invalid non-bedroom
+                box.remove();
+                $('.nonbedroom.addBox[type=' + room.type + ']').show();
+            }
+        }
+        rentOption.rooms[room.id] = r;
+        /* DOM */
+        box.attr('id', room.id).attr('type', r.type);
+        if (r.images && r.images.length > 0) {
+            box.find('.roomImg').attr('src', _image.thumbManageCover(r.images[0]));
+        }
+        // name
+        var names = ['主卧', '次卧', '客厅', '厨房', '卫生间', '其他'];
+        box.find('.name').text(names[r.type - 1]);
+        var statusButton = box.find('.op .status'), statusBox = box.find('.statusBox');
+        if (room.isBedroom()) {
+            // status button
+            if (r.status) {
+                statusButton.removeClass('lock').addClass('unlock');
+            } else {
+                statusButton.removeClass('unlock').addClass('lock');
+            }
+            // rent tag
+            if (r.status === 0) {
+                statusBox.removeClass('rentedTag').addClass('unrentedTag');
+            } else {
+                statusBox.removeClass('unrentedTag').addClass('rentedTag');
+            }
+            if (!model.isByRoom()) {
+                box.find('.op .status').remove();
+            }
+        } else {
+            box.find('.op .status').remove();
+            statusBox.remove();
+        }
+        checkAddBox();
+        onRoomContentHide();
+        // post
+        if (model.houseId && sync) {// manage
+            var param = {
+                'room' : JSON.stringify(r),
+                'cover' : rentOption.cover
+            };
+            log('Update room:')
+            log(param);
+            $.post('#url("/house/manage/update")', param, function(data) {
+                data = _json(data)
+                log(data)
+                if (!r.roomId) {
+                    r.roomId = parseInt(data.message);
+                }
+            });
+        }
+        _updateCloseAllButton();
+    }
+
+    function checkAddBox() {
+        var n = $('.bedroom.roomBox:visible').length;
+        if ((rentOption.house && n >= rentOption.house.roomCount) || n >= model.maxRoomCount) {
+            $('.bedroom.addBox').hide();
+        } else {
+            $('.bedroom.addBox').show();
+        }
+        // tag
+        if ($('.roomBox.bedroom').length == 0) {
+            $('#roomPannel1 .addBox').addClass('required');
+        } else {
+            $('#roomPannel1 .addBox').removeClass('required');
+        }
+    }
+
+    function updateCover() {
+        var first = null, validCover = false;
+        for (var r in rentOption.rooms) {
+            r = rentOption.rooms[r];
+            if (!r.images)
+                continue;
+            $.each(r.images, function(i, image) {
+                if (!rentOption.cover) {
+                    rentOption.cover = image;
+                    validCover = true;
+                    return false;
+                }
+                if (rentOption.cover === image) {
+                    validCover = true;
+                    return false;
+                }
+                if (!first) {
+                    first = image;
+                }
+            });
+        }
+        if (!validCover) {
+            rentOption.cover = first;
+        }
+    }
+
+    function onRoomCancel() {
+        onRoomContentHide();
+    }
+
+    function onRoomNext() {
+        var s = $('#roomCard .next');
+        if (s.hasClass('disabled'))
+            return false;
+
+        if(!inAdd || (room107.auth>0 && room107.userType !==3)){
+            window.global.submitHouseInfo(function(){
+                card.slideLeft("#wechatCard");
+            });
+        } else {
+            card.slideLeft("#registerCard");
+        }
+        s.addClass('disabled');
+        setTimeout(function() {// resume
+            $('#roomCard .next').removeClass('disabled');
+        }, 3000);
+        return false;
+    }
+
+    if(!window.global){
+        window.global = {};
+    }
+
+    window.global.submitHouseInfo = function(cb){
+        var json = JSON.stringify(rentOption);
+        var param = {
+            'rentOption' : json
+        };
+        log('CURRENT rentOption:');
+        log(rentOption);
+
+        $.post('#url("/house/manage/add")', param, function(data) {
+            data = _json(data);
+            log(data);
+            model.houseId = parseInt(data.houseId);
+            cb && cb();            
+        });       
+    }
+
+    function onRoomContentHide() {
+        $('.roomContentBanner').hide();
+        $('.roomBanner').show();
+        $('#roomContent').hide();
+        $('#roomList').show();
+        clearError();
+        $('.uploadStatus').empty();
+    }
+</script>

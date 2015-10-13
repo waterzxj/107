@@ -1,0 +1,470 @@
+<style>
+#usercenterCard .ageWidget li {
+position: absolute;
+background: url("/static/image/userinfo/age-dot.png");
+width: 10px;
+height: 10px;
+}
+#usercenterCard .age {
+color: ${mainColor};
+background-color: white;
+}
+#usercenterCard .constellation {
+color: ${mainColor};
+background-color: white;
+}
+#usercenterCard .titleContainer {
+	width: 100%;
+	height: 30px;
+	position: relative;
+	text-align: center;
+	font-size: 18px;
+	color: ${secondColor};
+}
+#usercenterCard .contentContainer {
+	height: 325px;
+}
+#usercenterCard .column {
+	margin-top: 15px;
+	margin-left: 30px;
+	width: 223px;
+	height: 310px;
+	float: left;
+	position: relative;
+}
+#usercenterCard .column .feature {
+	opacity: 0.15;
+}
+#usercenterCard .userinfoWidget .userinfoComponent {
+	opacity: 0.1;
+	cursor: pointer;
+}
+#usercenterCard .userinfoWidget .userinfoComponent.key {
+	cursor: default;
+}
+#usercenterCard .favicon {
+	margin: 70px 45px 10px 0px;
+	position: relative;
+}
+#usercenterCard .userinfoInput {
+	height: 60px;
+	width: 205px;
+	margin: 0px 0px 20px 0px;
+	position: relative;
+}
+#usercenterCard .key {
+	width: 30px;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	color: ${mainColor};
+}
+#usercenterCard .userinfoInput .value {
+	margin-top: 6px;
+}
+#usercenterCard .userinfoInput .value img {
+	width: 30px;
+	height: 30px;
+	vertical-align: middle;
+}
+#usercenterCard .userinfoInput .value input {
+	cursor: pointer;
+	margin-left: 6px;
+	width: 160px;
+	font-size: 16px;
+	font-weight: bold;
+	color: ${mainColor};
+	border: 0px;
+	border-bottom: 1px solid ${mainColor};
+	vertical-align: middle;
+}
+#usercenterCard .nickname {
+	cursor: pointer;
+	margin-left: 25px;
+	width: 96px;
+	font-size: 16px;
+	font-weight: bold;
+	color: ${mainColor};
+	border: 0 !important;
+	overflow-y: hidden;
+	resize: none;
+}
+#usercenterCard .nickname.nobord {
+	border-bottom: 0 !important;
+}
+#usercenterCard .nickname.bord {
+	border-bottom: 1px solid ${mainColor} !important;
+}
+#usercenterCard .userinfoWidget {
+	height: 100px;
+	width: 133px;
+	margin: 0px 0px 10px 0px;
+	position: relative;
+}
+#usercenterCard .userinfoDetail {
+	position: relative;
+}
+#usercenterCard .userinfoDetail .key {
+	width: 50px;
+}
+#usercenterCard .userinfoDetail .value img {
+	width: 30px;
+	height: 30px;
+	margin: 0px 10px 0px 10px;
+	vertical-align: middle;
+}
+#usercenterCard .userinfoDetail .value textarea {
+	position: absolute;
+	margin-left: 6px;
+	width: 160px;
+	height: 270px;
+	font-size: 12px;
+	font-weight: bold;
+	color: ${mainColor};
+	border: 1px solid ${mainColor};
+	cursor: pointer;
+	resize: none;
+}
+
+#usercenterCard .rightPanel .entry{
+  font-size: 12px;
+  padding: 0 0 5px 0;  
+  text-align: left;
+}
+
+#usercenterCard .rightPanel .entry a{
+  color: $disableColor;
+}
+
+#usercenterCard .rightPanel .entry a:hover{
+  color: $mainColor;
+}
+</style>
+<div id="usercenterCard" class="card" onCardShow="onUsercenterCardShow">
+    <div class="banner">
+        <span class="title">个人主页</span>
+        <span class="desc">展现最真实的自己，遇见最合适的租客</span>
+    </div>
+    <div class="cardContent">
+        <div class="titleContainer">
+        	<span>个人资料将与房间一起呈现，完整填写后房间排名更靠前</span>
+        </div>
+        <div class="contentContainer">
+        	<div class="column" style="width: 170px">
+        		<div class="favicon">
+        			<a href="javascript:;"><img class="faviconUrl" src="#staticUrl('image/userinfo/empty_favicon.png')"></a>
+        		</div>
+        		<div class="userinfoInput feature" content="$!user.name">
+        			<div class="key">
+        				<span>昵称</span>
+        			</div>
+        			<div class="value" style="margin-top: 0">
+        				<textarea class="nickname" maxHeight="105px" validate="length1-" rows="1"></textarea>
+        			</div>
+        		</div>
+        	</div>
+        	<div class="column" style="width: 180px">
+				#set($userAge=$!user.age)
+				#parse("house/age.vm")
+				#parse("house/gender.vm")
+				#set($constellationImgPath="/static/image/userinfo")
+				#set($userConstellation=$!user.constellation)
+        		#parse("house/constellation.vm")
+        	</div>
+        	<div class="column" style="width:225px">
+        		<div class="userinfoInput feature" content="$!user.school">
+        			<div class="key">
+        				<span>学校</span>
+        			</div>
+        			<div class="value">
+        				<img src="#staticUrl('image/userinfo/school.png')">
+        				<input type="text" class="school" />
+        			</div>
+        		</div>
+        		<div class="userinfoInput feature" content="$!user.major">
+        			<div class="key">
+        				<span>专业</span>
+        			</div>
+        			<div class="value">
+        				<img src="#staticUrl('image/userinfo/major.png')">
+        				<input type="text" class="major" />
+        			</div>
+        		</div>
+        		<div class="userinfoInput feature" content="$!user.company">
+        			<div class="key">
+        				<span>单位</span>
+        			</div>
+        			<div class="value">
+        				<img src="#staticUrl('image/userinfo/company.png')">
+        				<input type="text" class="company" />
+        			</div>
+        		</div>
+        		<div class="userinfoInput feature" content="$!user.profession">
+        			<div class="key">
+        				<span>职业</span>
+        			</div>
+        			<div class="value">
+        				<img src="#staticUrl('image/userinfo/profession.png')">
+        				<input type="text" class="profession" />
+        			</div>
+        		</div>
+        	</div>
+        	<div class="column" style="margin-left: 5px">
+        		<div class="userinfoDetail feature" content="#if($stringUtils.isNotEmpty($!user.description))done#end">
+        			<div class="key">
+        				<span>个人介绍</span>
+        			</div>
+        			<div class="value">
+        				<img src="#staticUrl('image/userinfo/detail.png')">
+        				<textarea class="detail"></textarea>
+        			</div>
+        		</div>
+        	</div>
+        </div>
+        <div class="rightPanel">
+            <p class="entry">
+              <a role="redirect-to" href="#">以后再说</a>
+            </p>
+            #if($isAdd)
+            <a onNext="onUserCenterNext" class="next button buttonNormal" validateFunction="validateUserInfo">保存</a>
+            #else
+            <a onNext="onUserCenterNext" next='#roomCard' class="next button buttonNormal" validateFunction="validateUserInfo" href="#?">保存</a>
+            #end
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="#staticUrl('js/autosize.js')"></script>
+<script type="text/javascript">
+      (function(){
+        var isAdd = ("$!isAdd" == "true");
+        if(isAdd){          
+          var user = (window.global)? window.global.user : {};
+          renderUserData(user);
+          room107.bindLogin(function(options){
+            var user = options.user;
+            renderUserData(user);
+          });
+        }
+      })();
+	function onUsercenterCardShow() {
+		//events for nickname
+		var nickname = document.querySelector('#usercenterCard .nickname');
+		autosize(nickname);
+             // set room preview link
+            $('#usercenterCard [role="previewRoom"]').each(function(){
+                if(!model.houseId){
+                  console.error('house id doesn\'t exist');                  
+                }
+                var link = $(this);
+                link.attr('href', link.attr('href') + 'h' + model.houseId);
+            });
+	}
+	
+	function setBorder(node, value) {
+		if (value) {
+    		if (node.is("input")) {
+    			node.css('border-bottom', '1px solid ${mainColor}');
+    		} else {
+    			if (node.hasClass("nickname")) {
+					node.removeClass("nobord");
+					node.addClass("bord");
+    			} else {
+    				node.css('border', '1px solid ${mainColor}');
+    			}
+    		}
+		} else {
+			if (node.is("input")) {
+    			node.css('border-bottom', '0');
+    		} else {
+    			if (node.hasClass("nickname")) {
+					node.removeClass("bord");
+					node.addClass("nobord");
+    			} else {
+    				node.css('border', '0');
+    			}
+    		}
+		}
+	}
+	
+	function onNicknameChanged() {
+		var nickname = document.querySelector('#usercenterCard .nickname');
+		var evt = document.createEvent('Event');
+		evt.initEvent('autosize.update', true, false);
+		nickname.dispatchEvent(evt);
+	}
+	
+	function onInputChanged(node) {
+		if (node.val().length == 0 ) {
+			setBorder(node, true);
+			node.closest('.feature').css('opacity', '0.15');
+			node.closest('.feature').attr("content", "");
+		} else {
+			node.closest('.feature').attr("content", "done");
+			node.closest('.feature').css('opacity', '1');
+			setBorder(node, false);
+		}
+	}
+	
+	function initEvent() {
+		//age widget
+		initAge(45);
+		initAgeEvents();
+		//constellation widget
+		initConstellation(40, 12);
+		initConstellationEvents();
+		//events for userinfoInput and userinfoDetail 
+		$(".userinfoInput input, .userinfoInput textarea, .userinfoDetail textarea").focus(function(){
+			if ($(this).closest('.feature').attr("content") == "") {
+				setBorder($(this), false);
+				$(this).closest('.feature').css('opacity', '1');
+				$(this).closest('.feature').attr("content", "doing");
+			}
+		});
+		$(".userinfoInput input, .userinfoInput textarea, .userinfoDetail textarea").blur(function(){
+			onInputChanged($(this));
+		});
+		$("#usercenterCard .feature").hover(function(){
+			if ($(this).attr("content") == "") {
+				$(this).css('opacity', '0.35');
+			}
+		}, function(){
+			if ($(this).attr("content") == "") {
+				$(this).css('opacity', '0.15');
+			}
+		});
+		$("#usercenterCard .feature").each(function(){
+			if ($(this).attr("content") && $(this).attr("content") != "") {
+				$(this).css('opacity', '1');
+				setBorder($(this).find(".value input, .value textarea"), false);
+			} else {
+				setBorder($(this).find(".value input, .value textarea"), true);
+			}
+		});
+		
+		//events for favicon
+		$("#usercenterCard .favicon a").click(function(){
+			Lightbox.open('/user/qrcode', appendDebug({}));
+			$.get("#url('/api/wx/bind')", onUserBindWechat);
+		});
+
+            //redirect link
+            $('#usercenterCard [role="redirect-to"]').click(function(){
+                var redirectTo = ("$!isAdd"==="true")?"/#url('house/manage')":"";
+                if(redirectTo){
+                  location.href = redirectTo;
+                }else{
+                  card.slideLeft('#roomCard');                  
+                  return false;
+                }
+            });
+	}
+	function onUserBindWechat(data) {
+          if (data) {
+              var userInfo = eval('(' + data + ')');
+              renderUserData(userInfo);
+              $("#qrCodeContainer .close").click();
+          }
+      }
+
+      function renderUserData(userInfo){
+          if (userInfo.name) {
+              var nickname = $("#usercenterCard .nickname");
+              nickname.val(userInfo.name);
+              nickname.closest('.feature').attr("content", "done");
+              nickname.closest('.feature').css('opacity', '1');
+              onInputChanged(nickname);
+              onNicknameChanged();
+          }
+          if (userInfo.gender) {
+              var gender = userInfo.gender;
+              if (typeof  gender === 'number'){
+                if(gender === 1){
+                  gender = '男';
+                }else if (gender === 2){
+                  gender = '女';
+                } else {
+                  gender = '';
+                }
+              }
+
+              $(".genderWidget").closest(".userinfoWidget").attr("content", gender);
+              $(".genderWidget").closest(".userinfoWidget").find(".key").css("opacity", "1");
+              showGender(gender);
+          }
+          if (userInfo.faviconUrl) {
+              $("#usercenterCard .faviconUrl").attr('src', userInfo.faviconUrl);
+              $("#roomCard .faviconUrl").attr('src', userInfo.faviconUrl);
+          }
+          if(userInfo.school){
+              usercenter.find('.school').val(user.school);            
+          }
+          if(userInfo.major){
+              usercenter.find('.major').val(user.major);
+          }
+          if(userInfo.company){
+              usercenter.find('.company').val(user.company);
+          }
+          if(userInfo.profession){
+              usercenter.find('.profession').val(user.profession);            
+          }
+          if(userInfo.detail){
+              usercenter.find('.detail').val(user.description);            
+          }
+      }
+	
+	function validateUserInfo() {
+        var v = Input.validateAll($('#usercenterCard'));
+        if (!v) {
+			c = $('#usercenterCard');
+			var name = c.find(".nickname").val();
+			if (!name || name == "") {
+				showError("必须填写昵称");
+				return v;
+			}
+			var age = c.find(".age").val();
+			if (!age || age == "") {
+				showError("必须选择年龄");
+				return v;
+			}
+			var gender = c.find(".gender").val();
+			if (!gender || gender == "") {
+				showError("必须选择性别");
+				return v;
+			}
+			var constellation = c.find(".constellation").val();
+			if (!constellation || constellation == "") {
+				showError("必须选择星座");
+				return v;
+			}
+        }
+        return v;
+    }
+    function onUserCenterNext() {
+        var user = {
+        	'username' : room107.username
+        }, c = $('#usercenterCard');
+        user.name = c.find('.nickname').val();
+        user.age = c.find('.age').val();
+        user.gender = c.find('.gender').val();
+        user.constellation = c.find('.constellation').val();
+        user.school = c.find('.school').val();
+        user.major = c.find('.major').val();
+        user.company = c.find('.company').val();
+        user.profession = c.find('.profession').val();
+        user.detail = c.find('.detail').val();
+		var param = {
+            'userinfo' : JSON.stringify(user)
+        };
+        log('Update userinfo:')
+        log(param);
+        $.post('#url("/user/updateInfo")', param, function(data) {
+            #if($isAdd)
+            window.location = "#url('/house/manage')";
+            #end
+        });
+        #if($isAdd)
+        return false;
+        #end
+    }
+    initEvent();
+</script>

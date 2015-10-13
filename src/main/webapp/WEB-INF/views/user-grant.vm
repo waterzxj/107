@@ -1,0 +1,304 @@
+#parse("_style.vm")
+
+#set($layout = "layout/default-simple.vm")
+#if($inMobile)
+    #set($layout = "layout/mobile-simple.vm")
+#end
+#set($pageTitle = "注册")
+#set($bannerTitle = "账户注册")
+#set($bannerDesc = "补充信息，从临时账户变为正式用户")
+
+<link href="#staticUrl('css/flat-ui-radio.css?20130809')" rel="stylesheet">
+<style>
+#grantContainer .cardContent {
+text-align: center;
+}
+#grantContainer .inputDiv {
+padding: 5px 0 25px;
+}
+.validateText, .helpText, .existText {
+position: absolute;
+line-height: 40px;
+font-size: 13px;
+}
+.validateText, .existText {
+display:none;
+margin-left: 10px;
+color: ${warnColor};
+text-align: left;
+}
+.existText{
+display: none;
+}
+.helpText {
+display:none;
+margin: 33px -290px;
+text-align: left;
+}
+#grantContainer .hide{
+display: none !important;
+}
+#grantContainer #genderDiv {
+padding: 18px 0 25px 0;
+}
+#grantContainer #genderDiv label:hover {
+opacity: 0.8;
+}
+#grantContainer #genderDiv .validateText {
+margin: 39px -6px;
+}
+#grantContainer #genderDiv .helpText {
+margin: 62px -305px;
+}
+#grantContainer #genderDiv .radio {
+cursor: pointer;
+margin: 0 25px;
+display: inline-block;
+}
+#grantContainer #genderDiv .radio .icons {
+top: auto;
+bottom: 2px;
+}
+#grantContainer #genderDiv .radio:hover {
+color: $radioActiveColor;
+}
+#grantContainer #genderDiv .femaleImg {
+padding-right: 5px;
+}
+#grantContainer #usernameDiv input {
+background: url("#staticUrl('image/icon/email_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#grantContainer #usernameDiv input:hover {
+background: url("#staticUrl('image/icon/email_h_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#grantContainer #passwordDiv input {
+background: url("#staticUrl('image/icon/password_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#grantContainer #passwordDiv input:hover {
+background: url("#staticUrl('image/icon/password_h_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#grantContainer #submitDiv {
+padding: 5px 0 30px;
+}
+#grantContainer #submitDiv .button {
+line-height: 45px;
+margin: 0 10px;
+width: 292px;
+font-size: 18px;
+}
+#grantContainer #submitDiv .landlordReg {
+background-color:${secondColor};
+}
+#grantContainer #submitDiv .landlordReg:hover {
+background-color:#F6B74B;
+}
+#grantContainer #protocolDiv {
+bottom: 30px;
+font-size: 12px;
+position: absolute;
+right: 388px;
+}
+#grantContainer #protocolDiv a {
+color: ${mainColor};
+}
+#grantContainer #inputTitle {
+text-align: center;
+font-size: 18px;
+font-weight: bold;
+padding-top: 50px;
+color: ${secondColor};
+}
+</style>
+<div id="grantContainer" class="cardContainer">
+    <div class="cardContent">
+        <div class="card">
+            <div id="inputTitle">已为你填好房间信息，完成注册后即可编辑</div>
+            <div id="genderDiv" class="inputDiv">
+                <label class="radio">
+                    <input type="radio" name="gender" id="optionsRadios1" value="2" data-toggle="radio" #if($inMobile)checked#end />
+                    <img class="femaleImg" src="#staticUrl('image/icon/female.png')">#if(!$inMobile)女#end</label>
+                <label class="radio">
+                    <input type="radio" name="gender" id="optionsRadios2" value="1" data-toggle="radio" />
+                    <img src="#staticUrl('image/icon/male.png')">#if(!$inMobile)男#end</label>
+                <span class="validateText">请选择性别</span>
+                <span class="helpText #if($inMobile) hide #end">真实的性别有助于找到最合适的室友，注册后不可修改</span>
+            </div>
+            <div id="usernameDiv" class="inputDiv">
+                <input class="input" type="text" value="" placeholder="邮箱#if($inMobile)（登录帐号，接收重要通知）#end" />
+                <span class="validateText">请填写正确的邮箱</span>
+                <span class="existText">该邮箱已被注册过</span>
+                <span class="helpText #if($inMobile) hide #end">用于登录和接受网站重要信息</span>
+            </div>
+            <div id="passwordDiv" class="inputDiv">
+                <input class="input" type="password" value="" placeholder="密码#if($inMobile)（至少6个字符）#end" />
+                <span class="validateText">最短$validateUtils.PASSWORD_MIN_CHARS个字符，最长$validateUtils.PASSWORD_MAX_CHARS个字符</span>
+                <span class="helpText #if($inMobile) hide #end">密码字母区分大小写</span>
+            </div>
+            <div id="submitDiv">
+                <a href="javascript:;" class="button">完&nbsp;&nbsp;成</a>
+            </div>
+            <div id="protocolDiv">
+                <span>注册即表示同意<a href="#url('/doc/protocol/')" target="_blank">用户协议</a></span>
+            </div>
+            <div id="encryptKeyDiv" style="display:none">
+                <input type="text" value="$!key">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="#staticUrl('js/flatui-radio.js')"></script>
+<script type="text/javascript">
+    (function() {
+        // `successCallback` would be called when granting succeeded
+        var successCallback = null;
+        window.global = window.global || {};
+        window.global.setUserGrantCb = function(cb){
+            if(typeof cb === 'function'){
+                successCallback = cb;
+            }
+        };
+
+        function initValidation() {
+            var validateResult = {};
+            function validate(e, input, /*whether warn when input value is empty*/emptyWarning) {
+                if (!input) {
+                    input = $(this);
+                }
+                if (input.val && !input.val() && !emptyWarning)
+                    return;
+                var p = input.parents(".inputDiv");
+                var v = p.find(".validateText");
+                var funcName = p.attr("id").replace("Div", "");
+                try {
+                    if (eval(funcName)(input.val())) {
+                        validateResult[funcName] = true;
+                        v.hide();
+                    } else {
+                        validateResult[funcName] = false;
+                        v.show();
+                    }
+                } catch(e) {
+                }
+            }
+
+            // validation implements
+            function validateGender() {
+                var t = $("#genderDiv .validateText");
+                if ($("#genderDiv input[checked]").length == 0) {
+                    validateResult["gender"] = false;
+                    t.show();
+                } else {
+                    validateResult["gender"] = true;
+                    t.hide();
+                }
+            }
+
+            function username(data) {
+                return new RegExp(/$validateUtils.EMAIL_PATTERN/).test(data);
+            }
+
+            function password(data) {
+                return data.length >= $validateUtils.PASSWORD_MIN_CHARS && data.length <= $validateUtils.PASSWORD_MAX_CHARS;
+            }
+
+            // correct input
+            $("#usernameDiv input").blur(function() {
+                $(this).val($(this).val().replace(/\s/g, ""));
+            });
+            // active validate
+            $(".inputDiv input").blur(validate).focus(validateGender);
+            // inactive validate
+            $("#genderDiv .radio").click(function() {
+                $("#genderDiv input[checked]").removeAttr('checked');
+                $(this).find('input').attr('checked', true);
+                $("#genderDiv .validateText").hide();
+            });
+            $(".inputDiv input").bind("input propertychange", function(e) {
+                if ($(this).parent().children(".validateText").is(":visible")) {
+                    validate(e, $(this));
+                }
+            });
+            // check exist
+            $("#usernameDiv input").blur(function() {
+                if ($(this).siblings(".validateText").is(":hidden"))// check when valid
+                {
+                    $(".existText").hide();
+                    var v = $(this).val();
+                    if (v) {
+                        $.getJSON("#springUrl('/user/exist/')" + $(this).val(), appendDebug({}), function(data) {
+                            if (data.exist) {
+                                $(".existText").show();
+                            }
+                        });
+                    }
+
+                } else {
+                    $(this).siblings(".existText").hide();
+                }
+            });
+            // submit
+            $("#grantContainer #submitDiv .button").click(function(e) {
+                var role = $(this).attr('role');
+                validateGender();
+                $(".inputDiv input").not('#genderDiv input').each(function() {
+                    validate(e, $(this), true);
+                });
+                var success = true;
+                for (key in validateResult) {
+                    if (!validateResult[key]) {
+                        success = false;
+                        break;
+                    }
+                }
+                if (success) {
+                    var user = {
+                        "gender" : $("#genderDiv input[checked]").val(),
+                        "username" : $("#usernameDiv input").val(),
+                        "password" : $("#passwordDiv input").val(),
+                        "key": $("#encryptKeyDiv input").val(),
+                        "role" : role
+                    };
+                    log(user)
+                    $.post("#url('/user/grant/submit')", appendDebug(user), function(data) {
+                        var userData = _json(data);
+                        if (userData.length > 0) {// invalid
+                            for (var i = 0; i < userData.length; i++) {
+                                if (userData[i] == "username.exist") {
+                                    $(".existText").show();
+                                } else {
+                                    $("#" + userData[i] + "Div .validateText").show();
+                                }
+                            }
+                        } else {
+                            login(userData);
+
+                            #if(!$inMobile)                            
+                            if (room107.isLandlord() || room107.isRegLandlord()) {
+                                window.location = '/house/manage';
+                            } else {
+                                window.location = '/house/search';
+                            }
+                            #end
+                            successCallback && successCallback();
+                        }
+                    });
+                }
+            });
+        }
+
+        function initHelp() {
+            function showHelp() {
+                $(".helpText").hide();
+                var h = $(this).find(".helpText");
+                if (h.is(":hidden")) {
+                    h.show();
+                }
+            }
+            $(".inputDiv").click(showHelp).focus(showHelp);
+        }
+
+        initValidation();
+        initHelp();
+    })();
+</script>

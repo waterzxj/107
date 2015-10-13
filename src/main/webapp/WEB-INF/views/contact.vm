@@ -1,0 +1,228 @@
+#parse("_style.vm")
+
+#set($pageTitle="联系我们")
+
+#if($type == 1)
+#set($bannerTitle = "有房待租")
+#set($bannerDesc = "面向60万高素质学生群体，迅速找到心仪租客")
+#set($message = "请简单描述下房子信息，我们会在一个工作日内与你联系（必填）")
+#set($contact1 = "手机号码（必填）")
+#set($contact2 = "其他联系方式")
+#set($contact2Value = "$!userUtils.getUser($request, $response).email")
+#set($successDesc = "感谢你的支持，我们的会在一个工作日内与你联系")
+#set($successButton = "去看看我们的微博")
+#set($successHref = "http://weibo.com/107room")
+#set($successTarget = "target='_blank'")
+
+##elseif($type == 2)
+
+#else
+#set($bannerTitle = "联系我们")
+#set($bannerDesc = "分享你的建议、创意和想法")
+#set($message = "你想说的话（必填）")
+#set($contact1 = "邮箱（必填）")
+#set($contact1Value = "$!userUtils.getUser($request, $response).email")
+#set($contact2 = "其他联系方式")
+#set($successDesc = "感谢你的反馈，我们会尽快处理")
+#set($successButton = "去找房")
+#set($successHref = "#url('/house/search')")
+#end
+
+<link href="#staticUrl('css/flat-ui.css')" rel="stylesheet">
+<style>
+    #contactContainer {
+        height: 435px;
+        padding: 20px 0;
+        position: relative;
+    }
+    .container {
+        position: absolute;
+        height: 435px;
+        width: 100%;
+        background-color: white;
+        left: 0;
+    }
+    #contactContainer textarea, #contactContainer input {
+        border-radius: 0;
+        background-color: ${backgroundColor};
+    }
+    #contactContainer {
+        padding: 20px 0;
+    }
+    #contactDiv {
+        background-color: white;
+        width: 100%;
+        height: ${contentHeightPx};
+        text-align: left;
+    }
+    #messageDiv {
+        float: left;
+        padding-left: 85px;
+        width: 620px;
+        padding-top: 10px;
+    }
+    #message {
+        height: 260px;
+        margin: 30px 0 20px;
+        padding: 10px;
+        width: 600px;
+    }
+    #bottomBar {
+        height: 50px;
+        width: 622px;
+    }
+    #bottomBar > * {
+        float: left;
+        height: 40px;
+        line-height: 40px;
+        margin-right: 20px;
+        padding: 5px;
+    }
+    #bottomBar input {
+        width: 215px;
+    }
+    #submit {
+        border-radius: 0 0 0 0;
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+        width: 120px;
+        float: right;
+    }
+    #addrDiv {
+        float: left;
+        padding: 175px 0 0 50px;
+    }
+    .address {
+        line-height: 30px;
+        margin: 15px 0;
+        width: 220px;
+        border-bottom: 2px dotted #D4D4D4;
+    }
+    .addrName {
+        color: #EBAC40;
+        margin-right: 10px;
+    }
+    .addrContent {
+        font-size: 14px;
+    }
+    #stamp {
+        height: 140px;
+        margin-left: -125px;
+        margin-top: 40px;
+        position: absolute;
+    }
+    #messageDiv .validContact {
+        border: 0;
+    }
+    #messageDiv .invalidContact {
+        border: 1px solid ${warnColor};
+    }
+    #resultDiv {
+        display: none;
+    }
+    #resultDiv .ok {
+        margin-top: 70px;
+    }
+    #resultDiv .desc1 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    #resultDiv .desc2 {
+        margin: 10px auto;
+        width: 250px;
+    }
+    #resultDiv #search {
+        border-radius: 0;
+        display: block;
+        margin: 40px auto;
+        padding: 15px 5px;
+        width: 240px;
+    }
+</style>
+
+<div id="contactContainer">
+    <div id="contactDiv" class="container">
+        <div id="messageDiv">
+            <textarea id="message" name="message" placeholder="$message" class="validContact"></textarea>
+            <div id="bottomBar">
+                <input id="contact1" name="contact1" value="$!contact1Value" class="contactInput validContact" type="text" placeholder="$contact1" />
+                <input id="contact2" name="contact2" value="$!contact2Value" class="contactInput validContact" type="text" placeholder="$contact2" />
+                <a id="submit" href="javascript:;" class="btn btn-large btn-block btn-primary">提交</a>
+            </div>
+            <input name="type" value="$!type" type="hidden" />
+        </div>
+        <div id="addrDiv">
+            <div class="address">
+                <span class="addrName">邮箱</span>
+                <span class="addrContent">support@107room.com</span>
+            </div>
+            <div class="address">
+                <span class="addrName">微博</span>
+                <span class="addrContent"><a href="http://weibo.com/107room" target="_blank">@107间</a></span>
+            </div>
+            <div class="address">
+                <span class="addrName">微信</span>
+                <span class="addrContent">hi107room</span>
+            </div>
+        </div>
+        <img id="stamp" src="#staticUrl('image/contact/stamp.png')" />
+    </div>
+    <div id="resultDiv" class="container">
+        <img class="ok" src="#staticUrl('image/icon/ok.png')" />
+        <p class="desc1">
+            提交成功
+        </p>
+        <p class="desc2">
+            $!successDesc
+        </p>
+        <a id="search" href="$!successHref" class="btn btn-large btn-block btn-primary" $!successTarget>$!successButton</a>
+    </div>
+</div>
+
+#function_containerHeight()
+<script type="text/javascript">
+    var containerSpace = 0;
+    function initLayout() {
+        containerSpace = ($(window).width() - $(".container").width()) / 2;
+        var left = 0;
+        $(".container").each(function() {
+            $(this).css("left", left);
+            left += $(this).width() + containerSpace;
+        });
+    }
+
+
+    $("#submit").click(function() {
+        var valid = true;
+        $("#message,#contact1").each(function() {
+            if ($(this).val()) {
+                $(this).removeClass("invalidContact").addClass("validContact");
+            } else {
+                valid = false;
+                $(this).removeClass("validContact").addClass("invalidContact");
+            }
+        });
+        if (valid) {
+            var param = {
+                "message" : $("#message").val(),
+                "contact1" : $("#contact1").val(),
+                "contact2" : $("#contact2").val()
+            };
+            $.post("#url('/contact/submit')", appendDebug(param), function(data) {
+                $("#resultDiv").show();
+                $(".container").each(function() {
+                    var left = parseInt($(this).css("left"));
+                    $(this).animate({
+                        "left" : left - $(this).width() - containerSpace
+                    }, 500);
+                });
+            });
+        }
+    });
+
+    $(function() {
+        initLayout();
+    });
+</script>

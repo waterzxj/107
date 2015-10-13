@@ -1,0 +1,35 @@
+#set($pageTitle="外部房源")
+
+<style>
+#houseDetail {
+    height: 200px;
+    padding-top: 50px;
+}
+#houseDetail table {
+    margin: 0px 0 50px 300px;
+}
+#houseDetail table, #houseDetail tr, #houseDetail th, #houseDetail td {
+    border:1px solid;
+    font-size:18px;
+}
+#houseDetail a {
+    color: green;
+}
+</style>
+
+<div id="houseDetail">
+    <table>
+        <tr>
+            <th>用户名</th>
+            <td>$!house.username</td>
+        </tr>
+        <tr>
+            <th>房间号</th>
+            <td><a href="#url('/')$!house.id">$!house.id</a></td>
+        </tr>
+        <tr>
+            <th>引导页</th>
+            <td><a href="#url('/user/k')$!encryptKey" target="_blank">http://107room.com/user/k$!encryptKey</a></td>
+        </tr>
+    </table>
+</div>

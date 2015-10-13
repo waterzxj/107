@@ -1,0 +1,150 @@
+#parse("_style.vm")
+#set($pageTitle = "让租房真实而简单")
+#set($noBanner = true)
+
+<style>
+    body {
+        background-color: white;
+    }
+    #contentContainer {
+        background-color: ${mainColor};
+        height: 470px;
+        color: white;
+        overflow: hidden;
+    }
+    #indexContainer {
+        height: 100%;
+        position: relative;
+        width: 100%;
+    }
+    #desc1 {
+        left: 0;
+        position: absolute;
+        text-align: center;
+        top: 60px;
+        width: 100%;
+    }
+    #desc1 .slogonText {
+        display: block;
+        font-size: 38px;
+        letter-spacing: 3px;
+        line-height: 60px;
+        margin-bottom: 20px;
+    }
+    #desc1 .buttons a {
+        background-color: #00baa3;
+        margin: 0 20px;
+        width: 120px;
+    }
+    #desc1 .buttons a:hover {
+        background-color: #00cdb4;
+    }
+    #desc2 {
+        bottom: 145px;
+        font-size: 16px;
+        left: 30px;
+        position: absolute;
+        text-align: left;
+        width: 500px;
+        letter-spacing: 1px;
+    }
+    #desc2 .descSlogon {
+        font-size: 19px;
+        margin-right: 8px;
+    }
+    #desc2 li {
+        float: none;
+        line-height: 26px;
+        font-size: 12px;
+    }
+    #desc3 {
+        bottom: 30px;
+        left: 0;
+        position: absolute;
+    }
+    #desc3 .feature {
+        cursor: pointer;
+        display: inline-block;
+        margin-right: 20px;
+        text-align: center;
+        width: 100px;
+    }
+    #desc3 .feature:hover {
+        opacity: 0.8;
+    }
+    #desc3 .feature img {
+        display: block;
+        margin: 0 auto;
+    }
+    #desc3 .feature h3 {
+        color: #FFFFFF;
+        font-size: 12px;
+        font-weight: normal;
+        padding-top: 4px;
+    }
+    .comma {
+        font-family: "冬青黑体简体中文", "Hiragino Sans GB", "黑体", "Microsoft YaHei", "微软雅黑", "verdana", Arial, sans-serif;
+    }
+    img.demo {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
+    .demo.phone {
+        bottom: 84px;
+        right: 380px;
+        width: 57px;
+    }
+    .demo.pad {
+        bottom: -24px;
+        right: 251px;
+        width: 140px;
+    }
+    .demo.pc {
+        right: -30px;
+        width: 320px;
+    }
+</style>
+
+<div id="indexContainer">
+    <div id="desc1">
+        <span class="slogonText">让真实的那一间<span class="comma">，</span>遇见年轻的你</span>
+        <div class="buttons">
+            <a id="searchButton" href="#springUrl('/house/search')" class="button buttonBig">开始找房</a>
+            <a id="addButton" href="#springUrl('/house/add')" class="button buttonBig houseButton">发布房间</a>
+        </div>
+    </div>
+    <ul id="desc2">
+        <li>
+            <span class="descSlogon">真实</span>每间房都经过智能核实，每位租客均通过身份认证
+        </li>
+        <li>
+            <span class="descSlogon">便捷</span>手机电脑随时找房，感受互联网租房新体验
+        </li>
+        <li>
+            <span class="descSlogon">省钱</span>房子均由个人出租，无需中介费
+        </li>
+    </ul>
+    <div id="desc3">
+        <a href="#url('/weixin')" class="feature" target="_blank"> <img src="#staticUrl('image/icon/icon-app.png')" /> <h3>微信找房</h3> </a>
+        <a href="#url('/weekly')" class="feature" target="_blank"> <img src="#staticUrl('image/icon/icon-weekly.png')" /> <h3>北京租房周刊</h3> </a>
+        <a href="#url('/totoro')" class="feature" target="_blank"> <img src="#staticUrl('image/icon/icon-totoro.png')" /> <h3>龙猫中介搜索</h3> </a>
+    </div>
+    <img class="demo pc" src="#staticUrl('image/index/demo-pc.png')" />
+    <img class="demo pad" src="#staticUrl('image/index/demo-pad.png')" />
+    <img class="demo phone" src="#staticUrl('image/index/demo-phone.png')" />
+</div>
+
+
+## <script type="text/javascript" src="#staticUrl('js/jquery.snow.min.js')"></script>
+<script type="text/javascript">
+    // $(function() {
+    //     $.fn.snow();
+    // });
+    if(room107.userType==3){
+        var addButton = $('#indexContainer #addButton');
+        var href = addButton.attr('href');
+        href = href.slice(0, href.lastIndexOf('add')) + 'manage';
+        addButton.attr('href', href);
+    }
+</script>

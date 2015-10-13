@@ -1,0 +1,204 @@
+#set($pageTitle="管理房间")
+
+<style>
+    #houseList {
+        padding:20px 0;
+    }
+    #houseList table {
+        border:1px solid;
+        font-size:14px;
+    }
+    #houseList tr> * {
+        padding:0 5px;
+        border:1px solid;
+    }
+    #houseList button {
+        border:1px solid green;
+    }
+    #houseList a {
+        text-decoration:underline;
+    }
+    tr:hover {
+        color:black;
+    }
+    .auditStatus0 {
+        background-color:#F0F8FF;
+    }
+    .auditStatus1 {
+        background-color:white;
+    }
+    .auditStatus2 {
+        background-color:#FAEBD7;
+    }
+    .status0 {
+    }
+    .status1, .status2 {
+        background-color:inherit;
+    }
+</style>
+
+<div id="houseList">
+    <table>
+        <tbody>
+            <div style="margin-bottom: 10px; text-align: left; font-size: 20px;">
+                <label>条件查找</label>
+                <input class="search-key" type="text" style="font-size: 20px;width: 500px;border:1px solid;"/>
+                <a style="margin-left: 30px; color: green; text-decoration: none;" id="search" href="javascript:;">查找</a>
+            </div>
+            <tr>
+                <th>ID</th>
+                <th>创建时间</th>
+                <th>用户名</th>
+                <th>联系方式</th>
+                <th>描述</th>
+                <th>出租状态</th>
+                <th>分数[0-100]</th>
+                <th>备注</th>
+                <th>审核</th>
+            </tr>
+            #foreach($h in $houses)
+            <tr houseId="$!h.house.id" class="auditStatus$!h.house.auditStatus status$!h.house.status">
+                <td><a href="#url('/house/h')$!h.house.id" target="_blank" style="font-weight: bold;color:green">$!h.house.id</a></td>
+                <td style="width:100px">
+                <p>
+                    $!h.house.createdTime
+                </p><a href="#url('/admin/message/HousePositionChanged')?houseId=$!h.house.id" target="_blank" style="color:red">建索引</a></td>
+                <td class="user"> <a href="#url('/admin/totoro/query?username=')$!h.user.username" target="_blank" ">$!h.user.username</a>
+                <a class="super" href="#url('/admin/user/super-login')?username=$!h.user.username" target="_blank">登录</a>
+                #if($!h.externalHouse && $!h.externalHouse.encryptKey && $!h.house.telephone)
+                <a class="msg" href="javascript:;" tel="$!h.house.telephone" key="$!h.externalHouse.encryptKey">发送短信</a>
+                #end
+                #if( $!h.user.email)
+                <a  class="email" href="javascript:;" email="$!h.user.email">发送邮件 </a>    
+                #end
+                </td>
+                <td class="user">
+                    <p>
+                    #if($!h.user.email)
+                        邮箱：<a class="windowInfo" url="http://www.gfsswy.com/?q=$!h.user.email" href="javascript:;">$!h.user.email</a>
+                    #end
+                    </p>
+                    <p>
+                    #if($!h.house.telephone)
+                        电话：<a class="windowInfo" url="http://www.gfsswy.com/?q=$!h.house.telephone" href="javascript:;">$!h.house.telephone</a>
+                    #end
+                    </p>
+                    <p>
+                    #if($!h.house.qq)
+                        qq：<a class="windowInfo" url="http://www.gfsswy.com/?q=$!h.house.qq" href="javascript:;">$!h.house.qq</a>
+                    #end
+                    </p>
+                    <p>
+                    #if($!h.house.wechat)
+                        微信：<a class="windowInfo" url="http://www.gfsswy.com/?q=$!h.house.wechat" href="javascript:;">$!h.house.wechat</a>
+                    #end
+                    </p>
+                    <p>
+                    #if($!h.externalHouse.url)
+                        来源：<a class="windowInfo" url=$!h.externalHouse.url href="javascript:;">$!h.externalHouse.url</a>
+                    #end
+                    </p>
+                    #if($!h.externalHouse && $!h.externalHouse.encryptKey)
+                        临时账户：<a class="windowInfo" url=#url('/user/k')$h.externalHouse.encryptKey href="javascript:;">http://107room.com/user/k$h.externalHouse.encryptKey</a>
+                    #end
+                    <p>
+                    </p>
+                    <p style="color: blue">
+                    #if($!h.user.verifyStatus == 0)未认证
+                    #elseif($!h.user.verifyStatus == 1)邮箱已认证
+                    #elseif($!h.user.verifyStatus == 2)证件已认证
+                    #elseif($!h.user.verifyStatus == 3)房间已认证
+                    #end
+                    </p>
+                </td>
+                <td>                <textarea autocomplete="off" class="desc">$!h.house.description</textarea></td>
+                <td>
+                <select class="status" autocomplete="off">
+                <option value="0" #if($h.house.status==0)selected#end>开放</option>
+                <option value="1" #if($h.house.status==1)selected#end>关闭</option>
+                </select></td>
+                <td>
+                <input autocomplete="off" class="rank" style="width:50px" value="$!number.integer($h.house.rank)" type="number" title="分数[0-100]，默认50" />
+                </td>
+                <td>                <textarea autocomplete="off" class="comment">$!h.house.comment</textarea></td>
+                <td>
+                <button class="submit">
+                更新
+                </button></td>
+                <td>
+                <select class="auditStatus" autocomplete="off">
+                <option value="0" #if($h.house.auditStatus==0)selected#end>通过</option>
+                <option value="1" #if($h.house.auditStatus==1)selected#end>审核中</option>
+                <option value="2" #if($h.house.auditStatus==2)selected#end>拒绝</option>
+                </select></td>
+                </tr>
+                #end
+                </tbody>
+                </table>
+                </div>
+
+                <script>
+                $('#houseList .auditStatus').change(function() {
+                var param = {
+                houseId: $(this).parents('tr').attr('houseId'),
+                auditStatus : $(this).val()
+                };
+                log('Audit:');
+                log(param);
+                $.post('#url("/admin/house/audit")' ,param);
+                });
+
+                $('#houseList button.submit').click(function() {
+                var t = $(this).parents('tr');
+                var param = {
+                houseId: t.attr('houseId'),
+                desc : t.find('.desc').val(),
+                rank : t.find('.rank').val(),
+                comment : t.find('.comment').val(),
+                status : t.find('.status').val()
+                };
+                log('Update:');
+                log(param);
+                $.post('#url("/admin/house/update")' , param, function(data) {
+                t.removeClass('status0').removeClass('status1').removeClass('status2').addClass('status' + status);
+                t.removeClass('auditStatus0').removeClass('auditStatus1').removeClass('auditStatus2').addClass('auditStatus' + auditStatus);
+                });
+                });
+                $("#houseList .windowInfo").click(function() {
+                    var url = $(this).attr("url");
+                    window.open(url);
+                });
+                $("#houseList .msg").click(function() {
+                    var param = {
+                        tel: $(this).attr("tel"),
+                        message: "Hi，我们在网上看到你的出租信息，想转发至107间让更多人看到，如不同意请回复告知。107间是北京领先的无中介智能租房平台，点击链接即可进入107间修改信息http://107room.com/user/k" + $(this).attr("key")
+                    };
+                    $.post("#url('/admin/sms/submit')", param, function(result){
+                        alert(result);
+                      });
+                });
+                $("#houseList .email").click(function(){
+                   var param = {
+                       email: $(this).attr("email"),
+                       title: "107间审核结果",
+                       message: "<html><body><p>hi</p>"
+                                   + "<p></p>"
+                                   + "<p>你的房子已通过107间审核，可随时登录107间进行房间管理。现在已经可以在107间微信APP搜索到你的房子，关注微信公众号<strong>“107间”</strong>后即可查看。</p>"
+                                + "<p></p>"
+                                + "<p>如有任何问题或建议，欢迎告诉我们。</p>"
+                                + "<p></p>"
+                                + "<p>祝好</p>"
+                                + "<p></p>"
+                                + "<p>------------<br />赵姝红<br />运营 | 107间<br /><a href='http://107room.com' target='_blank'>http://107room.com</p>"
+                                + "</body></html>"
+                   };
+                   $.post("#url('/admin/email')",param,function(result){
+                      alert(result);
+                   });
+                });
+                $("#search").click(function() {
+                    var searchKey = $(this).closest("div").find(".search-key").val();
+                    var url = "#url('/admin/house/search')?searchKey=" + searchKey;
+                    window.open(url);
+                });
+                </script>

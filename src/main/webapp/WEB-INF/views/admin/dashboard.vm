@@ -1,0 +1,71 @@
+#set($pageTitle="管理员主页")
+
+<style>
+    #dashboard {
+        padding: 20px 0;
+    }
+    #dashboard a {
+        display: block;
+        padding: 5px 0;
+        width: 120px;
+        margin: 10px auto;
+    }
+    #dashboard a:hover {
+        background: lightgrey;
+    }
+    .dashboardContent {
+        height: 250px;
+        margin: 0 auto;
+        width: 518px;
+    }
+    .box {
+        float: left;
+        height: 100%;
+    }
+</style>
+
+<div id="dashboard">
+    <div class="dashboardContent">
+        <div class="box">
+            <h3>房源</h3>
+            <a href="#url('/admin/house/')" target="_blank">房源列表</a>
+            <a href="#url('/admin/external/create_2')" target="_blank">添加整租房源</a>
+            <a href="#url('/admin/external/create_1')" target="_blank">添加分租房源</a>
+            <a href="#url('/admin/external/')" target="_blank">抓取房源</a>
+			<a href="#url('/admin/external/forum')" target="_blank">论坛房源</a>
+        </div>
+        <div class="box">
+            <h3>用户</h3>
+            <a href="#url('/admin/user/list')" target="_blank">用户管理</a>
+            <a href="#url('/admin/user/verify-email')" target="_blank">邮箱认证</a>
+            <a href="#url('/admin/contact/')" target="_blank">用户留言</a>
+        </div>
+        <div class="box">
+            <h3>辅助</h3>
+            <a href="#url('/admin/totoro/')" target="_blank">龙猫系统</a>
+            <a href="#url('/admin/upper/')" target="_blank">豆瓣顶贴机</a>
+            <a href="#url('/admin/sms/')" target="_blank">短信发送</a>
+        </div>
+        <div class="box message">
+            <h3>系统（慎用）</h3>
+            <a class="close" href="javascript:;">关闭过期房子</a>
+            <a class="HouseLocationChanged" href="javascript:;">重建线路索引</a>
+        </div>
+    </div>
+</div>
+<script>
+    $('.box.message a.close').click(function() {
+        if (confirm('关闭过期房子？')) {
+            $.getJSON("#url('/admin/house/close')", {}, function(data) {
+                alert("OK");
+            })
+        }
+    });
+    $('.box.message a.HouseLocationChanged').click(function() {
+        if (confirm('重建房子位置相关索引？')) {
+            $.getJSON("#url('/admin/message/HouseLocationChanged')", {}, function(data) {
+                alert('房子数量：' + data.message);
+            })
+        }
+    });
+</script>

@@ -1,0 +1,22 @@
+/* IE */
+.scrollbar {
+    scrollbar-face-color: #DDDDDD;
+    scrollbar-track-color: #F4F4F4;
+}
+/* chrome */
+.scrollbar::-webkit-scrollbar {
+    width: 15px;
+    background-color: #F4F4F4;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: #DDDDDD;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #BBBBBB;
+}
+.scrollbar::-webkit-scrollbar-track-piece {
+    background-color: #F8F8F8;
+}
+.scrollbar::-webkit-resizer {
+    opacity: 0.8;
+}

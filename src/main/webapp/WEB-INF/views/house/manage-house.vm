@@ -1,0 +1,474 @@
+#set($tagWidth="47px")
+<style>
+    #houseCard #panel1 {
+        width: 350px;
+    }
+    #houseCard #district {
+        width: 20px;
+    }
+    #houseCard #struct input {
+        letter-spacing: 1px;
+    }
+    #houseCard #description {
+        background-color: ${backgroundColor};
+        height: 230px;
+        margin-bottom: 10px;
+        padding: 15px 20px;
+        text-align: left;
+        bottom: -10px;
+        position: absolute;
+    }
+    #houseCard #description .infoTitle {
+        display: block;
+        margin-bottom: 10px;
+        text-indent: 0;
+    }
+    #houseCard #description textarea {
+        width: 430px;
+        height: 105px;
+        padding: 10px;
+        overflow: auto;
+    }
+    #houseCard #telephone {
+        width: 492px;
+        height: 102px;
+    }
+    #houseCard #telephone #contactHint {
+        width: 100%;
+        height: 30px;
+    }
+    #houseCard #telephone #contactHint .contactArea {
+        display: inline-block;
+        position: relative;
+        font-size: 15px;
+        text-indent: 20px;
+        margin-right: 107px;
+        text-align: left;
+    }
+    #houseCard #telephone #contactInput {
+        width: 100%;
+        height: 40px;
+    }
+    #houseCard #telephone #contactInput .contactArea {
+        width: 136px;
+        margin-left: 20px;
+        text-align: center;
+    }
+    #houseCard #rentByRoom {
+        width: 240px;
+        right: 0;
+    }
+    #houseCard #rentByRoom .button {
+        width: 50px;
+            margin-right:0px;
+        margin-left:0px;
+    }
+    #houseCard #telephone .infoInput {
+        width: 160px;
+    }
+    #houseCard #panel2 {
+        margin: 0 20px;
+        width: 490px;
+        position: relative;
+    }
+    .infoBox .sublet{
+        width:70px;
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+    }
+    .infoBox .infoFacilityChoose{
+        width:50px;
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+    }
+
+    #houseCard .item{
+        width: 330px;  
+        padding: 10px 0px 10px 20px;
+        text-align: center;        
+    }
+
+    #houseCard .item.disabled{
+        opacity: 0.3;
+    }
+
+    #houseCard .item>.button{
+        width: 85px;
+        height: 30px;
+        line-height: 30px;
+        margin-right: 18px;
+    }
+
+    #houseCard .item.rent-type>.button{
+        width: 135px;
+    }
+
+    #houseCard .item.disabled>.button{
+        cursor: default;    
+    }
+
+    #houseCard .facility{
+        font-size: 14px;
+        display: inline-block;
+        vertical-align: top;
+    }
+    #houseCard .facility .tag-wrap{
+        display: inline-block;
+        width: 220px;
+        vertical-align: top;
+    }
+    #houseCard .facility .facility-selector{
+        height: 55px;
+        padding: 4px 0 0 0;
+        margin: 0;
+        line-height: 0px;
+    }
+    #houseCard .facility .facility-selector .button{
+        background-color: #fff;
+        color: #939393;
+        font-size: 12px;
+        width: $tagWidth;
+        height: 24px;
+        margin: 0 2px 2px 0;
+        overflow: hidden;
+        vertical-align: top;
+    }
+
+    #houseCard .facility p.title{
+        text-indent: 0px;
+        font-size: 14px;
+    }
+
+    #houseCard #price .infoInput{
+        width: 270px;
+    }
+
+    #houseCard #price .infoInput.small{
+        width: 195px;
+    }
+
+    #houseCard #price .subTitle{
+        font-size: 12px;
+        margin-left: 15px;
+    }
+</style>
+
+<div id="houseCard" class="card" onCardShow="showHouseCard">
+    <div class="banner">
+        <span class="title">管理房间</span>
+        <span class="desc">修改房间信息，更新出租状态</span>
+    </div>
+    <div class="cardContent">
+        <div id="panel1" class="panel">
+            <div id="address" class="infoBox">
+                <span class="infoTitle">地址</span>
+                <input class="infoInput" id="district" validate='length2-3' placeholder="选择区域" type="text" readonly style="width: 60px" />
+                <input class="infoInput input107" validate='length1-' id="position" placeholder="输入地址" type="text" title="商圈和小区名，例如：潘家园建业苑" style="width: 203px" />
+            </div>
+            <div id="struct" class="infoBox">
+                <span class="infoTitle">户型</span>
+                <input class="infoInput" validate='length1-' placeholder="点击选择" type="text" readonly />
+            </div>
+            <div id="area" class="infoBox">
+                <span class="infoTitle">面积</span>
+                <input class="infoInput numberInput" validate='int0-' numberInput='0-' placeholder="点击选择或直接输入" type="text" />
+                <span class="infoUnit">m<sup>2</sup></span>
+            </div>
+            <div id="floor" class="infoBox">
+                <span class="infoTitle">楼层</span>
+                <input class="infoInput numberInput" numberInput='0-' placeholder="点击选择或直接输入" type="text" />
+            </div>
+            <div role="gender" class="infoBox item hide" validate="select">
+              <a required-gender="1" class="infoInput button" href="#?">限男</a>
+              <a required-gender="0" class="infoInput button" href="#?">不限</a>
+              <a required-gender="2" class="infoInput button" href="#?">限女</a>
+            </div>
+            <div id="price" class="infoBox">
+                #if($house.getRentType() == 1)
+                    <span class="infoTitle">整租价格<span class="subTitle">选填</span></span>
+                    <input class="infoInput small numberInput" role="priceInput" validate='int0-' numberInput='0-' placeholder="点击选择或直接输入" type="text" />                    
+                #else
+                    <span class="infoTitle">月租</span>                
+                    <input class="infoInput numberInput" role="priceInput" validate='int0-' numberInput='0-' placeholder="点击选择或直接输入" type="text" />
+                #end
+                <span class="infoUnit">元/月</span>
+            </div>
+        </div>
+        <div id="panel2" class="panel">
+            <div id="telephone" class="infoBox">
+                <span class="infoTitle">联系方式</span>
+                <span class="infoTitleHint">至少填一项</span>
+                <div id="contactHint">
+                    <span class="contactArea">手机</span>
+                    <span class="contactArea">ＱＱ</span>
+                    <span class="contactArea">微信</span>
+                </div>
+                <div id="contactInput" multi-choice-container="contact">
+                    <input id="phoneInput" class="infoInput contactArea" validate="length7-" multi-choice-validate="contact" placeholder="点击输入" type="text" />
+                    <input id="qqInput" class="infoInput contactArea" validate="length5-" multi-choice-validate="contact" placeholder="点击输入" type="text" />
+                    <input id="wechatInput" class="infoInput contactArea" validate="length5-" multi-choice-validate="contact" placeholder="点击输入" type="text" />
+                </div>
+            </div>
+            <div id="description">
+                <span class="infoTitle">描述</span>
+                <textarea class="scrollbar" validate='length1-' placeholder="介绍下你的房子，例如：房子吸引人的地方、交通和周边生活、入住时间、对租客的具体要求、注意事项等（卧室信息将在下一步添加）" maxlength="2048"></textarea>
+                <div role="facility" class="facility">
+                    <div class="tag-wrap">
+                      <p class="title">可多选标签</p>
+                      <div role="facility-selector-unselected" class="infoBox facility-selector">
+                          #set($facilityItems=["电梯房","宽带","空调","冰箱","热水器","阳台","洗衣机","电视"])
+                          #foreach($item in $facilityItems)<a class="infoInput button" href="#?">$item</a>#end                      
+                      </div>
+                    </div>
+                    <div class="tag-wrap">
+                      <p class="title">已选标签</p>
+                      <div role="facility-selector-selected" class="infoBox facility-selector">
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rightPanel">
+            <a onCancel="onHouseCancel" class="cancel" href="#?">取消</a>
+            <a onSave="onHouseSave" validateFunction="validateHouse" class="save button buttonNormal" href="#?">保存</a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    (function() {
+        var unselectedFacility = $('#houseCard [role="facility-selector-unselected"]'),
+            selectedFacility = $('#houseCard [role="facility-selector-selected"]');
+
+          // facility animation
+        function clickTrigger(event, target){
+          var e = $(event.target);
+          if(!e.hasClass('button')){
+            return;
+          }
+          e.css({
+            width:'0px'          
+          }, 500);        
+
+          setTimeout(function(){
+            e.remove();
+            log(e);
+            target.append(e);
+            e.css({
+                width: "$!tagWidth"
+            })
+          }, 500);
+        }
+
+        function initLayout() {
+            // button group
+            Input.radioGroup('#elevator .button');
+            Input.radioGroup('#rentByRoom .button');
+            Input.radioGroup('#houseCard [role="rentType"] .button');
+            Input.radioGroup('#houseCard [role="gender"] .button');
+        }
+
+        function initEvent() {
+            $('#houseCard #district').click(function() {
+                var s = EasySelector.create($('#houseCard #address'), {
+                    'popupPosition' : 'bottom',
+                    'popupOffset' : 12,
+                    'tipArrowClass' : 'tipArrowUp',
+                    'selections' : ['朝阳', '海淀', '东城', '西城', '通州', '昌平', '丰台', '房山', '延庆', '门头沟', '石景山', '平谷', '怀柔', '大兴', '密云', '顺义']
+                }, $(this));
+                s && s.popup.find('.tipArrow').css('left', 82);
+            });
+            $('#houseCard #struct input').click(function() {
+                HouseStructSelector.create($('#houseCard #struct'), {
+                    'width' : 292,
+                    'height' : 84
+                });
+            });
+            $('#houseCard #price input').click(function() {
+                NumberSlider.create($('#houseCard #price'), {
+                    'width' : 500,
+                    'height' : 80,
+                    'sliderNumber' : {
+                        '0-2000' : 2000,
+                        '2000-6000' : 500,
+                        '6000-10000' : 1000
+                    },
+                    'delta' : 100,
+                    'paddingRight' : '30px'
+                });
+            });
+            $('#houseCard #area input').click(function() {
+                NumberSlider.create($('#houseCard #area'), {
+                    'width' : 400,
+                    'height' : 80,
+                    'sliderNumber' : {
+                        '0-200' : 20
+                    }
+                });
+            });
+            $('#houseCard #floor input').click(function() {
+                NumberSlider.create($('#houseCard #floor'), {
+                    'width' : 400,
+                    'height' : 80,
+                    'sliderNumber' : {
+                        '0-10' : 1,
+                        '10-30' : 5
+                    },
+                });
+            });
+
+            // display rentByRoom
+            Popup.onPopupClose.push(function() {
+                if (rentOption.rentType === 2) {
+                    var r = $('#houseCard #rentByRoom');
+					if (r.length > 0) {
+                        if (parseInt($('#houseCard #struct input').val()) > 1) {
+                            r.show();
+                        } else {
+                            r.hide();
+                        }
+					}
+                }
+            });
+            unselectedFacility.click(function(e){
+              clickTrigger(e, selectedFacility);
+            });
+
+            selectedFacility.click(function(e){
+              clickTrigger(e, unselectedFacility);
+            });      
+        }
+
+        $(function() {
+            initLayout();
+            initEvent();
+        });
+    })();
+
+    function getSelectedItems(elements){
+      var str = '';
+      elements.each(function() {
+        if (str){
+          str += '、';
+        }
+        str += $(this).text();
+      });
+      return str;          
+    }
+
+    function showHouseCard() {
+        //oyyd: This function will not be triggered when the card is shown.
+        var h = $('#houseCard');
+        if (rentOption.rentType === 1) {// by room
+            h.find('#floor').show();
+            h.find('#elevator').show();
+            h.find('#price').show();
+            h.find('#area').show();
+            h.find('#rentByRoom').hide();
+            h.find('[role="rentType"]').hide();
+            h.find('[role="gender"]').show();
+            h.find('#description textarea').attr('placeholder', '介绍下你的房子，例如：房子吸引人的地方、交通和周边生活、入住时间、现住室友的概况、对租客的具体要求、注意事项等（卧室信息将在下一步添加）。不要在这里留下任何联系方式。');
+        } else {// by house
+            h.find('#elevator').hide();
+            h.find('#floor').show();            
+            h.find('#price').show();
+            h.find('#area').show();
+            h.find('[role="gender"]').hide();
+            h.find('#description textarea').attr('placeholder', '介绍下你的房子，例如：房子吸引人的地方、交通和周边生活、入住时间、对租客的具体要求、注意事项等（卧室信息将在下一步添加）');
+        }
+    }
+
+    function getHouseModel() {
+        var h = {
+            'houseId' : '$!house.id'
+        }, c = $('#houseCard');
+        h.district = c.find('#district').val();
+        h.position = c.find('#position').val();
+        var struct = c.find('#struct input').val().split(' ');
+        h.roomCount = parseInt(struct[0]);
+        h.hallCount = parseInt(struct[1]);
+        h.kitchenCount = parseInt(struct[2]);
+        h.toiletCount = parseInt(struct[3]);
+        h.facility = getSelectedItems(c.find('[role="facility-selector-selected"] .button'));
+        //Legacy for elevator
+        h.elevator = (~h.facility.indexOf('电梯房'))?true:false;
+        h.description = c.find('#description textarea').val();
+        h.telephone = c.find('#contactInput #phoneInput').val();
+        h.qq = c.find('#contactInput #qqInput').val();
+        h.wechat = c.find('#contactInput #wechatInput').val();
+        var t = c.find('#price input').val();
+        t && (h.price = parseInt(t));
+        var t = c.find('#area input').val();
+        t && (h.area = parseInt(t));
+        if (model.isByRoom()) {
+            h.floor = parseInt(c.find('#floor input').val());
+            
+            var requiredGender = c.find('[role="gender"] .button.buttonSelected').attr('required-gender');
+            h.requiredGender = requiredGender;            
+        }
+        if (model.isByHouse()) {
+            h.floor = parseInt(c.find('#floor input').val());
+            
+            log(h);            
+            if (c.find('#rentByRoom .buttonSelected').attr('rentByRoom') === '1') {
+                rentOption.rentType = 3;
+            } else {
+                rentOption.rentType = 2;
+            }
+        }
+        log('house data:');
+        log(h);
+        return h;
+    }
+
+    function validateHouse() {        
+        // Price is not necessary when `rentType` is 1.
+        var v = null;
+        if(rentOption.rentType==1){
+            v = Input.validateAll($('#houseCard [validate], #houseCard [multi-choice-container]').not('[role="priceInput"]'));
+            var isPriceValidate = Input.validate($('#houseCard [role="priceInput"]'), false);
+            v = v && isPriceValidate;
+        }else{
+            v = Input.validateAll($('#houseCard'));            
+        }      
+
+        var s = $('#houseCard #struct input');
+        if (parseInt(s.val()) < 1) {
+            s.addClass(Input.validateErrorClass);
+            v = false;
+        }
+        if (!v) {
+            showError('请检查错误提示');
+        }
+        return v;
+    }
+
+    function onHouseNext() {
+        rentOption.house = getHouseModel();
+    }
+
+    function onHouseSave() {
+        rentOption.house = getHouseModel();
+        var param = {
+            'house' : JSON.stringify(getHouseModel())
+        };
+        log('Update house:');
+        log(param);
+        $.post('#url("/house/manage/update")', param, function(data) {
+            log(abbreviate($('#houseCard #district').val() + $('#houseCard #position').val(), 10));
+            log(data);
+            var h = $('#roomCard .houseBox');
+            h.find('.name').text(abbreviate($('#houseCard #district').val() + $('#houseCard #position').val(), 10));
+            h.find('.desc').text(abbreviate($('#houseCard #description textarea').val(), 85));
+        });
+        onHouseCancel();
+    }
+
+    function onHouseCancel() {
+        $('#houseCard').hide();
+        $('#roomCard').show();
+        checkAddBox();
+    }
+</script>

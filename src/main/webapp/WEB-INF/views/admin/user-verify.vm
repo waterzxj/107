@@ -1,0 +1,13 @@
+#set($pageTitle="管理员认证")
+
+<style>
+</style>
+
+<form method="post" action="#url('/admin/user/verify/submit')">
+    <div>
+        <label>用户名</label>
+        <input name="username" type="text" value="" />
+    </div>
+    <button type="submit">认证</button>
+    <div>$!message</div>
+</form>

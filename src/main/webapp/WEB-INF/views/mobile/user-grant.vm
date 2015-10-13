@@ -1,0 +1,226 @@
+#parse("_style.vm")
+
+#set($layout = "layout/mobile-simple.vm")
+#set($pageTitle="注册")
+#set($inMobile=true)
+
+<link href="#staticUrl('css/flat-ui-radio.css?20130809')" rel="stylesheet">
+<style>
+#contentContainer>.mobile-user-grant{
+  top: 16%;
+}
+.mobile-user-grant ::-webkit-input-placeholder{
+  opacity: 0.6;
+  font-size: 12px;
+  color: $mainColor;
+  text-align: left;
+  padding-left: 35px;
+}
+.mobile-user-grant :-moz-placeholder{
+  opacity: 0.6;  
+  font-size: 12px;
+  color: $mainColor;
+  text-align: left;
+  padding-left: 35px;
+}
+.mobile-user-grant ::-moz-placeholder{
+  opacity: 0.6;  
+  font-size: 12px;
+  color: $mainColor;
+  text-align: left;
+  padding-left: 35px;
+}
+.mobile-user-grant :-ms-input-placeholder{
+  opacity: 0.6;  
+  font-size: 12px;
+  color: $mainColor;
+  text-align: left;
+  padding-left: 35px;
+}
+.mobile-user-grant .inputDiv{
+  position: relative;
+}
+.mobile-user-grant .radio .icons{
+  font-size: 15px;
+  display: none;
+}
+.mobile-user-grant .card{
+  display: block;
+}
+.mobile-user-grant .hide{
+  display: none;
+}
+.mobile-user-grant .title{
+  color:$secondColor;
+  margin: 5% 0;
+  font-size: 19px;
+}
+.mobile-user-grant .input{
+  color: $mainColor;
+  width: 217px;
+  height: 21px;
+  padding: 8px 5px;
+  border-bottom: 1px solid $mainColor;
+  font-size: 15px;
+  font-family: "verdana", sans-serif;
+}
+.mobile-user-grant #grantContainer #submitDiv .button{
+  background-color: $mainColor;
+  display: inline-block;
+  width: 230px;
+  line-height: 35px;
+}
+.mobile-user-grant .helpText{
+  margin: 41px -198px;
+  line-height: 16px;
+  width: 227px;  
+}
+.mobile-user-grant .validateText{
+  line-height: 20px;
+  position: absolute;  
+}
+.mobile-user-grant #grantContainer #passwordDiv .helpText{
+  margin: 41px -172px;
+}
+.mobile-user-grant #grantContainer #genderDiv{
+  padding-bottom: 35px;
+}
+.mobile-user-grant #grantContainer #genderDiv .helpText{
+    margin: 46px -218px;
+}
+.mobile-user-grant #grantContainer #usernameDiv input.input {
+  background-position: 15px 12px;
+  text-align: center;
+}
+.mobile-user-grant #grantContainer #passwordDiv input.input {
+  background-position: 16px 12px;
+  text-align: center;
+}
+.mobile-user-grant #genderDiv>.radio>img{
+  width: 35px;
+}
+.mobile-user-grant #grantContainer #genderDiv .validateText{
+  margin: 45px -145px;
+}
+.mobile-user-grant #grantContainer #usernameDiv .validateText{
+  margin: 38px -166px;
+}
+.mobile-user-grant #grantContainer #usernameDiv .existText{
+ margin: 28px -166px;
+ position: absolute; 
+}
+.mobile-user-grant #grantContainer #passwordDiv .validateText{
+  margin: 41px -193px;
+}
+.mobile-user-grant #grantContainer #inputTitle{
+  display: none;
+}
+.mobile-user-grant #grantContainer #submitDiv{
+  padding: 6% 0 5px 0;
+}
+.mobile-user-grant #grantContainer #protocolDiv{
+  margin-top: 10px;
+  display: block;
+  position: static;
+}
+.mobile-user-grant #grantContainer #protocolDiv a{
+  color: $secondColor;
+}
+.mobile-user-grant #grantContainer #genderDiv .radio{
+  margin: 0 25px;
+  padding: 0;  
+  opacity: 0.3;
+}
+.mobile-user-grant #grantContainer #genderDiv .radio.checked{
+  opacity: 1;
+}
+/*simple card*/
+.mobile-user-grant .simple-card{
+  position: relative;
+  left: 0px;
+  display: none;
+}
+.mobile-user-grant .redirect-tips .title{
+  margin-top: 20%;
+}
+.mobile-user-grant .redirect-tips .desc{
+  color: $fontColor;  
+  font-weight: bold;
+  margin-top: 5%;
+}
+.mobile-user-grant .redirect-tips .link-text{
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 6%;
+}
+.mobile-user-grant .redirect-tips .link-text a{
+  color: $mainColor;
+}
+.mobile-user-grant #grantContainer #usernameDiv input{
+  background: url("/static/image/icon/email_h_16x16.png") no-repeat scroll 260px 12px transparent;
+}
+.mobile-user-grant #grantContainer #passwordDiv input{
+    background: url("/static/image/icon/password_h_16x16.png") no-repeat scroll 260px 12px transparent;
+}
+
+</style>
+<div class="mobile-user-grant">
+  <div role="form" class="simple-card">
+    <h1 class="title">已为你填好房间信息<br/>完成注册后即可编辑</h1>
+    <div role="form">
+      #parse("user-grant.vm")
+    </div>    
+  </div>  
+  <div role="redirect-tips" class="simple-card redirect-tips">
+    <h1 class="title">注册成功！</h1>
+    <p class="desc">你可以在电脑上访问网站<br/>编辑自己的房子</p>
+    <p class="link-text"><a href="/">我们的网站<br/>http://107room.com</a></p>
+  </div>
+</div>
+<script src="#staticUrl('js/common.js')"></script>
+<script src="#staticUrl('js/main.js')"></script>
+<script>
+  (function(window){
+    var form = $('.mobile-user-grant .simple-card[role="form"]');
+    window.slideLeft = function(){
+      simpleCard.slideLeft('[role="redirect-tips"]');
+    };
+
+    var SimpleCard = function(options){
+      this.dom = options.dom;
+      this.currentCardSelector = options.cardSelector;
+
+      this.dom.find(this.currentCardSelector).css({
+        display: 'block'
+      });
+    };
+
+    SimpleCard.prototype.slideLeft = function(cardSelector){
+      var currentCard = this.dom.find(this.currentCardSelector),
+        nextCard = this.dom.find(cardSelector);
+      currentCard.animate({
+        left: -150,          
+        opacity: 0
+      }, function(){
+        currentCard.css({
+          display: 'none'
+        });
+        nextCard.css({
+          opacity: 0,
+          display: 'block'
+        }).animate({
+          opacity: 1
+        });
+      });
+    };
+
+    var simpleCard = new SimpleCard({
+      dom: $('.mobile-user-grant'),
+      cardSelector: '[role="form"]'
+    });
+
+    window.global.setUserGrantCb(function(){
+      simpleCard.slideLeft('[role="redirect-tips"]');
+    });  
+  })(window);
+</script>

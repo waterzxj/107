@@ -1,0 +1,70 @@
+#parse("_style.vm")
+
+#if($debug)
+##set($error = true)
+#set($help = true)
+#set($title = "恭喜你，认证成功！")
+#set($desc = "现在你可以查看房东电话了：<a href='http://baidu.com'>测试超链接</a>现在你可以查看房东电话了东电话了")
+#set($button = "开始找房")
+#set($url = "/house/search")
+#set($timing = 5)
+#end
+<style>
+    .card {
+        display: block;
+    }
+    .resultIcon {
+        margin-top: 60px;
+    }
+    #resultCard .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    #resultCard .desc {
+        margin: 20px auto;
+        font-size: 14px;
+        word-wrap: break-word;
+    }
+    #resultCard .desc a {
+        color: ${secondColor};
+    }
+    #resultCard .desc, #resultCard .button {
+        width: 220px;
+    }
+    #resultCard .timing {
+        margin-top: 5px;
+        display: none;
+        font-size: 12px;
+    }
+    #resultCard a.help {
+        color: ${mainColor};
+    }
+</style>
+
+<div class="cardContainer">
+    <div id="resultCard" class="card">
+        <img class="resultIcon" src="#if($error)#staticUrl('image/icon/error.png')#else #staticUrl('image/icon/ok.png')#end" />
+        <p class="title">
+            $!title
+        </p>
+        <p class="desc">
+            $!desc#if($help)。如需帮助，请<a href="#url('/user/feedback')" class="help">联系我们</a>#end
+        </p>
+        <a href="$!url" class="button"> #if($button)$button #else 确定 #end </a>
+        <p class="timing"></p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#resultCard .desc a').attr('target', '_blank').addClass('reactive');
+    // timing
+    //#if($timing && $url)//
+    timing($timing, function(t) {
+        $('#resultCard .timing').text(t + '秒后自动跳转').show();
+    }, function() {
+        $('#resultCard .timing').hide();
+        window.location = '$url';
+    });
+    //#end//
+</script>

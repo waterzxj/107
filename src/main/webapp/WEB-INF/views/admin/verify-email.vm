@@ -1,0 +1,68 @@
+#set($pageTitle = "邮件认证管理")
+
+<style>
+    .button {
+        width: 80px;
+    }
+    .button.white {
+        color: black;
+        background-color: white;
+    }
+    .button.black {
+        color: white;
+        background-color: black;
+    }
+    #contentDiv table {
+        border: 1px solid;
+        font-size: 14px;
+    }
+    #contentDiv tr > * {
+        padding: 0 5px;
+        border: 1px solid;
+    }
+</style>
+
+<div id="contentDiv">
+    切勿连续点击，点击后服务器会发送邮件，时间较长，请过段时间刷新页面查看结果
+    <table>
+        <tbody>
+            <tr>
+                <th>时间</th>
+                <th>用户名</th>
+                <th>邮箱</th>
+                <th></th>
+            </tr>
+            #foreach($r in $records)
+            <tr #if($v) class="verified" #end>
+                <td>$!r.modifiedTime</td>
+                <td class="username">$!r.username</td>
+                <td class="email">$!r.email</td>
+                <td class="op">
+                <button class="button white" href="javascript:;">
+                    白
+                </button>
+                <button class="button black" href="javascript:;">
+                    黑
+                </button></td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(".button").click(function() {
+        $('.button').attr('disabled', true).css('opacity',0.1).text('提交中');
+        var t = $(this).parents("tr");
+        var type = $(this).hasClass('white') ? 0 : 1;
+        var p = {
+            "email" : t.find(".email").text(),
+            "type" : type
+        };
+        console.log(p)
+        $.post("#url('/admin/user/verify-email/submit')", p, function() {
+            location.replace(location.href);
+        });
+    });
+</script>
+

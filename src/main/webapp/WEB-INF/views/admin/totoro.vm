@@ -1,0 +1,65 @@
+#set($pageTitle="龙猫系统")
+
+<style>
+    #totoroBox table {
+        border: 1px solid;
+        width: 100%;
+    }
+    #totoroBox tr > * {
+        padding: 0 5px;
+        border: 1px solid;
+    }
+    .queryBox {
+        line-height: 100px;
+    }
+    .queryInput {
+        width: 200px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        margin-right: 20px;
+    }
+    .queryButton {
+        line-height: 30px;
+        border-radius: 3px;
+    }
+    .queryResult {
+padding: 20px 0;
+    width: 100%;
+    }
+</style>
+
+<div id="totoroBox">
+    <form action="#url('/admin/totoro/query')">
+        <div class="queryBox">
+            <input name="username" class="queryInput" value="$!username" type="text" placeholder="输入用户名查询" />
+            <button class="queryButton button">
+                龙猫查询
+            </button>
+        </div>
+    </form>
+    #if($sniffs)
+    <div class="queryResult">
+    <table>
+        <tbody>
+            <tr>
+                <th>URL ID</th>
+                <th>URL</th>
+                <th>类型</th>
+                <th>权重</th>
+                <th>更新时间</th>
+            </tr>
+            #foreach($s in $sniffs)
+            <tr>
+                <td>$!s.urlId</td>
+                <td style="text-align: left" title="$!s.url">$!stringUtils.abbreviate($s.url, 70)</td>
+                <td>#if($s.type==0)黑#else 白 #end</td>
+                <td>$!s.weight</td>
+                <td>$!s.modifiedTime</td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+    </div>
+    #end
+</div>

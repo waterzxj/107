@@ -1,0 +1,146 @@
+#set($layout="layout/empty.vm")
+
+<script type="text/javascript" src="#staticUrl('js/common.js')?20140911"></script>
+<script src="#staticUrl('js/jquery-1.9.1.min.js')"></script>
+<script src="#staticUrl('js/json2.min.js')"></script>
+<script src="#staticUrl('js/main.js')"></script>
+<script type="text/javascript">
+    /*** globals ***/
+    // logDisabled = 1;
+    var singleDebug = getParams()["debug"] != null;
+    var sniffSingleUrlCount = $confidentBaseLevel;
+    var sniffIntervalWhenBusy = 10000;
+</script>
+#set($browser = $userUtils.getBrowser($request))
+<script src="#staticUrl('js/totoro/sniff.min.js')?20131106"></script>
+
+## init
+#set($confidentLevel = $session.getAttribute("confidentLevel"))
+<script type="text/javascript">
+    (function() {
+        if (!window.requestAnimationFrame) {
+            var vendors = ['ms', 'moz', 'webkit', 'o'];
+            for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+                window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+            }
+        }
+        if (!window.requestAnimationFrame) {
+            log("requestAnimationFrame() NOT supported");
+            return;
+        }
+
+        $(function() {
+            log("browser: $!browser");
+            if (!sniffUrl) {
+                log("sniffUrl() undefined");
+                return;
+            }
+            // index: confidentLevel
+            var sniffIntervals = [0, 500, 2000];
+            var pageDelay = 2000, maxBatchFrequency = 1, sniffInterval = sniffIntervals[$confidentLevel], batchInterval = 200;
+            if (singleDebug) {
+                pageDelay = 0;
+                maxBatchFrequency = 1;
+                sniffInterval = 100;
+            }
+            function batchSniff() {
+                var time = new Date().getTime();
+                getUrls(function(urls) {
+                    if (!urls || urls.length == 0) {// no more or network opps
+                        log("no more URLs, end batch sniff");
+                        return;
+                    }
+                    log("URL count: " + urls.length + ", time=" + (new Date().getTime() - time));
+                    for (var i = 0; i < urls.length; i++) {
+                        var url = urls[i];
+                        if (url["url"].indexOf("://") < 0) {
+                            url["url"] = "http://" + url["url"];
+                        }
+                    }
+                    sniffUrl(urls, 0, sniffInterval, putResult, function() {
+                        if (--maxBatchFrequency != 0) {
+                            log("========");
+                            setTimeout(batchSniff, batchInterval);
+                        } else if (!singleDebug) {// batch end, reload for browser performance
+                            putResult(null, true);
+                            window.location.reload(false);
+                        }
+                    });
+                });
+            }
+
+            /**
+             * @param callback function with an array of {"url", "urlId"} as parameter
+             */
+            function getUrls(callback) {
+                var url = "#url('/antispam/history/url?')&r=$date.systemTime";
+                var debugUrl = "$!url";
+                if (debugUrl) {
+                    url += "&url=" + debugUrl;
+                }
+                $.get(url, {
+                    "noAmend" : $noAmend
+                }, function(data) {
+                    log("urls: " + data);
+                    if (data) {
+                        callback(_json(data));
+                    }
+                });
+            }
+
+            var resultBuffer = [], resultBufferSize = 50;
+            /**
+             * Put sniff results to server.
+             * @param result {"urlId", "visited"}
+             */
+            function putResult(result, force) {
+                if (!result && !force)
+                    return;
+                if (!force && resultBuffer.length < resultBufferSize) {
+                    resultBuffer.push(result);
+                } else {// full
+                    var data = resultBuffer;
+                    resultBuffer = [];
+                    var resultJson = JSON.stringify(data);
+                    log("result JSON: " + resultJson);
+                    $.post("#url('/antispam/history/result')", {
+                        "result" : resultJson
+                    });
+                }
+            }
+
+            setTimeout(batchSniff, pageDelay);
+        });
+    })();
+</script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    #sniffList li {
+        list-style-type: none;
+    }
+    #sniffList a {#if($browser == "ie")
+        border: 0.05px dashed;
+        border-radius: 10.7px;#else
+        text-shadow: 200px 200px 500px #fff, 200px 200px 500px #fff, 200px 200px 500px #fff;
+        #end
+        cursor: default;#if(!$debug)
+        color: white;
+        color: transparent;
+        #end
+    }
+</style>
+<div id="sniffContainer">
+    <ul id="sniffList">
+        #if($browser != "ie")
+        #foreach($i in [0..0])
+        <li>
+            <a href="javascript:;" href0="javascript:;">This is a health test for 107 ROOM. If you see this text, don't worry and please tell us for better user experience. 3X very much!</a>
+        </li>
+        #end
+        #end
+    </ul>
+</div>

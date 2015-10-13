@@ -1,0 +1,14 @@
+#set($layout = "layout/null.vm")
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <title>jQuery Iframe Transport Plugin Redirect Page for 7niu</title>
+  <script src="#staticUrl('js/base64.min.js')"></script>
+  </head>
+  <body>
+    <script>
+      document.body.innerText=document.body.textContent=decodeURIComponent(Base64.decode(window.location.search.slice(12)));
+    </script>
+  </body>
+</html>

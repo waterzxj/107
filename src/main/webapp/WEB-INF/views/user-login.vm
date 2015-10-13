@@ -1,0 +1,501 @@
+#parse("_style.vm")
+
+#if($embedded)
+#set($layout="layout/null.vm")
+#else
+#set($pageTitle="登录")
+#set($bannerTitle="登录")
+#set($bannerDesc="安得广厦10<sup>7</sup>间，大辟天下寒士俱欢颜")
+#end
+
+<style>
+#loginContainer {
+color: ${fontColor};
+}
+#loginContainer .hide{
+display: none;
+}
+#loginContainer .panel {
+position: relative;
+width: 400px;
+height: 365px;
+margin: 0 auto;
+background-color: white;
+display: none;
+}
+#loginContainer #loginDiv {
+display: block;
+}
+#loginDiv #loginUsername {
+padding-top: 50px;
+}
+#loginDiv .loginInput {
+padding-bottom: 30px;
+}
+#loginUsername input {
+background: url("#staticUrl('image/icon/email_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#loginUsername input:hover {
+background: url("#staticUrl('image/icon/email_h_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#loginPassword input {
+background: url("#staticUrl('image/icon/password_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#loginPassword input:hover {
+background: url("#staticUrl('image/icon/password_h_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#loginSubmit .button {
+width: 290px;
+line-height: 50px;
+}
+#loginValidateDiv{
+font-size: 13px;
+height: 50px;
+line-height: 63px;
+margin-top: -45px;
+text-align: left;
+color: ${warnColor};
+}
+#loginValidate{
+display: none;
+margin-left: 55px;
+}
+#loginReg {
+margin-top: 6px;
+font-size: 13px;
+letter-spacing: 1px;
+padding: 0px 55px;
+text-align: right;
+}
+#loginReg a {
+color: $mainColor;
+}
+#loginReg .sep {
+padding: 0 5px;
+}
+.loginClose{
+cursor: pointer;
+float: right;
+opacity: 0.5;
+position: absolute;
+right: 15px;
+top: 15px;
+}
+.loginClose:hover{
+opacity: 1;
+}
+#resetPasswordDiv .hint {
+position: absolute;
+top: 84px;
+/*top: 45px;*/
+font-size: 14px;
+padding-left: 55px;
+text-align: left;
+width: 290px;
+}
+#resetPasswordDiv .hint em {
+font-size: 16px;
+padding: 0 5px;
+font-style: normal;
+font-weight: bold;
+}
+#resetPasswordDiv .input, #emailPasswordDiv input {
+margin: 120px 0 10px 0;
+/*margin: 80px 0 10px 0;*/
+}
+#resetPasswordDiv .error {
+height: 50px;
+font-size: 14px;
+color: ${warnColor};
+}
+#resetPasswordDiv .button {
+width: 290px;
+margin: 0 auto;
+line-height: 50px;
+}
+#emailPasswordDiv .hint {
+position: relative;
+background-color: ${backgroundColor};
+margin: 0 auto;
+width: 260px;
+padding: 5px 15px;
+font-size: 12px;
+top: 5px;
+text-align: left;
+}
+#emailPasswordDiv .hint .tipArrow {
+border-bottom: 10px solid ${backgroundColor};
+}
+#emailPasswordDiv .hint .title {
+font-size: 15px;
+}
+#emailPasswordDiv .hint .email {
+color: ${mainColor};
+width: 100%;
+line-height: 30px;
+font-size: 15px;
+font-weight: bold;
+text-align: center;
+}
+#emailPasswordDiv .hint a {
+color: ${secondColor};
+}
+#emailPasswordDiv .hint p {
+letter-spacing: 1px;
+}
+#emailPasswordDiv .resendDiv {
+height: 40px;
+position: relative;
+text-align: right;
+top: 20px;
+width: 100%;
+text-align: center;
+}
+#emailPasswordDiv .resendButton {
+font-size: 15px;
+width: 100px;
+}
+#emailPasswordDiv .resendHint {
+bottom: 0;
+display: none;
+font-size: 12px;
+position: absolute;
+right: 55px;
+width: 90px;
+}
+#loginContainer .oauth-login>p.title{
+width: 290px;
+display: inline-block;
+text-align: left;
+color: $mainColor;
+font-size: 14px;
+padding-top: 8px;
+}
+#loginContainer .oauth-login .login-fail-tips{
+float: right;
+color: $warnColor;
+margin-left: 5px;
+font-size: 14px;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link>span.icon{
+display: inline-block;
+width: 49px;
+height: 49px;
+background-repeat: no-repeat;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link>span.icon.douban{
+background-image: url("#staticUrl('image/icon/oauth/oauth-login.png')");
+}
+#loginContainer .oauth-login>.login-icons>a.login-link:hover>span.icon.douban{
+background-position: 0px -49px;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link>span.icon.weibo{
+background-image: url("#staticUrl('image/icon/oauth/oauth-login.png')");
+margin: 0 38px;
+width: 50px;
+height: 50px;
+background-position: -98px 0px;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link:hover>span.icon.weibo{
+background-position: -98px -50px;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link>span.icon.qq{
+background-image: url("#staticUrl('image/icon/oauth/oauth-login.png')");
+background-position: -49px 0px;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link:hover>span.icon.qq{
+background-position: -49px -49px;
+}
+#loginContainer .oauth-login>.login-icons>a.login-link{
+display: inline;
+font-size: 12px;
+}
+#loginContainer .oauth-login>.login-icons{
+padding-top: 8px;
+}
+</style>
+
+<div id="loginContainer" class="cardContainer">
+    <div #if(!$embedded) class="card" #end>
+        <div id="loginDiv" class="panel">
+            <div id="loginUsername" class="loginInput">
+                <input class="input" type="text" value="$!lastLoginUsername" placeholder="邮箱/用户名" />
+            </div>
+            <div id="loginPassword" class="loginInput">
+                <input class="input" type="password" value="" placeholder="密码" />
+            </div>
+            <div id="loginValidateDiv">
+                <span id="loginValidate">账号与密码不匹配</span>
+            </div>
+            <div id="loginSubmit">
+                <a class="button" href="#">登录</a>
+            </div>
+            <div role="oauth-login" class="oauth-login">
+                <p class="title"><span>其他登录方式</span><span role="login-fail-tips" class="login-fail-tips hide">授权登录失败</span></p>
+                <div class="login-icons">
+                    <a onclick="window.open('$!loginUrls.douban', '107room-oauth-window','left=20,top=20,width=500,height=500,toolbar=1,resizable=0');" 
+                        href="#" class="login-link douban" role="login-link" title="使用豆瓣帐号登录">
+                        <span class="douban icon"></span>
+                    </a>
+                    <a onClick="window.open('$!loginUrls.weibo', '107room-oauth-window','left=20,top=20,width=500,height=500,toolbar=1,resizable=0');" 
+                        role="login-link" class="login-link"  href="#" title="使用微博帐号登录">
+                        <span class="weibo icon"></span>
+                    </a>
+                    <a onClick="window.open('$!loginUrls.qq', '107room-oauth-window','left=20,top=20,width=500,height=500,toolbar=1,resizable=0');" 
+                        role="login-link" class="login-link"  href="#" title="使用QQ帐号登录">
+                        <span class="qq icon"></span>
+                    </a>
+                </div>
+            </div>
+            <div id="loginReg">
+                <a href="#url('/user/auth/register')">马上注册</a><span class="sep">|</span><a class="forgetPassword" href="#">忘记密码</a>
+            </div>
+            #if($embedded)
+            <img class="loginClose" src="#staticUrl('image/icon/close_14x15.png')">
+            #end
+        </div>
+        <div id="resetPasswordDiv" class="panel">
+            <p class="hint">
+                输入<em>邮箱</em>或<em>用户名</em></em>
+            </p>
+            <input class="input" type="text" value="$!lastLoginUsername" placeholder="邮箱或用户名" />
+            <p class="error"></p>
+            <a class="button" href="#">重置密码</a>
+            #if($embedded)
+            <img class="loginClose" src="#staticUrl('image/icon/close_14x15.png')">
+            #end
+        </div>
+        <div id="emailPasswordDiv" class="panel">
+            <input class="input" type="text" readonly />
+            <div class="hint">
+                <div class="tipArrow tipArrowUp"></div>
+                <h4 class="title">重置密码邮件已发送至</h4>
+                <p class="email"></p>
+                <p>
+                    请查收邮件并完成重置，如未收到邮件，可尝试重新发送。如需帮助，可以<a href="#url('/user/feedback')" target="_blank">联系我们</a>
+                </p>
+            </div>
+            <div class="resendDiv">
+                <a class="resendButton button">重发邮件</a>
+                <span class="resendHint"><span class="number"></span> 秒后可以重试</span>
+            </div>
+            #if($embedded)
+            <img class="loginClose" src="#staticUrl('image/icon/close_14x15.png')">
+            #end
+        </div>
+    </div>
+</div>
+
+#function_containerHeight()
+<script type="text/javascript">
+    var lastPanelTop = 0;
+    function initLayout() {
+        var lastNameIsOauth = function(username){
+            var oauthTypeList = ['DOUBAN_', 'WEIBO_', 'QQ_'];
+            var isOauth = false;
+            for(var i=0; i<oauthTypeList.length;i++){
+                if(username.indexOf(oauthTypeList[i])===0){
+                    isOauth = true;
+                    break;
+                }
+            }
+            return isOauth;
+        };
+
+        var inputArray = [];
+        inputArray.push($('#loginUsername input'));
+        inputArray.push($('#resetPasswordDiv input'));
+        $.each(inputArray, function(){
+            if(lastNameIsOauth(this.val())){
+                this.val('');
+            }
+        });
+        lastPanelTop = $('#loginContainer .panel').css("top");
+        $('#loginContainer .panel').css("top", (containerHeight($("#loginContainer")) - 390) / 2);
+    }
+
+    function initEvent() {
+        // input
+        $(".loginInput input").focus(function() {
+            $("#loginValidate").hide();
+        });
+        // submit
+        $("#loginReg").click(function() {
+            if (room107.onLoginRegClick) {
+                return room107.onLoginRegClick();
+            }
+            return true;
+        });
+        $("#loginSubmit a").click(function() {
+            var valid = true;
+            $(".loginInput input").each(function() {
+                if ($(this).val().length == 0) {
+                    valid = false;
+                    $("#loginValidate").show();
+                    return false;
+                }
+            });
+            if (valid) {// login
+                var user = {
+                    "username" : $("#loginUsername input").val(),
+                    "password" : $("#loginPassword input").val()
+                };
+                $.post("#url('/user/login/submit')", appendDebug(user), function(data) {
+                    var success = false;
+                    if (data) {// success
+                        var userData = _json(data);
+                        login(userData);
+                        Lightbox.close();
+                        success = true;
+                    } else {
+                        $("#loginValidate").show();
+                    }
+                });
+            }
+        });
+        function countDownResend() {
+            $('#emailPasswordDiv .resendButton').text('发送中').addClass('disabled');
+            $('#emailPasswordDiv .resendHint').show();
+            timing(5, function(t) {
+                $('#emailPasswordDiv .resendHint .number').text(t);
+            }, function() {
+                $('#emailPasswordDiv .resendButton').text('重发邮件').removeClass('disabled');
+                $('#emailPasswordDiv .resendHint').hide();
+            });
+        }
+
+        function showPanel(p) {
+            $('#loginContainer .panel').hide();
+            $(p).show();
+        }
+
+        // reset password
+        $('.forgetPassword').click(function() {
+            showPanel('#resetPasswordDiv');
+        });
+        $('#resetPasswordDiv .input').focus(function() {
+            $('#resetPasswordDiv .error').empty();
+        }).bind('input propertychange', function() {
+            var b = $('#resetPasswordDiv .button');
+            if ($.trim($(this).val())) {
+                b.removeClass('disabled');
+            } else {
+                b.addClass('disabled');
+            }
+        });
+        $('#resetPasswordDiv .button').click(function() {
+            if ($(this).hasClass('disabled'))
+                return;
+            var b = $(this).text('重置邮件发送中').addClass('disabled');
+            var v = $.trim($('#resetPasswordDiv .input').val());
+            $.get('#springUrl("/user/auth/reset/send/")', appendDebug({
+                userKey : v
+            }), function(data) {
+                data = _json(data);
+                log('Reset send:');
+                log(data);
+                var error = null;
+                switch(data.status) {
+                    case 204:
+                        error = '未设置邮箱，如需帮助请联系我们';
+                        break;
+                    case 404:
+                        error = '无效的用户名或邮箱';
+                        break;
+                    case 500:
+                        error = '抱歉，服务器出错了，请稍后再试';
+                        break;
+                }
+                if (error) {
+                    $('#resetPasswordDiv .error').text(error);
+                    b.text('重置密码').removeClass('disabled');
+                } else {// OK
+                    showPanel('#emailPasswordDiv');
+                    countDownResend();
+                    $('#emailPasswordDiv .input').val(v);
+                    $('#emailPasswordDiv .email').text(data.message);
+                }
+            })
+        });
+        $('#emailPasswordDiv .button').click(function() {
+            if ($(this).hasClass('disabled'))
+                return;
+            $(this).addClass('disabled');
+            $('#resetPasswordDiv .button').removeClass('disabled').click();
+        });
+        // input enter
+        $('#loginContainer .panel').each(function() {
+            var p = $(this);
+            validateInput(p.find('input'), function() {
+                p.find('.button').click();
+            });
+        });
+        // close
+        $(".loginClose").click(function(){
+            $('#loginContainer .panel').css('top', lastPanelTop);
+            Lightbox.close();
+        });
+
+        // oauth login failed
+        var toggleOauthLoginFailed = function(open){
+            if(open){
+                $('#loginContainer [role="login-fail-tips"]').removeClass('hide');
+            }else{
+                $('#loginContainer [role="login-fail-tips"]').addClass('hide');
+            }
+        };
+
+        // show oauth login confirm button
+        var comet = null;
+        $('#loginContainer [role="login-link"]').click(function(){
+            toggleOauthLoginFailed(false);
+            if(comet){
+                comet.abort();
+                comet = null;
+            }
+            createComet();
+        });
+
+        //TODO for test
+        window.createComet = createComet;
+
+        function createComet(){            
+            log('Start Comet');
+            comet = $.getJSON('#url("/user/login/check")').done(function(res){
+                log('RES', res);
+                if(res.isReturned){
+                    if(res.user){
+                        // TODO oyyd: This needs a better solution
+                        // Cookie setting in auth page may finished a bit latter
+                        setTimeout(function(){
+                            if(!res.user.username){
+                                return;
+                            }
+                            login(res.user);
+                            Lightbox.close();                            
+                        }, 500);
+                    }else{
+                        toggleOauthLoginFailed(true);
+                    }
+                }else{
+                    // timeout
+                    createComet();
+                }
+            }).error(function(e){
+                console.log('ERROR', e);
+            });
+        };
+    }
+
+    window.global = window.global || {};
+    window.global.userLogin = window.global.userLogin || {};
+
+    // Hook for external code to know rendering is over.
+    window.global.userLogin.onInit && window.global.userLogin.onInit();
+
+    initLayout();
+    initEvent();
+
+    PlaceHolder.init($('#loginContainer input'));
+    $(window).resize(initLayout);
+</script>

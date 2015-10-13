@@ -1,0 +1,38 @@
+<style>
+#totoroCard {
+background-color: inherit;
+}
+#totoroCard .cardContent {
+background: url("#staticUrl('image/icon/totoro-loading.gif')") no-repeat scroll center center transparent;
+}
+#totoroCard .cardContent .desc {
+ left: 450px;
+    position: absolute;
+    top: 280px;
+    width: 100%;
+}
+</style>
+
+<div id="totoroCard" class="card" onCardShow="showTotoroCard">
+    <div class="banner">
+        <span class="title">发布房间</span>
+        <span class="desc">龙猫中介识别系统检测中</span>
+    </div>
+    <div class="cardContent">
+        <span class="desc">龙猫中介识别系统检测中……</span>
+        <a next='#shareCard' class="next" href="#?" style="display:none"></a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function showTotoroCard() {
+        $.get('#url("/broker/judge")', function(data) {
+            data = _json(data);
+            log(data)
+            model.isAgency = data.isAgency;
+            setTimeout(function() {
+                $('#totoroCard .next').click();
+            }, 3000);
+        });
+    }
+</script>

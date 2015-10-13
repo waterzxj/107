@@ -1,0 +1,10 @@
+<div id="photoCard" class="card">
+    #foreach($p in $roomPreviews)
+    <div class="room">
+        <div class="title"><div class="bg"></div><p>$!p.room.name</p></div>
+        #foreach($img in $p.imageIds)
+        <img class="photo" img="$!img" />
+        #end
+    </div>
+    #end
+</div>

@@ -1,0 +1,66 @@
+#parse("mobile/_style.vm")
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+        #if($pageTitle)
+        <title>$pageTitle</title>
+        #else
+        <title>107间</title>
+        #end
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="x-rim-auto-match" content="none">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="keywords" content="107间 北京租房 白领租房 毕业生租房 无中介 找室友 北京合租 个人出租 转租 海淀租房 朝阳租房" />
+        <meta name="description" content="107间免费为年轻人在北京找到直租房和高素质的租客。每间房都经过智能核实，每位租客均通过身份认证，畅享真实无中介的租房新体验。107间，让租房真实而简单！">
+        <meta name="author" content="107间">
+        <meta name="viewport" content="width=320,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=10" />
+        <link rel="shortcut icon" href="#staticUrl('favicon.ico')" type="image/ico">
+        <link rel="stylesheet" type="text/css" href="#staticUrl('css/mobile/main.css')?20140331">
+        <script type="text/javascript" src="#staticUrl('js/jquery-1.9.1.min.js')"></script>
+        <style>
+            body {
+                text-align: center;
+                color: ${mainColor};
+            }
+            #contentContainer > * {
+                position: absolute;
+                margin: 0 auto;
+                width: 100%;
+            }
+            .logo img {
+                width: 240px;
+                padding: 20px 0;
+            }
+            .title {
+                top: 40%;
+                font-size: 20px;
+            }
+            .desc {
+                top: 50%;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        $!debugDetail
+        <script type="text/javascript">
+            // init weixin
+            document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+                WeixinJSBridge.call('hideToolbar');
+            });
+        </script>
+
+        <div class="logo"><img src="#staticUrl('image/logo0.png')" />
+        </div>
+        <div id="contentContainer">
+            $screen_content
+        </div>
+
+        #if(!$disableStatistic)
+        #statistic()
+        #end
+
+    </body>
+</html>

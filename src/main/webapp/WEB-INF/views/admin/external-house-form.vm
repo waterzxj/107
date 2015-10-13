@@ -1,0 +1,377 @@
+#set($pageTitle="外部房源")
+
+<style>
+#externalHouse #externalInput {
+float:left;
+margin-top: 20px;
+font-size: 16px;
+border: 1px solid;
+width: 100%;
+}
+#externalHouse #externalInput div {
+padding-top: 10px;
+//border-bottom: 1px solid;
+text-align: left;
+}
+#externalHouse #externalInput .infoStart {
+margin-left: 30px;
+}
+#externalHouse select, #externalHouse input, #externalHouse textarea {
+border: 1px solid;
+border-color: rgb(169, 169, 169);
+font-size: 14px;
+}
+#externalHouse hr {
+border: 1px solid;
+margin-top: 10px;
+}
+#externalHouse a {
+    color: green;
+}
+#externalHouse h2  
+    background-color: #CDCCC6;
+}
+</style>
+<script src="#staticUrl('js/jquery-ui/jquery-ui.min.js')?20130915"></script>
+<script src="#staticUrl('js/jquery-ui/jquery.ui.widget.min.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.iframe-transport.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.fileupload.js')?20130915"></script>
+<div id="externalHouse">
+    <div id="externalInput">
+        <form id="externalHouseForm">
+            <h2>
+                房子信息
+                <hr />
+            </h2>
+            
+            <div>
+                <label>出租方式：</label>
+				<input type="text" value=$house.rentType name="rentType" style="display:none">
+                #if($house.rentType==1)分租#else 整租#end
+                <label class="infoStart">发布时间：</label>
+                <input name="createdTime" type="text" style="width:100px" value=$!houseUtils.formatDate($!house.createdTime) >
+                <hr />
+            </div>
+            <div>
+                <label>省份：</label>
+                <select name="province">
+                    <option value="北京">北京</option>
+                </select>
+                <label class="infoStart">城市：</label>
+                <select name="city">
+                    <option value="朝阳" #if($house.city=="朝阳")selected#end>朝阳</option>
+                    <option value="海淀" #if($house.city=="海淀")selected#end>海淀</option>
+                    <option value="东城" #if($house.city=="东城")selected#end>东城</option>
+                    <option value="西城" #if($house.city=="西城")selected#end>西城</option>
+                    <option value="昌平" #if($house.city=="昌平")selected#end>昌平</option>
+                    <option value="顺义" #if($house.city=="顺义")selected#end>顺义</option>
+                    <option value="丰台" #if($house.city=="丰台")selected#end>丰台</option>
+                    <option value="石景山" #if($house.city=="石景山")selected#end>石景山</option>
+                    <option value="通州" #if($house.city=="通州")selected#end>通州</option>
+                    <option value="平谷" #if($house.city=="平谷")selected#end>平谷</option>
+                    <option value="怀柔" #if($house.city=="怀柔")selected#end>怀柔</option>
+                    <option value="门头沟" #if($house.city=="门头沟")selected#end>门头沟</option>
+                    <option value="房山" #if($house.city=="房山")selected#end>房山</option>
+                    <option value="大兴" #if($house.city=="大兴")selected#end>大兴</option>
+                    <option value="密云" #if($house.city=="密云")selected#end>密云</option>
+                    <option value="延庆" #if($house.city=="延庆")selected#end>延庆</option>
+                </select>
+                <a class="origin" style="margin-left: 180px" href="$!house.url" target="_blank">原始页面</a>
+            </div>
+            <div>
+                <label>地址：</label>
+                <input name="position" type="text" style="width:230px" value=$!house.position >
+                <label class="infoStart">楼层：</label>
+                <input name="floor" type="text" style="width:30px" value=$!house.floor>
+                <hr />
+            </div>
+            <div>
+                <label>设备：</label>
+                <br />
+                <label class="infoStart">
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "宽带"))checked#end value="宽带" />
+                    宽带
+                </label>
+                <label>
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "空调"))checked#end value="空调" />
+                    空调
+                </label>
+                <label>
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "冰箱"))checked#end value="冰箱" />
+                    冰箱
+                </label>
+                <label>
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "电视"))checked#end value="电视" />
+                    电视 
+                </label>
+                <label>
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "洗衣机"))checked#end value="洗衣机" />
+                    洗衣机
+                </label>
+                <label>
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "热水器"))checked#end value="热水器" />
+                    热水器
+                </label>
+				<label>
+                    <input name="facilities" type="checkbox" #if($!stringUtils.contains($!house.facilities, "电梯房"))checked#end value="电梯房" />
+                    电梯房
+                </label>
+            </div>
+            #if($house.rentType==2)
+            <div>
+                <label>价格：</label>
+                <input name="price" type="text" style="width:80px" value=$!house.price>
+                <label>元</label>
+                <label class="infoStart">面积</label>
+                <input name="area" type="text" style="width:80px" value=$!house.area>
+                <label>㎡</label>
+            </div>
+            #end
+            <div>
+                <label>房间：</label>
+                <input class="infoStart" name="roomNumber" type="text" style="width:18px" value=$!house.roomNumber>
+                <label>室</label>
+                <input class="infoStart" name="hallNumber" type="text" style="width:18px" value=$!house.hallNumber>
+                <label>厅</label>
+                <input class="infoStart" name="toiletNumber" type="text" style="width:18px" value=$!house.toiletNumber>
+                <label>卫</label>
+                <input class="infoStart" name="kitchenNumber" type="text" style="width:18px" value="1">
+                <label>厨</label>
+            </div>
+            #if($house.rentType==1)
+            <div>
+				<label>房客性别：</label>
+				<select name="requiredGender">
+					<option value="3" #if($house.requiredGender==3)selected#end>男女均可</option>
+					<option value="1" #if($house.requiredGender==1)selected#end>限男</option>
+					<option value="2" #if($house.requiredGender==2)selected#end>限女</option>
+				</select>
+            </div>
+            #end
+            <hr />
+            <div>
+                <label>电话图片：</label>
+                <img src=$!house.phoneImg />
+                <label class="infoStart">电话：</label>
+                <input name="telephone" type="text" style="width:120px" class="searchInfo" value=$!house.telephone>
+                <a class="infoStart search" href="javascript:;" url="http://www.baidu.com/s?wd=">百度</a>
+                <a class="infoStart search" href="javascript:;" url="http://www.gfsswy.com/?q=">Google</a>
+                <br />
+                <label>QQ：</label>
+                <input name="qq" type="text" style="width:120px" >
+                <label class="infoStart">微信：</label>
+                <input name="wechat" type="text" style="width:120px" >
+				<a class="infoStart verify" href="javascript:;" style="background-color:red">验证</a>
+                <hr />
+            </div>
+            <div>
+                <label>描述：</label> <br />
+                <textarea name="description" rows="5" cols="60" style="margin-left:50px">$!house.description</textarea>
+                <hr />
+            </div>
+            <h2>
+                房间信息
+                <hr />
+            </h2>
+            <div id="roomZone">
+            </div>
+            <div style="text-align:center">
+                <a id="addRoom" href="javascript:;">添加房间</a>
+                <hr />
+            </div>
+            <h2>
+                录入信息
+                <hr />
+            </h2>
+            #if ($!isCreate)
+            <div>
+                <label>房源Url：</label>
+                <input type="text" name="url" style="width: 200px" />
+                <hr />
+            </div>
+            #end
+            <div>
+                <label>录入状态：</label>
+                <select name="operationStatus">
+                    <option value="0" selected>通过</option>
+                    <option value="2">丢弃</option>
+                </select>
+                <label class="infoStart">质量分：</label>
+                <input type="text" name="rank" value="50" style="width: 50px"/>
+            </div>
+            <div>
+                <label>录入记录：</label> <br />
+                <textarea name="comment" rows="5" cols="60" style="margin-left:50px"></textarea>
+                <hr />
+            </div>
+            
+            <div style="text-align: center;padding-bottom: 10px;">
+                <a id="submitButton" href="javascript:;" style="color:red;background-color:green;margin-bottom:10px">提交房源</a>
+            </div>
+        </form>
+    </div>
+    <div id="hiddenRoom" class="room" style="display:none">
+        <input type="text" style="display:none" name="roomId" class="roomId">
+        <div>
+            <label>类型：</label>
+            <select class="needRoomNumber roomType" name="roomType">
+                <option value="0" #if(!$house.roomType)selected#end>未知</option>
+                <option value="1" #if($house.roomType==1)selected#end>主卧</option>
+                <option value="2" #if($house.roomType==2)selected#end>次卧</option>
+                <option value="3" #if($house.roomType==3)selected#end>客厅</option>
+                <option value="4" #if($house.roomType==4)selected#end>厨房</option>
+                <option value="5" #if($house.roomType==5)selected#end>卫生间</option>
+                <option value="6" #if($house.roomType==6)selected#end>其他</option>
+            </select>
+        </div>
+                
+        #if($house.rentType==1)
+        <div>
+            <label>朝向： </label>
+            <input class="needRoomNumber" name="roomOrientation" type="text" style="width:30px" value=$!house.orientation>
+            <label class="infoStart">房间面积：</label>
+            <input class="needRoomNumber" name="roomArea" type="text" style="width:30px" value=$!house.area>
+            <label>㎡</label>
+        </div>
+                
+        <div>
+            <label>分租价格：</label>
+            <input class="needRoomNumber" name="roomPrice" type="text" style="width:50px" value=$!house.price>
+            <label>元</label>
+            <label class="infoStart">当前：</label>
+            <select class="needRoomNumber" name="roomStatus">
+                <option value="0" selected>待租</option>
+                <option value="1">已租</option>
+            </select>
+        </div>
+        
+        #end
+        <div>
+            <a class="picSelector" href="javascript:;">收起图片</a>
+            <a class="removeRoom" href="javascript:;" style="float:right;margin-right:20px">删除房间</a>
+            <input type="text" class="picInfo needRoomNumber" name="imageIds" style="display:none" value=$!house.imageIds>
+        </div>
+        <hr />
+    </div>
+    <div id="hiddenPic" class="imgDiv" style="display:none">
+        #foreach($img in $houseUtils.formatImages($!house.imageIds))
+        <span class="oneImg">
+            <img src=$!img style="width:220px"/>
+            <a class="removeImg" href="javascript:;">删除</a>
+        </span>
+        #end
+        <br />
+        <input class="addPic" type="file" name="files"/>
+    </div>
+    <span class="oneImg" style="display:none" id="hiddenOneImg">
+        <img style="width:220px"/>
+        <a class="removeImg" href="javascript:;">删除</a>
+    </span>
+</div>
+<script type="text/javascript">
+    function updatePicInfo(room) {
+        var picstrs = "";
+        room.find(".oneImg img").each(function(){
+            var picstr = $(this).attr("src");
+            if (picstrs != "") {
+                picstrs += "|";
+            }
+            picstrs += picstr;
+        });
+        room.find(".picInfo").attr("value", picstrs);
+    }
+    function addPicForRoom(room) {
+        var pic = $("#externalHouse #hiddenPic").clone();
+        pic.removeAttr("id");
+        room.find(".picSelector").parent().append(pic);
+        pic.find(".oneImg .removeImg").click(function() {
+            $(this).closest(".oneImg").remove();
+            updatePicInfo(room);
+        });
+        pic.show();
+        pic.find(".addPic").fileupload({
+            url: "#url('/admin/external/addPic/ext')$!house.id",
+            done: function(e, data) {
+                    data = _json(data.result);
+                    if (data.status == 200) {
+                        var oneImg = $("#hiddenOneImg").first().clone();
+                        oneImg.find("img").attr("src", data.message);
+                        oneImg.show();
+                        pic.prepend(oneImg);
+                        oneImg.find(".removeImg").click(function() {
+                            $(this).closest(".oneImg").remove();
+                            updatePicInfo(room);
+                        });
+                        updatePicInfo(room);
+                    } else {
+                        alert("上传图片失败");
+                    }
+                }
+         });
+    }
+    var roomNum = 0;
+    function addRoom() {
+        var room = $("#externalHouse #hiddenRoom").clone();
+        room.removeAttr("id");
+        room.find(".roomId").attr("value",roomNum+"");
+        $("#externalHouse #roomZone").append(room);
+        addPicForRoom(room);
+        room.find(".needRoomNumber").each(function(){
+            var name = $(this).attr("name");
+            $(this).attr("name", name + "_" + roomNum);
+        });
+        room.show();
+        room.find(".picSelector").click(function() {
+            if ($(this).text()=="展开图片") {
+                $(this).parent().find(".imgDiv").show();
+                $(this).text("收起图片");
+            } else if ($(this).text()=="收起图片") {
+                $(this).parent().find(".imgDiv").hide();
+                $(this).text("展开图片");
+            }
+        });
+        room.find(".removeRoom").click(function() {
+            room.remove();
+        });
+        roomNum++;
+    }
+    addRoom();
+    $("#externalHouse #addRoom").click(addRoom);
+    $("#externalHouse .search").click(function(){
+        var content = $(this).parent().find(".searchInfo").val();
+        var url = $(this).attr("url");
+        window.open(url + content);
+    });
+    $("#externalHouse .verify").click(function(){
+		var param = {};
+        $(this).parent().find("input").each(function() {
+			param[$(this).attr("name")] = $(this).val();
+		});
+        $.post("#url('/admin/external/verify')", param, function(data) {
+            data = _json(data);
+            alert(data.message);
+        });
+    });
+    $("#externalHouse #submitButton").click(function(){
+        $.ajax({
+            cache: false,
+            type: "post",
+            url: "#url('/admin/external/submit/')#if($!house.id)ext$!house.id#end",
+            data: $("#externalHouse #externalHouseForm").serialize(),
+            async: true,
+            success: function(data) {
+                data = _json(data);
+                if (data.status==200) {
+                    if (data.houseId==-1) {
+                        alert("已放弃房源，确定后页面将自动关闭");
+                        window.close();
+                    } else {
+                        location.href="#url('/admin/external/show/h')" + data.houseId;
+                    }
+                } else {
+                    alert(data.message);
+                }
+            }
+        });
+    });
+</script>

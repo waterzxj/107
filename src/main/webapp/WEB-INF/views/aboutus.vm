@@ -1,0 +1,813 @@
+#parse("_style.vm")
+
+#set($pageTitle="关于我们")
+
+#if($type == 1)
+#set($bannerTitle = "有房待租")
+#set($bannerDesc = "面向60万高素质学生群体，迅速找到心仪租客")
+#set($message = "请简单描述下房子信息，我们会在一个工作日内与你联系（必填）")
+#set($contact1 = "手机号码（必填）")
+#set($contact2 = "其他联系方式")
+#set($contact2Value = "$!userUtils.getUser($request, $response).email")
+#set($successDesc = "感谢你的支持，我们的会在一个工作日内与你联系")
+#set($successButton = "去看看我们的微博")
+#set($successHref = "http://weibo.com/107room")
+#set($successTarget = "target='_blank'")
+
+##elseif($type == 2)
+
+#else
+#set($bannerTitle = "关于我们")
+#set($bannerDesc = "团队 产品 公司")
+#set($message = "你想说的话（必填）")
+#set($contact1 = "邮箱（必填）")
+#set($contact1Value = "$!userUtils.getUser($request, $response).email")
+#set($contact2 = "其他联系方式")
+#set($successDesc = "感谢你的反馈，我们会尽快处理")
+#set($successButton = "去找房")
+#set($successHref = "#url('/house/search')")
+#end
+
+<link href="#staticUrl('css/flat-ui.css')" rel="stylesheet">
+<style>
+    .aboutsContainer {
+        padding: 20px 0;
+        position: relative;
+    }
+	
+    /*
+    **
+    *********************************navigation*********************************
+    **
+    */
+
+    .navigation {
+        text-align: center;
+        position: fixed;
+        left: 85px;
+        top: 160px;
+    }
+
+    .navigation .navigationSeg {
+        position: absolute;
+        width: 36px;
+        height: 70px;
+        display: block;
+    }
+    .seg1 {
+        top: 0;
+    }
+    .seg2 {
+        top: 70px;
+    }
+    .seg3 {
+        top: 140px;
+    }
+
+    .navigation .navigationSeg:hover {
+        opacity: 0.7;
+    }
+
+    .navigationText {
+        font-size: 13px;
+        padding-top: 38px;
+        padding-left: 3px;
+        position: absolute;
+    }
+    .textInit {
+        display: block;
+        color: #9C9C9C;
+    }
+    .textActive {
+        display: none;
+        color: #1fa38c;
+        font-weight: bold;
+    }
+
+    .iconInit {
+        display: inline;
+        position: absolute;
+        left: 0;
+    }
+    .iconActive {
+        display: none;
+        position: absolute;
+        left: 0;
+    }
+    
+    .aboutsDiv {
+        position: relative;
+        left: 0;
+        background-color: white;
+        width: 100%;
+        height: 435px;
+        margin-bottom: 20px;
+    }
+
+    /*
+    **
+    *********************************part1*********************************
+    **
+    */
+
+    .teamContainer {
+        position: relative;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    .teamPannel {
+        position: relative;
+        left: 0;
+        width: 100%;
+    }
+
+    .desc1 {
+        top: 30px;
+    }
+    .desc2 {
+        top: 163px;
+    }
+    .desc3 {
+        top: 296px;
+    }
+
+    .teamPannel .teamIcon {
+        position: absolute;
+        left: 65px;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        width: 200px;
+        text-align: left;
+    }
+    .teamPannel .teamIcon .hint {
+        font-size: 13px;
+        text-align: center;
+        color: #1fa38c;
+        font-weight: 900;
+        line-height: 10px;
+    }
+	
+    .teamPannel .teamIcon img {
+        height: 90px;
+        width: 90px;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+    }
+
+    .teamPannel .teamIcon p {
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        position: relative;
+        bottom: 40px;
+        padding-left: 10px;
+        color: #9C9C9C;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .teamPannel .teamIntroduce {
+        position: absolute;
+        left: 340px;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        text-align: left;
+    }
+
+    .teamPannel .teamIntroduce .teamText {
+        position: relative;
+    }
+
+    .teamPannel .teamIntroduce .teamEdu {
+        position: relative;
+        width: 165px;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        color: #ebac40;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 22px;
+    }
+
+    .desc1 .teamIntroduce .teamEdu {
+        top: 0px;
+    }
+    .desc2 .teamIntroduce .teamEdu {
+        top: 12px;
+    }
+    .desc3 .teamIntroduce .teamEdu {
+        bottom: 10px;
+    }
+
+    .teamPannel .teamIntroduce .teamDes {
+        position: relative;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        width: 432px;
+        margin-left: 60px;
+        color: #9C9C9C;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 22px;
+    }
+    
+    .desc1 .teamIntroduce .teamDes {
+    	top: 13px;
+    }
+    .desc2 .teamIntroduce .teamDes {
+        top: 12px;
+    }
+    .desc3 .teamIntroduce .teamDes {
+        top: 10px;
+    }
+
+    .teamPannel .teamIntroduce .teamMotto {
+        margin-top: 12px;
+        color: #1fa38c;
+        font-size: 12px;
+        font-weight: normal;
+        font-style: italic;
+        line-height: 18px;
+        text-align: right;
+    }
+
+    /*
+    **
+    *********************************part2*********************************
+    **
+    */
+
+    .productWap {
+        position: absolute;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        text-align: left;
+    }
+
+    .productPannel1 {
+        position: absolute;
+        top: 35px;
+        width: 100%;
+        height: 120px;
+    }
+
+    .productPannel1 .productWeb {
+        position: absolute;
+        left: 65px;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+    }
+
+    .productPannel1 .productApp {
+        position: absolute;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        left: 560px;
+    }
+
+    .productPannel1 .pannel1Icon {
+        float: left;
+        width: 80px;
+        text-align: center;
+    }
+    
+    .productPannel1 .pannel1Icon:hover {
+        opacity: 0.8;
+    }
+
+    .productPannel1 .pannel1Icon a p {
+        position: relative;
+        top: 5px;
+        color: #1fa38c;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .productPannel1 .pannel1Text {
+        position: absolute;
+        left: 100px;
+        width: 480px;
+    }
+
+    .productPannel1 .pannel1Text .pannel1Slogon {
+        color: #F6B96F;
+        font-size: 18px;
+        font-weight: normal;
+        margin-top: 12px;
+    }
+
+    .productPannel1 .pannel1Text .pannel1Introduce {
+        color: #9C9C9C;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 23px;
+        margin-top: 20px;
+    }
+
+    .productText {
+        width: 100%;
+        position: absolute;
+        top: 190px;
+        text-align: center;
+    }
+
+    .productText p {
+        color: #F6B96F;
+        font-size: 13px;
+        font-weight: normal;
+        line-height: 21px;
+    }
+
+    .productPannel2 {
+        position: absolute;
+        top: 240px;
+        left: 220px;
+    }
+
+    .productPannel2 .pannel2Part {
+        position: relative;
+        width: 100%;
+    }
+
+    .productPannel2 .pannel2Part a {
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        margin-bottom: 15px;
+    }
+
+    .productPannel2 .pannel2Part a:hover {
+        opacity: 0.8;
+    }
+
+    .productPannel2 .pannel2Part .pannel2Slogon {
+        position: absolute;
+        top: 0px;
+        left: 60px;
+        width: 140px;
+        font-size: 12px;
+        font-weight: 900;
+        color: #1fa38c;
+    }
+
+    .productPannel2 .pannel2Part .pannel2Introduce {
+        position: absolute;   
+        left: 85px;
+        top: 20px;
+        width: 650px;
+        color: #9C9C9C;
+        font-size: 12px;
+        font-weight: normal;
+    }
+
+    /*
+    **
+    *********************************part3*********************************
+    **
+    */
+
+    .companyWap {
+        position: absolute;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+    }
+
+    .companyLogo {
+        position: relative;
+        width: 100%;
+        top: 22px;
+    }
+
+    .companyLogo span {
+        padding-left: 70px;
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        background: url("#staticUrl('image/icon/abouts/company-big.png')") no-repeat scroll 0 center transparent;
+        color: #000000;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 54px;
+        margin-bottom: 17px;
+    }
+
+    .companyText {
+        position: relative;
+        top: 7px;
+        margin-bottom: 12px;
+    }
+
+    .companyText .companyTextTitle {
+        color: #1fa38c;
+        font-size: 13px;
+        font-weight: 900;
+    }
+
+    .companyText .companyTextIntroduce {
+        color: #9C9C9C;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 21px;
+        margin-top: 5px;
+    }
+
+    .companyText .companyTextIntroduce a:hover {
+        color: #F6B96F;
+        text-decoration: underline;
+    }
+
+    .companyText .companyUsdo {
+        color: #F6B96F;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 17px;
+        padding-top: 6px;
+    }
+
+    .companyContact {
+        top: 12px;
+    }
+</style>
+
+	<div class="aboutsContainer" id="aboutsContainer">
+        <div class="navigation" id="navigation">
+            <a class="navigationSeg seg1" href="javascript: ;">
+                <img class="iconInit" src="#staticUrl('image/icon/abouts/team2.png')" />
+                <img class="iconActive" src="#staticUrl('image/icon/abouts/team.png')" />
+                <p class="navigationText textInit">团队</p>
+                <p class="navigationText textActive">团队</p>
+            </a>
+            <a class="navigationSeg seg2" href="javascript: ;">
+                <img class="iconInit" src="#staticUrl('image/icon/abouts/product2.png')" />
+                <img class="iconActive" src="#staticUrl('image/icon/abouts/product.png')" />
+                <p class="navigationText textInit">产品</p>
+                <p class="navigationText textActive">产品</p>
+            </a>
+            <a class="navigationSeg seg3" href="javascript: ;">
+                <img class="iconInit" src="#staticUrl('image/icon/abouts/company2.png')" />
+                <img class="iconActive" src="#staticUrl('image/icon/abouts/company.png')" />
+                <p class="navigationText textInit">公司</p>
+                <p class="navigationText textActive">公司</p>
+            </a>
+        </div>
+        <div class="aboutsDiv">
+            <div class="teamContainer">
+                <div class="teamPannel desc1">
+                    <div class="teamIcon">
+                        <img src="#staticUrl('image/icon/abouts/weiwei.png')" />
+                        <p>首席执行官</p>
+                    </div>
+                    <div class="teamIntroduce">
+                        <div class="teamText">
+                            <p class="teamEdu">
+                                剑桥大学&nbsp;&nbsp;&nbsp;土地经济学硕士<br/>
+                                北京大学&nbsp;&nbsp;&nbsp;经济学学士
+                            </p>
+                            <p class="teamDes">
+                                两年全球地产投资并购经验<br/>
+                                首创中介经济学（Brokonomics）概念<br/>
+                                用.NET框架独立全栈开发动态网站
+                            </p>
+                        </div>
+                        <p class="teamMotto">
+                            “We build too many walls and not enough bridges”<br/>
+                            ——Sir Isaac Newton
+                        </p>
+                    </div>
+                </div>
+                <div class="teamPannel desc2">
+                    <div class="teamIcon">
+                        <img src="#staticUrl('image/icon/abouts/jinyu.png')" />
+                        <p>产品·公关总监</p>
+                    </div>
+                    <div class="teamIntroduce">
+                        <div class="teamText">
+                            <p class="teamEdu">
+                                香港大学&nbsp;&nbsp;&nbsp;金融学硕士<br/>
+                                北京大学&nbsp;&nbsp;&nbsp;经济学硕士<br/>
+                                北京大学&nbsp;&nbsp;&nbsp;经济学学士
+                            </p>
+                            <p class="teamDes">
+                500强央企两年产业投资及行业研究经验<br/>
+                                曾就职于麦肯锡咨询、奥美公关<br/>
+                                北京大学首届社会企业创业项目大赛冠军
+                            </p>
+                        </div>
+                        <p class="teamMotto">
+                            "流行易逝，风格永存"<br/>——可可·香奈儿
+                        </p>
+                    </div>
+                </div>
+                <div class="teamPannel desc3">
+                    <div class="teamIcon">
+                        <img src="#staticUrl('image/icon/abouts/yanghao.png')" />
+                        <p>首席技术官</p>
+                    </div>
+                    <div class="teamIntroduce">
+                        <div class="teamText">
+                            <p class="teamEdu">
+                                北京大学&nbsp;&nbsp;&nbsp;计算机学士
+                            </p>
+                            <p class="teamDes">
+                                三年顶级互联网公司核心研发经验<br/>
+            NOI金牌保送北京大学计算机系<br/>
+                                国际大学生程序设计竞赛亚洲区金牌，全球总决赛14名
+                            </p>
+                        </div>
+                        <p class="teamMotto">
+                            "做得到的，我才会说"<br/>——迪克·杨
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="aboutsDiv">
+            <div class="productWap">
+                <div class="productPannel1">
+                    <div class="productWeb">
+                        <div class="pannel1Icon">
+                            <a href="/">
+                                <img src="#staticUrl('image/icon/abouts/webIcon.png')" />
+                                <p>网站</p>
+                            </a>
+                        </div>
+                        <div class="pannel1Text">
+                            <p class="pannel1Slogon">让租房真实而简单</p>
+                            <p class="pannel1Introduce">
+                                直接连接租客与房东的真实智能租房平台<br/>
+                                专注于北京高校毕业生和年轻白领市场<br/>
+                                定位无中介，每间房都经过智能核实，每位租客均通过身份认证
+                            </p>
+                        </div>
+                    </div>
+                    <div class="productApp">
+                        <div class="pannel1Icon">
+                            <a href="/weixin">
+                                <img src="#staticUrl('image/icon/abouts/appIcon.png')" />
+                                <p>微信APP</p>
+                            </a>
+                        </div>
+                        <div class="pannel1Text">
+                            <p class="pannel1Slogon">随时随地，轻松找房</p>
+                            <p class="pannel1Introduce">
+                                基于微信的移动端产品，充分发挥微信的联结性与便捷性<br/>
+                                订阅感兴趣的地址/交通线路后，附近有新房时会即刻推送<br/>
+                                让找房者不错过任何未来可能的家
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="productText">
+                    <p>
+                        「107间」意为千万（10的7次方）间，取自杜甫的诗句“安得广厦千万间，大庇天下寒士俱欢颜。”
+                    </p>
+                </div>
+                <div class="productPannel2">
+                    <div class="pannel2Part">
+                        <a href="/weekly">
+                            <img src="#staticUrl('image/icon/abouts/icon-weekly.png')" />
+                        </a>
+                        <p class="pannel2Slogon">北京租房周刊</p>
+                        <p class="pannel2Introduce">
+                            北京订阅量最大的租房生活电子杂志，综合非中介出租信息与各类租房生活攻略，为北漂的年轻人送上一份归属感
+                        </p>
+                    </div>
+                    <div class="pannel2Part">
+                        <a href="/totoro">
+                            <img src="#staticUrl('image/icon/abouts/icon-totoro.png')" />
+                        </a>
+                        <p class="pannel2Slogon">龙猫中介搜索</p>
+                        <p class="pannel2Introduce">
+                            国内首个独立的中介搜索、查询及举报引擎，用大家的力量建立更洁净的租房环境
+                        </p>
+                    </div>
+                    <div class="pannel2Part">
+                        <a href="http://107room.lofter.com/post/27e0bc_100b290" target="_blank">
+                            <img src="#staticUrl('image/icon/abouts/totoro-rotate.png')" />
+                        </a>
+                        <p class="pannel2Slogon">龙猫中介识别系统</p>
+                        <p class="pannel2Introduce">
+                            基于最前沿技术自主研发的智能中介识别和过滤系统，不断更新升级中，迄今从未有遗漏中介的用户举报
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aboutsDiv"  style="margin-bottom: 0;">
+            <div class="companyWap">
+                <div class="companyLogo">
+                    <span>北京六度草堂网络科技有限公司</span>
+                </div>
+                <div class="companyText">
+                    <p class="companyTextTitle">简介</p>
+                    <p class="companyTextIntroduce">
+                        我们是一家前沿互联网公司，致力于“租房4.0”产品和服务的提供。主要产品「107间」是直接连接租客与房东的真实智能租房平台<br/>
+                        核心团队为85后，毕业于北京大学、剑桥大学、香港大学等国内外名校，发展至今已拥有十余人的稳定团队
+                    </p>
+                </div>
+                <div class="companyText">
+                    <p class="companyTextTitle">Logo·名称·文化</p>
+                    <p class="companyTextIntroduce">
+                        logo由斐波那契黄金分割曲线演化而来，从起点经过6个节点不断延伸。代表六度空间理论，即人与人之间的联结性，以及形成关系后的无限可能<br/>
+                        “六度草堂”中草堂取自杜甫草堂，杜甫的诗句“安得广厦千万间，大庇天下寒士俱欢颜”是我们所追求的理想
+                    </p>
+                </div>
+                <div class="companyText">
+                    <p class="companyTextTitle">产品愿景</p>
+                    <p class="companyTextIntroduce">
+                        租房1.0——传统中介，利用地面门店获取房源并通过信息垄断牟利<br/>
+                        租房2.0——分类网站，用互联网提升了部分效率，但信息混乱质量低劣，也没有延伸到线下<br/>
+                        租房3.0——打着互联网旗号但本质依然通过地面人员联结租房双方的产品，包括传统中介从线下到线上的改变                    
+                    </p>
+                    <p class="companyUsdo">我们的做法：租房4.0——重视信息“真实”与交互“智能”，从线上大量的真实有效信息出发，用移动互联、智能匹配的方式让用户更简单地租房</p>
+                </div>
+                <div class="companyText companyContact">
+                    <p class="companyTextTitle">联系方式</p>
+                    <p class="companyTextIntroduce">
+                    商务洽谈&nbsp;&nbsp;&nbsp;&nbsp;
+                    	<a href="mailto:weiwei@107room.com">weiwei@107room.com</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    媒体合作&nbsp;&nbsp;&nbsp;&nbsp;
+                    	<a href="mailto:jinyu@107room.com">jinyu@107room.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+#function_containerHeight()
+<script type="text/javascript">
+	var naTop = 0, naLeft = 0, navLocation = 0, judge = true;
+	function updateNavigation() {
+	    naLeft = $("#aboutsContainer").offset().left - 50;
+	    var aboutsTop = $(".aboutsDiv").eq(0).offset().top;
+	    var seg1 = $('.aboutsDiv').eq(1).offset().top - 125;
+	    var seg2 = $('.aboutsDiv').eq(2).offset().top - 125;
+	
+	    if ($(window).scrollTop() <= aboutsTop) {
+	        naTop = aboutsTop - $(window).scrollTop() + 40;
+	
+	        $('#navigation').css({
+	            left: naLeft,
+	            top: naTop
+	        });
+	    } else {
+	        $('#navigation').css({
+	            left: naLeft,
+	            top: 40
+	        });
+	    }
+	    
+	    if (!judge) {
+	        return ;
+	    }
+	
+	    if ($(window).scrollTop() <= seg1) {
+	        switchImage(0);
+	    } else if ($(window).scrollTop() <= seg2 && $(window).scrollTop() > seg1) {
+	        switchImage(1);
+	    } else if ($(window).scrollTop() > seg2) {
+	        switchImage(2);
+	    }
+	};
+	
+	function onResize() {
+	    updateNavigation();
+	}
+	
+	function switchImage(location) {
+	    if (location == 0) {
+	        if ( !$('.iconInit').eq(0).is(':hidden') ) {
+	            $('.iconInit').eq(0).fadeOut('normal');
+	            $('.iconActive').eq(0).fadeIn('normal');
+	        }
+	
+	        if ( !$('iconActive').eq(1).is(':hidden') ) {
+	            $('.iconActive').eq(1).fadeOut('normal');
+	            $('.iconInit').eq(1).fadeIn('normal');
+	        }
+	
+	        if ( !$('iconActive').eq(2).is(':hidden') ) {
+	            $('.iconActive').eq(2).fadeOut('normal');
+	            $('.iconInit').eq(2).fadeIn('normal');
+	        }
+	
+	        if ( !$('.textInit').eq(0).is(':hidden') ) {
+	            $('.textInit').eq(0).fadeOut('normal');
+	            $('.textActive').eq(0).fadeIn('normal');
+	        }
+	
+	        if ( !$('.textActive').eq(1).is(':hidden') ) {
+	            $('.textActive').eq(1).fadeOut('normal');
+	            $('.textInit').eq(1).fadeIn('normal');
+	        }
+	
+	        if ( !$('.textActive').eq(2).is(':hidden') ) {
+	            $('.textActive').eq(2).fadeOut('normal');
+	            $('.textInit').eq(2).fadeIn('normal');
+	        }
+	    } else if (location == 1) {
+	        if ( !$('.iconInit').eq(1).is(':hidden') ) {
+	            $('.iconInit').eq(1).fadeOut('normal');
+	            $('.iconActive').eq(1).fadeIn('normal');
+	        }
+	        if ( !$('iconActive').eq(0).is(':hidden') ) {
+	            $('.iconActive').eq(0).fadeOut('normal');
+	            $('.iconInit').eq(0).fadeIn('normal');
+	        }
+	        if ( !$('iconActive').eq(2).is(':hidden') ) {
+	            $('.iconActive').eq(2).fadeOut('normal');
+	            $('.iconInit').eq(2).fadeIn('normal');
+	        }
+	
+	        if ( !$('.textInit').eq(1).is(':hidden') ) {
+	            $('.textInit').eq(1).fadeOut('normal');
+	            $('.textActive').eq(1).fadeIn('normal');
+	        }
+	        if ( !$('.textActive').eq(0).is(':hidden') ) {
+	            $('.textActive').eq(0).fadeOut('normal');
+	            $('.textInit').eq(0).fadeIn('normal');
+	        }
+	        if ( !$('.textActive').eq(2).is(':hidden') ) {
+	            $('.textActive').eq(2).fadeOut('normal');
+	            $('.textInit').eq(2).fadeIn('normal');
+	        }
+	    } else if (location == 2) {
+	        if ( !$('.iconInit').eq(2).is(':hidden') ) {
+	            $('.iconInit').eq(2).fadeOut('normal');
+	            $('.iconActive').eq(2).fadeIn('normal');
+	        }
+	        if ( !$('iconActive').eq(0).is(':hidden') ) {
+	            $('.iconActive').eq(0).fadeOut('normal');
+	            $('.iconInit').eq(0).fadeIn('normal');
+	        }
+	        if ( !$('iconActive').eq(1).is(':hidden') ) {
+	            $('.iconActive').eq(1).fadeOut('normal');
+	            $('.iconInit').eq(1).fadeIn('normal');
+	        }
+	
+	        if ( !$('.textInit').eq(2).is(':hidden') ) {
+	            $('.textInit').eq(2).fadeOut('normal');
+	            $('.textActive').eq(2).fadeIn('normal');
+	        }
+	        if ( !$('.textActive').eq(0).is(':hidden') ) {
+	            $('.textActive').eq(0).fadeOut('normal');
+	            $('.textInit').eq(0).fadeIn('normal');
+	        }
+	        if ( !$('.textActive').eq(1).is(':hidden') ) {
+	            $('.textActive').eq(1).fadeOut('normal');
+	            $('.textInit').eq(1).fadeIn('normal');
+	        }
+	    }
+	}
+	
+    $(function() {
+        updateNavigation();
+    	
+        $('.navigationSeg').each(function (location) {
+            var index = $('.navigationSeg').index($(this));
+            var distance = $(".aboutsDiv").eq(index).offset().top - 60;
+            var pageScroll = $(document).height()-$(window).height();
+            if (index == 0) {
+                distance = $(".aboutsDiv").eq(0).offset().top - 13;
+            }
+            if (distance > pageScroll) {
+                distance = pageScroll + 10;
+            }
+        	
+            $(this).click(function () {
+                judge = false;
+                navLocation = location;            
+                setTimeout("switchImage(navLocation)", 100);
+                var time = 100 + Math.abs($(window).scrollTop() - distance);          
+                $("body,html").animate({
+                        "scrollTop": distance
+                    }, time, function(){
+                        judge = true;
+                });
+            });
+        });
+
+        $(window).scroll(function () {
+            updateNavigation();
+        });
+        
+        $(window).resize(onResize);
+    });
+</script>

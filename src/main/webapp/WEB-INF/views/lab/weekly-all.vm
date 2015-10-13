@@ -1,0 +1,27 @@
+#parse("_style.vm")
+
+#set($pageTitle="北京租房周刊 - 查看往期")
+#set($bannerTitle="北京租房周刊")
+#set($bannerDesc="第一时间获取丰富个人出租信息")
+
+<style>
+    #content {
+        height: 1010px;
+    }
+    #all {
+        width: 100%;
+        height: 100%;
+    }
+    .loading {
+        margin-top: 200px;
+    }
+</style>
+
+<img class="loading" src="#staticUrl('image/icon/loading.gif')" />
+<iframe id="all" frameborder="0" scrolling="auto" src="http://us3.campaign-archive2.com/home/?u=eef82249bfdf4f513fa3dd1ff&id=fcfc28f40b"></iframe>
+
+<script type="text/javascript">
+    $('#all').load(function() {
+        $('.loading').hide();
+    });
+</script>

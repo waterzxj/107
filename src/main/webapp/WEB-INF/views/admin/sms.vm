@@ -1,0 +1,61 @@
+#set($pageTitle="短信发送")
+
+<style>
+#smsDiv {
+text-align: left;
+}
+#smsDiv .tel {
+position: relative;
+padding: 50px 0 20px 0;
+}
+#smsDiv .tel label {
+position: absolute;
+}
+#smsDiv .tel input {
+margin-left: 50px;
+width: 150px;
+}
+#smsDiv .message {
+position: relative;
+}
+#smsDiv .message label {
+position: absolute;
+top: 0px;
+}
+#smsDiv .message textarea {
+margin-left: 50px;
+width: 400px;
+height: 200px;
+}
+#smsDiv .submit {
+margin: 20px 0 20px 0;
+background-color: yellow;
+}
+#smsDiv input, #smsDiv textarea, #smsDiv button {
+border: 1px solid;
+}
+</style>
+
+<div id="smsDiv">
+    <div class="tel">
+        <label>电话</label>
+        <input type="text" name="tel"/>
+    </div>
+    <div class="message">
+        <label>短信</label>
+        <textarea name="message">Hi，我们在网上看到你的出租信息，想转发至107间让更多人看到，如不同意请回复告知。107间是北京领先的无中介智能租房平台，点击链接即可进入107间修改信息</textarea>
+    </div>
+    <button class="submit" type="button">发送短信</button>
+</div>
+    
+<script>
+    $("#smsDiv .submit").click(function() {
+        var param = {
+            tel: $("#smsDiv .tel input").val(),
+            message: $("#smsDiv .message textarea").val(),
+        };
+        $.post("#url('/admin/sms/submit')", param, function(result){
+            alert(result);
+          });
+    });
+</script>

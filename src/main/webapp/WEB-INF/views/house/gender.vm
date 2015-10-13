@@ -1,0 +1,68 @@
+<div class="userinfoWidget" content="$!user.gender">
+    <div class="key userinfoComponent" style="opacity: 0.15">
+        <span>性别</span>
+    </div>
+    <div class="value">
+    	<ul class="genderWidget" style='position:absolute; left:42px; top:15px;'>
+            <a herf="javascript:;">
+                <li class="userinfoComponent" style='position:absolute; left: 0px; top: 0px; width: 80px; height: 40px; z-index:11;' info="男"></li>
+            </a>
+        	<a herf="javascript:;">
+        		<li class="userinfoComponent" style='position:absolute; left: 0px; top: 40px; width: 80px; height: 40px; z-index:11;' info="女"></li>
+        	</a>
+        	<li style='position:absolute; left: 0px; top: 0px; width: 80px; height: 80px;
+        		background:url("/static/image/userinfo/gender.png"); opacity: 0.15; z-index:10;'></li>
+        	<li class="male" style='position:absolute; left: 0px; top: 0px; width: 80px; height: 80px;
+        		background:url("/static/image/userinfo/male.png"); opacity: 0;' z-index:9;></li>
+        	<li class="female" style='position:absolute; left: 0px; top: 0px; width: 80px; height: 80px;
+        		background:url("/static/image/userinfo/female.png"); opacity: 0;' z-index:9;></li>
+        	<div style='position: absolute; left: 30px; top: 20px;'>
+                <input class="gender" type="text" style="width: 22px; font-size: 20px; border: none !important; color: ${mainColor}; font-weight:bold;" 
+					value="$!user.gender" validate="length1-" readonly/>
+        	</div>
+       </ul>
+    </div>
+</div>
+<script>
+	function showGender(v) {
+		if (v == "男") {
+			$(".genderWidget .male").css("opacity", "1");
+			$(".genderWidget .female").css("opacity", "0.2");
+		} else if (v == "女") {
+			$(".genderWidget .male").css("opacity", "0.2");
+			$(".genderWidget .female").css("opacity", "1");
+		} else {
+			$(".genderWidget .male").css("opacity", "0");
+			$(".genderWidget .female").css("opacity", "0");
+		}
+		$(".genderWidget input").val(v);
+	}
+	$(".genderWidget .userinfoComponent").hover(function(){
+		var v = $(this).attr("info");
+		showGender(v);
+		var selectedV = $(".genderWidget").closest(".userinfoWidget").attr("content");
+		if (selectedV == "") {
+			$(".genderWidget").closest(".userinfoWidget").find(".key").css("opacity", "0.35");
+		}
+	}, function(){
+		var selectedV = $(".genderWidget").closest(".userinfoWidget").attr("content");
+		showGender(selectedV);
+		if (selectedV == "") {
+			$(".genderWidget").closest(".userinfoWidget").find(".key").css("opacity", "0.15");
+		}
+	});
+	$(".genderWidget .userinfoComponent").click(function(){
+		var v = $(this).attr("info");
+		$(".genderWidget").closest(".userinfoWidget").attr("content", v);
+		showGender(v);
+		$(".genderWidget").closest(".userinfoWidget").find(".key").css("opacity", "1");
+	});
+	//init
+	{
+		var v = $(".genderWidget").closest(".userinfoWidget").attr("content");
+		if (v != "") {
+			showGender(v);
+			$(".genderWidget").closest(".userinfoWidget").find(".key").css("opacity", "1");
+		}
+	}
+</script>

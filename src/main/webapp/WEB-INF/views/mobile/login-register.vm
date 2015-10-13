@@ -1,0 +1,253 @@
+#mobile()
+
+<style>
+#logRegCard .tipArrowUp {
+border-bottom: 8px solid white;
+top: 30px;
+}
+#logRegCard .cardView {
+height: 90%;
+margin: 0 auto;
+width: 100%;
+}
+#regCard .genderBox {
+top: 12%;
+height: 50px;
+text-align: center;
+}
+#regCard .genderBox a {
+display: inline-block;
+width: 50px;
+height: 50px;
+}
+#regCard .genderBox a.female {
+margin-right: 39px;
+}
+#regCard .genderBox a.male {
+margin-left: 39px;
+}
+#regCard .female {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -150px -47px transparent;
+}
+#regCard .female.active {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -50px -47px transparent;
+}
+#regCard .male {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -200px -47px transparent;
+}
+#regCard .male.active {
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll -100px -47px transparent;
+}
+#regCard .protocol {
+bottom: 5%;
+font-size: 12px;
+position: absolute;
+text-align: center;
+width: 100%;
+}
+#regCard .protocol a{
+color: ${lightColor};
+}
+</style>
+<div id="logRegCard" class="card">
+    <div class="header">
+        <div class="line"></div>
+        <div class="nav">
+            <a class="login active" href="javascript:;">登&nbsp;&nbsp;录</a>
+            <a class="reg inactive" href="javascript:;">注&nbsp;&nbsp;册</a>
+            <div class="tipArrow tipArrowUp"></div>
+        </div>
+    </div>
+    <div class="cardView">
+        <div id="logCard" class="card" menu="login">
+            <div class="inputBox">
+                <div class="inputLine">
+                    <label class="username"></label>
+                    <input class="username" type="text" placeholder="邮箱/用户名">
+                </div>
+                <div class="inputLine">
+                    <label class="password"></label>
+                    <input class="password" type="password" placeholder="密码">
+                </div>
+            </div>
+        </div>
+        <div id="regCard" class="card" menu="reg">
+            <div class="genderBox inputBox">
+                <a gender="2" class="female" href="javascript:;"></a>
+                <a gender="1" class="male" href="javascript:;"></a>
+            </div>
+            <div class="inputBox">
+                <div class="inputLine">
+                    <label class="username"></label>
+                    <input class="username" type="text" placeholder="邮箱">
+                </div>
+                <div class="inputLine">
+                    <label class="password"></label>
+                    <input class="password" type="password" placeholder="密码">
+                </div>
+            </div>
+            <p class="protocol">
+                注册即表示同意 <a href="#url('/doc/protocol-m')" target="_blank">用户协议</a>
+            </p>
+        </div>
+    </div>
+    <div class="error"></div>
+    <div class="submit">
+        <a validate="LogRegCard.validate" callback="LogRegCard.submit" href="javascript:;"></a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var cl = CardLayout.create('#logRegCard .cardView', ['#logCard', '#regCard']);
+    $(function() {
+        // layout
+        function layout() {
+            // arrow
+            var menuIndent = ($(window).width() - menuSpace - menuWidth - arrow.outerWidth(true)) / 2;
+            if ($('#logRegCard .nav .active').hasClass('reg')) {
+                menuIndent += menuWidth + menuSpace;
+            }
+            arrow.css('left', menuIndent);
+            // input
+            if ($(window).height() < 250) {
+                $('#regCard .genderBox').hide();
+                $('#regCard .protocol').hide();
+            } else {
+                $('#regCard .genderBox').show();
+                $('#regCard .protocol').show();
+            }
+        }
+
+        function activeMenu(menu) {
+            $('#logRegCard .header a').removeClass('active').addClass('inactive');
+            menu.removeClass('inactive').addClass('active');
+        }
+
+        var arrow = $('#logRegCard .header .tipArrow');
+        var menuSpace = 4.73333740234375, menuWidth = $('#logRegCard .nav .login').outerWidth(true);
+        var arrowLeft = 0;
+        cl.onMoveStart = function(id) {
+            arrowLeft = arrow.position().left;
+        }
+        cl.onMove = function(id, offsetX, offsetY) {
+            var delta = -(menuSpace + menuWidth) * offsetX / $(window).width();
+            arrow.css('left', arrowLeft + delta);
+        };
+        cl.onShow = function(id) {
+            activeMenu($('#logRegCard .nav .' + $(id).attr('menu')));
+            layout();
+        };
+        // menu
+        $('#logRegCard .header a').click(function() {
+            var showNew = mainLayout.currentId() !== '#logRegCard';
+            showNew && mainLayout.show('#logRegCard', 'toTop');
+            if ($(this).hasClass('active'))
+                return;
+            activeMenu($(this));
+            arrowLeft = arrow.position().left;
+            if ($(this).hasClass('login')) {
+                if (showNew) {
+                    cl.show('#logCard');
+                } else {
+                    cl.show('#logCard', 'toRight', true);
+                }
+            } else {
+                if (showNew) {
+                    cl.show('#regCard');
+                } else {
+                    cl.show('#regCard', 'toLeft', true);
+                }
+            }
+        });
+        // gender
+        $('#regCard .genderBox a').click(function() {
+            $('#regCard .genderBox a').removeClass('active');
+            $(this).addClass('active');
+        });
+        // input
+        $('#logRegCard input').focus(function() {
+            $('#logRegCard .error').empty();
+        });
+        $(window).resize(layout);
+        layout();
+        cl.show('#logCard');
+    });
+    /*
+     * validate
+     */
+    var LogRegCard = {
+        validate : function(e, hideError) {
+            var c = $(cl.currentId());
+            var e = $('#logRegCard .error').empty(), errors = [];
+            // gender
+            var g = c.find('.genderBox');
+            if (g.length) {
+                if (!g.find('a.active').length) {
+                    errors.push('gender');
+                }
+            }
+            if (cl.currentId() == "#regCard") {
+	            if (!Validate.username(c.find('input.username').val())) {
+	                errors.push('username');
+	            }
+	        }
+            if (!Validate.password(c.find('input.password').val())) {
+                errors.push('password');
+            }
+            // show error
+            if (!hideError) {
+                for (var i = 0; i < errors.length; i++) {
+                    e.append('<p>' + Validate.errorType[errors[i]] + '</p>');
+                };
+            }
+            return errors.length == 0;
+        },
+        submit : function() {
+            if (cl.currentId() == '#regCard') {
+                LogRegCard.register();
+            } else {
+                LogRegCard.login();
+            }
+        },
+        register : function() {
+            var msg = $('#logRegCard .error').empty();
+            $.post("#url('/user/auth/register/submit')?platform=wechat", appendDebug(LogRegCard._getUserParam('#regCard')), function(data) {
+                var errors = _json(data);
+                if (!errors.length) {// ok
+                    var user = errors;
+                    LogRegCard._login(user);
+                } else {
+                    for (var i = 0; i < errors.length; i++) {
+                        msg.append('<p>' + Validate.errorType[errors[i]] + '</p>');
+                    };
+                    SubmitButton.loading($('#logRegCard .submit a'), false);
+                }
+            });
+        },
+        login : function() {
+            var msg = $('#logRegCard .error').empty();
+            $.post("#url('/user/login/submit')?platform=wechat", appendDebug(LogRegCard._getUserParam('#logCard')), function(data) {
+                if (data) {// ok
+                    LogRegCard._login(_json(data));
+                } else {
+                    msg.append('<p>' + Validate.errorType['password.error'] + '</p>');
+                    SubmitButton.loading($('#logRegCard .submit a'), false);
+                }
+            });
+        },
+        _login : function(user) {
+            window.location.href = _appendParam(location.href, 'showVerify', true);
+        },
+        _getUserParam : function(c) {
+            c = $(c);
+            return {
+                euid : "$!{euid}",
+                username : c.find('input.username').val(),
+                password : c.find('input.password').val(),
+                gender : c.find('.genderBox a.active').attr('gender'),
+                role : 11
+            };
+        }
+    };
+
+</script>

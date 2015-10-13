@@ -1,0 +1,74 @@
+#parse("_style.vm")
+#set($noBanner = true)
+
+##set($code = 500)
+
+#if($code == 404)
+#set($msg1 = 'Page Not Found')
+#set($msg2 = '未找到该页面')
+#elseif($code == 410)
+#set($msg1 = 'Page Out Of Date')
+#set($msg2 = '页面已过期')
+#else
+#set($msg1 = 'Internal Server Error')
+#set($msg2 = '服务器内部错误')
+#end
+
+<style>
+    #content {
+        width: 100%;
+        height: 481px;
+        padding: 20px 0;
+        color: white;
+        background-color: ${mainColor};
+    }
+    .errorBox .code {
+        margin: 40px auto 0 auto;
+        font-size: 130px;
+        font-weight: bold;
+    }
+    .errorBox .msg {
+        font-weight: bold;
+        font-size: 30px;
+        line-height: 30px;
+    }
+    .errorBox .msg1 {
+        float: left;
+        width: 50%;
+        text-align: right;
+        font-family: arial, verdana;
+    }
+    .errorBox .msg2 {
+        clear: left;
+        float: right;
+        width: 50%;
+        text-align: left;
+    }
+    .errorBox .buttonBox {
+        clear: both;
+    }
+    .errorBox .button {
+        margin: 90px auto;
+        background-color: #00baa3;
+        width: 120px;
+    }
+    .errorBox .button:hover {
+        background-color: #00cdb4;
+    }
+</style>
+
+<div class="errorBox">
+    <p class="code">
+        $!code
+    </p>
+    <p class="msg msg1">
+        $msg1
+    </p>
+    <p class="msg msg2">
+        $msg2
+    </p>
+
+    <div class="buttonBox">
+        <a class="button buttonBig" href="#url('/')">回到首页</a>
+    </div>
+</div>

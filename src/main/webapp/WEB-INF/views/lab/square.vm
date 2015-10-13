@@ -1,0 +1,150 @@
+#set($pageTitle = "生活广场")
+#set($bannerTitle = $pageTitle)
+#set($bannerDesc = "点亮生活每一天")
+
+#parse('_style.vm')
+
+<style>
+    body {
+        background-color: ${backgroundColor};
+    }
+    .squareBox {
+        position: relative;
+        margin-top: 15px;
+    }
+    .item {
+        display: block;
+        width: 140px;
+        height: 140px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        cursor: pointer;
+        color: white;
+        background-color: ${mainColor};
+    }
+    .item:hover {
+        opacity: 0.8;
+    }
+    .item10 {
+        width: 295px;
+    }
+    .item01 {
+        height: 295px;
+    }
+    .item11 {
+        width: 295px;
+        height: 295px;
+    }
+    .item .title {
+        bottom: 0;
+        font-size: 14px;
+        line-height: 30px;
+        opacity: 0.85;
+        position: absolute;
+        width: 100%;
+        background-color: ${mainColor};;
+    }
+    .item .content {
+        display: none;
+        width: 100%;
+        height: 100%;
+        font-size: 12px;
+        opacity: 1;
+        background-color: ${mainColor};
+    }
+    .item .content .title1 {
+        padding-top: 10px;
+        font-size: 14px;
+    }
+    .item .content .desc {
+        padding: 10px;
+        line-height: 24px;
+        text-align: left;
+    }
+    .item.contact h3 {
+        padding-top: 30px;
+        letter-spacing: 1px;
+        font-size: 30px;
+        font-family: '楷体';
+    }
+    .item.contact h4 {
+        padding-top: 10px;
+        font-size: 14px;
+        font-weight: normal;
+    }
+</style>
+
+<div class="squareBox">
+    <a iid="1" class="item item00 itemAd" img="1.jpg" href="http://www.quwan.com/goods_2013-39101.html" title1="Umbra数字小钟" desc="Umbra 是当代时尚休闲家居用品的领导者。"></a>
+    <a iid="2" class="item item11 itemAd" img="2-weiwei.jpg" href="javascript:;" desc="
+    <style>
+        h4.ww {
+            margin-top: 10px;
+        }
+    </style>
+    <h4>Wei将帮助你</h4>
+    <p>
+    1. 洞悉市场行情：多达1小时的对话沟通<br>
+    2. 定制化个人出租信息：多达30条房子信息<br>
+    3. 代替/陪同看房：提供评估报告、视频等<br>
+    4. 合同审查及建议：揭露并规避潜在风险
+    </p>
+    <h4 class='ww'>费用</h4>
+    <p>
+    你需要支付一笔完全可控的费用，具体面议。每一点收入都将用于正在努力推行的无中介租房事业。
+    </p>
+    <h4 class='ww'>微信号</h4>
+    <p>
+    <b>weiweipku107</b>，加时注明“租友咨询”
+    </p>
+    "</a>
+    <a iid="3" class="item item10 itemAd" img="3.jpg?jiayuan" href="javascript:;" desc="<h4>服务项目</h4>专业开荒保洁，家庭保洁，家政服务，钟点工，清洗抽油烟机"></a>
+    <a iid="0" class="item item10 contact" href="mailto:business@107room.com"> <h3>想展示自己？</h3> <h4>联系我们&nbsp;&nbsp;&nbsp;&nbsp;business@107room.com</h4> </a>
+    <a iid="4" class="item item01 itemAd" img="4.jpg" href="http://detail.tmall.com/item.htm?spm=a220m.1000858.1000725.6.vuoEcH&id=37770633723&areaId=110000&cat_id=50097371&rn=d7e5afe017e42c084617d504ac319577&user_id=1820451791&is_b=1" title1="飞利浦HUE多彩灯" desc="hue很聪明，也很直观，更能互联，hue将为您的家居和生活带来一抹亮色。您可以随心所欲的使用hue。"></a>
+    <a iid="5" class="item item00 itemAd" img="5.jpg" href="http://detail.tmall.com/item.htm?spm=a220m.1000858.1000725.12.I7YqWh&id=17358949552&areaId=110000&cat_id=50025271&rn=b7f0d609c75fc3fcd2b029434f347abb&user_id=404667932&is_b=1" title1="Belkin无线路由器" desc="- 多波束<br>- 设置简单<br>- 预设安全<br>- 3年质保<br>"></a>
+    <a iid="8" class="item item01 itemAd" img="8.jpg" href="javascript:;"></a>
+    <a iid="9" class="item item11 itemAd" img="9-dushifu2.jpg" href="http://www.douban.com/group/493120/"></a>
+    <a iid="6" class="item item00 itemAd" img="6.jpg" href="javascript:;"></a>
+    <a iid="7" class="item item10 itemAd" img="7.jpg?huo" href="javascript:;"></a>
+</div>
+
+<script type="text/javascript" src="#staticUrl('js/jquery.masonry.min.js')"></script>
+<script>
+    $(".squareBox").masonry({
+        itemSelector : '.item',
+        gutterWidth : 15
+    });
+    /*
+     * item AD
+     */
+    $('.squareBox .item.itemAd').each(function() {
+        if ($(this).attr('href') != 'javascript:;') {
+            $(this).attr('target', '_blank');
+        }
+        $(this).append('<h3 class="title"></h3><div class="content"><h3 class="title1"></h3><p class="desc"></p></div>');
+        $(this).find('.title').text($(this).attr('title1'));
+        $(this).find('.title1').text($(this).attr('title1'));
+        $(this).find('.desc').html($(this).attr('desc'));
+        // background
+        var img = $(this).attr('img'), staticUrl='#staticUrl("image/square/")';
+        img && $(this).css('backgroundImage', 'url("'+staticUrl + img + '")');
+        var bgColor = $(this).attr('bgColor');
+        bgColor && $(this).css('backgroundColor', bgColor);
+    }).hover(function() {
+        if ($(this).attr('desc')) {
+            $(this).find('.title').hide();
+            $(this).find('.content').show();
+        }
+    }, function() {
+        if ($(this).attr('desc')) {
+            $(this).find('.content').hide();
+            $(this).find('.title').show();
+        }
+    });
+    $('.squareBox .item').click(function() {
+        $.post('#url("/stat")', {
+            target : 'square/' + $(this).attr('iid'),
+            action : 'click'
+        });
+    });
+</script>

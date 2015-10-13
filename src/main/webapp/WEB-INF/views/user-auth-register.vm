@@ -1,0 +1,413 @@
+<link href="#staticUrl('css/flat-ui-radio.css?20130809')" rel="stylesheet">
+<style>
+#registerCard .hide{
+display: none;
+}
+#registerCard .cardContent {
+text-align: center;
+}
+#registerCard .inputDiv {
+padding: 5px 0 25px;
+}
+.validateText, .helpText, .existText {
+position: absolute;
+line-height: 40px;
+font-size: 13px;
+}
+.validateText, .existText {
+display:none;
+margin-left: 10px;
+color: ${warnColor};
+text-align: left;
+}
+.existText{
+display: none;
+}
+.helpText {
+display:none;
+margin: 33px -290px;
+text-align: left;
+}
+#registerCard #genderDiv {
+padding: 72px 0 25px 0;
+}
+#registerCard #genderDiv.disabled{
+opacity: 0.2;
+}
+#registerCard #genderDiv label:hover {
+opacity: 0.8;
+}
+#registerCard #genderDiv .validateText {
+margin: 39px -6px;
+}
+#registerCard #genderDiv .helpText {
+margin: 62px -305px;
+}
+#registerCard #genderDiv .radio {
+cursor: pointer;
+margin: 0 25px;
+display: inline-block;
+}
+#registerCard #genderDiv .radio .icons {
+top: auto;
+bottom: 2px;
+}
+#registerCard #genderDiv .radio:hover {
+color: $radioActiveColor;
+}
+#registerCard #genderDiv .femaleImg {
+padding-right: 5px;
+}
+#registerCard #usernameDiv input {
+background: url("#staticUrl('image/icon/email_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#registerCard #usernameDiv input:hover {
+background: url("#staticUrl('image/icon/email_h_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#registerCard #passwordDiv input {
+background: url("#staticUrl('image/icon/password_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#registerCard #passwordDiv input:hover {
+background: url("#staticUrl('image/icon/password_h_16x16.png')") no-repeat scroll 260px 12px transparent;
+}
+#registerCard #submitDiv {
+padding: 5px 0 30px;
+}
+#registerCard #submitDiv .button {
+line-height: 45px;
+margin: 0 10px;
+width: 133px;
+}
+#registerCard #submitDiv .landlordReg {
+background-color:${secondColor};
+}
+#registerCard #submitDiv .landlordReg:hover {
+background-color:#F6B74B;
+}
+#registerCard #protocolDiv {
+bottom: 30px;
+font-size: 12px;
+position: absolute;
+right: 388px;
+}
+#registerCard #protocolDiv .to-login-span{
+margin-right: 50px;
+}
+#registerCard #protocolDiv a {
+color: ${mainColor};
+}
+
+/*add house*/
+#registerCard .registerAndAdd a.button{
+width: 293px;
+}
+
+#registerCard .registerAndAdd .group{
+display: inline-block;
+}
+</style>
+
+<div id="registerCard" class="card">
+    <div class="banner">
+        #if($isAdd)
+        <span class="title">发布房间</span>
+        <span class="desc">最后一步，注册账户</span>        
+        #else
+        <span class="title">注册</span>
+        <span class="desc">告诉北京，你来了</span>
+        #end
+    </div>
+    <div class="cardContent">
+        <div id="genderDiv" class="inputDiv">
+            <label class="radio">
+                <input type="radio" name="gender" id="optionsRadios1" value="2" data-toggle="radio" />
+                <img class="femaleImg" src="#staticUrl('image/icon/female.png')">女</label>
+            <label class="radio">
+                <input type="radio" name="gender" id="optionsRadios2" value="1" data-toggle="radio" />
+                <img src="#staticUrl('image/icon/male.png')">男</label>
+            <span class="validateText">请选择性别</span>
+            <span class="helpText">真实的性别有助于找到最合适的室友，注册后不可修改</span>
+        </div>
+        <div id="usernameDiv" class="inputDiv">
+            <input class="input" type="text" value="" placeholder="邮箱" />
+            <span class="validateText">请填写正确的邮箱</span>
+            <span class="existText">该邮箱已被注册过</span>
+            <span class="helpText">用于登录和接受网站重要信息</span>
+        </div>
+        <div id="passwordDiv" class="inputDiv">
+            <input class="input" type="password" value="" placeholder="密码" />
+            <span class="validateText">最短$validateUtils.PASSWORD_MIN_CHARS个字符，最长$validateUtils.PASSWORD_MAX_CHARS个字符</span>
+            <span class="helpText">密码字母区分大小写</span>
+        </div>
+        #if($isAdd)
+        <div roleId="registerAndAdd" class="registerAndAdd">
+            <a roleId="register" class="button" href="#">注册</a>
+        </div>
+        #else
+        <div id="submitDiv">
+            <a role="1" href="javascript:;" class="button">我要找房</a>
+            <a role="2" href="javascript:;" class="button landlordReg">我要出租</a>
+        </div>
+        #end
+        <div id="protocolDiv">
+            #if($isAdd)
+            <span class="to-login-span">已有账户？<a role="toLogin" href="#">点击登录</a></span>
+            #end        
+            <span>注册即表示同意<a href="#url('/doc/protocol/')" target="_blank">用户协议</a></span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="#staticUrl('js/flatui-radio.js')"></script>
+<script type="text/javascript">
+    (function() {
+        var isAdd = ("$!isAdd" ==='true')?true:false;
+        function initValidation() {
+            var validateResult = {};
+            function validate(e, input, /*whether warn when input value is empty*/emptyWarning) {
+                if (!input) {
+                    input = $(this);
+                }
+                if (input.val && !input.val() && !emptyWarning)
+                    return;
+                var p = input.parents(".inputDiv");
+                var v = p.find(".validateText");
+                var funcName = p.attr("id").replace("Div", "");
+                try {
+                    if (eval(funcName)(input.val())) {
+                        validateResult[funcName] = true;
+                        v.hide();
+                    } else {
+                        validateResult[funcName] = false;
+                        v.show();
+                    }
+                } catch(e) {
+                }
+            }
+
+            // validation implements
+            function validateGender() {                
+                var genderDiv = $('#genderDiv');
+                var t = genderDiv.find(".validateText");
+                // do not validate if `immutable`
+                if(genderDiv.attr('immutable') !== undefined){
+                    validateResult['gender'] = true;
+                    t.hide();
+                    return;
+                }
+                if (genderDiv.find("input[checked]").length == 0) {
+                    validateResult["gender"] = false;
+                    t.show();
+                } else {
+                    validateResult["gender"] = true;
+                    t.hide();
+                }
+            }
+
+            function username(data) {
+                return new RegExp(/$validateUtils.EMAIL_PATTERN/).test(data);
+            }
+
+            function password(data) {
+                return data.length >= $validateUtils.PASSWORD_MIN_CHARS && data.length <= $validateUtils.PASSWORD_MAX_CHARS;
+            }
+
+            // correct input
+            $("#usernameDiv input").blur(function() {
+                $(this).val($(this).val().replace(/\s/g, ""));
+            });
+            // active validate
+            $(".inputDiv input").blur(validate).focus(validateGender);
+            // inactive validate
+            $("#genderDiv .radio").click(function() {
+                $("#genderDiv input[checked]").removeAttr('checked');
+                $(this).find('input').attr('checked', true);
+                $("#genderDiv .validateText").hide();
+            });
+            $(".inputDiv input").bind("input propertychange", function(e) {
+                if ($(this).parent().children(".validateText").is(":visible")) {
+                    validate(e, $(this));
+                }
+            });
+            // check exist
+            $("#usernameDiv input").blur(function() {
+                if ($(this).siblings(".validateText").is(":hidden"))// check when valid
+                {
+                    $(".existText").hide();
+                    var v = $(this).val();
+                    if (v) {
+                        $.getJSON("#springUrl('/user/exist/')" + $(this).val(), appendDebug({}), function(data) {
+                            if (data.exist) {
+                                $(".existText").show();
+                            }
+                        });
+                    }
+
+                } else {
+                    $(this).siblings(".existText").hide();
+                }
+            });
+
+            // parameter e is the (jquery click) event
+            function validateRegisterInfo(e){
+                validateGender();
+                $(".inputDiv input").not('#genderDiv input').each(function() {
+                    validate(e, $(this), true);
+                });
+                var success = true;
+                for (key in validateResult) {
+                    if (!validateResult[key]) {
+                        success = false;
+                        break;
+                    }
+                }
+                return success;
+            }
+
+            // you still need to get 'role' by yourself
+            function getRegisterObj(){
+                var user = {
+                    "gender" : $("#genderDiv input[checked]").val(),
+                    "username" : $("#usernameDiv input").val(),
+                    "password" : $("#passwordDiv input").val()                    
+                };
+
+                return user;
+            }
+
+            // submit
+            $("#registerCard #submitDiv .button").click(function(e) {
+                var role = $(this).attr('role');
+                var success = validateRegisterInfo(e);
+
+                if (success) {
+                    var user = getRegisterObj();
+                    user.role = role;
+
+                    log(user)
+                    $.post("#url('/user/auth/register/submit')", appendDebug(user), function(data) {
+                        var userData = _json(data);
+                        if (userData.length > 0) {// invalid
+                            for (var i = 0; i < userData.length; i++) {
+                                if (userData[i] == "username.exist") {
+                                    $(".existText").show();
+                                } else {
+                                    $("#" + userData[i] + "Div .validateText").show();
+                                }
+                            }
+                        } else {
+                            login(userData);
+                            room107.onRegister && room107.onRegister(role);
+                        }
+                    });
+                }
+            });
+
+            // submit register in adding house page
+            if (isAdd) {
+                var logoutRequest = function(){
+                    $.get("#url('/user/logout')");
+                };
+
+                var afterLoginOrRegister = function(){
+                    if(!(window.global && window.global.submitHouseInfo)){
+                        throw Error('global function submitHouseInfo does not exist');
+                    }
+                     window.global.submitHouseInfo(function(){
+                        card.slideLeft('#wechatCard');                            
+                    });
+                };
+
+                var hasHouse = function(){
+                    if(room107 && room107.userType == 3){
+                        return true;
+                    }
+                    return false;
+                };
+
+                var hasHouseHandle = function(){
+                    var leave = confirm('该账户已发房。\n你可点击确定去理房，或点击取消注册新账户。');
+                    if(leave){
+                        $(window).unbind('beforeunload');
+                        location.href = '#url("/house/manage")';
+                        return ;
+                    }
+                    logoutRequest();
+                };
+
+                var toLoginHandle = function(){
+                    $('.unloginTag').filter(function(){
+                        return ($(this).find('span.navItemText').text() === "登录")?true:false;
+                    }).trigger('click');
+                };
+
+                var registerCard = $('#registerCard');
+                
+                // `to login` btn
+                registerCard.find('#protocolDiv [role="toLogin"]').click(function(){
+                    toLoginHandle();
+                });                
+
+                // slide left if login successfully
+                room107.beforeLoginRefresh(function(){
+                    if(hasHouse()){
+                        hasHouseHandle();
+                        return true;
+                    }                    
+                });
+
+                room107.bindLogin(function(){
+                    // return here if it's not the register/login page
+                    if($('.card').filter(function(){return $(this).is(':visible')}).attr('id') === 'registerCard'){
+                        afterLoginOrRegister();
+                    }
+                });
+
+                // register button click event
+                registerCard.find('[roleId="registerAndAdd"] .button[roleId="register"]').click(function(e){
+                    var success = validateRegisterInfo(e);
+                    if(!success){
+                        return;
+                    }
+
+                    var user = getRegisterObj();
+                    user.role = 2;
+
+                    $.post("#url('/user/auth/register/submit')", appendDebug(user), function(data) {
+                        var userData = _json(data);
+                        if (userData.length > 0) {// invalid
+                            for (var i = 0; i < userData.length; i++) {
+                                if (userData[i] == "username.exist") {
+                                    $(".existText").show();
+                                } else {
+                                    $("#" + userData[i] + "Div .validateText").show();
+                                }
+                            }
+                        } else {
+                            log('userData:');
+                            log(userData);
+                            login(userData);
+                        }
+                    });                    
+                });
+            }
+        }
+
+        function initHelp() {
+            function showHelp() {
+                $(".helpText").hide();
+                var h = $(this).find(".helpText");
+                if (h.is(":hidden")) {
+                    h.show();
+                }
+            }
+            $(".inputDiv").click(showHelp).focus(showHelp);
+        }
+
+        initValidation();
+        initHelp();
+        validateInput($("#registerCard input"), function() {
+            $("#submitDiv .tenantReg").click();
+        });
+    })();
+</script>

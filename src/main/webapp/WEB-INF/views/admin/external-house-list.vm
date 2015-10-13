@@ -1,0 +1,116 @@
+#set($pageTitle="外部房源")
+
+<style>
+#content {
+    width: 1755px;
+}
+#houseList table, #houseList tr, #houseList th, #houseList td {
+	border:1px solid;
+	font-size:18px;
+}
+#houseList .showId {
+	width: 60px;
+}
+#houseList .showSource {
+	width: 100px;
+}
+#houseList .showTime {
+	width: 250px;
+}
+#houseList .showModifiedTime {
+	width: 250px;
+}
+#houseList .showAddr {
+	width: 320px;
+}
+#houseList .showRent {
+	width: 120px;
+}
+#houseList .delete {
+	width: 150px;
+}
+#houseList a {
+	color: green;
+}
+#houseList .showUrl {
+	width: 250px;
+}
+#houseList .showPic {
+	width: 120px;
+}
+#houseList .delayColor{
+color:red;
+}
+</style>
+
+<div id="houseList">
+    <table>
+        <tbody>
+            <tr>
+                <th class="showId">ID</th>
+				<th class="showSource">来源</th>
+                <th class="showTime">房源时间</th>
+				#if(!$isForum)
+				<th class="showModifiedTime">入库时间</th>
+				#end
+                <th class="showAddr">地址</th>
+				#if(!$isForum)
+				<th class="showRent">出租</th>
+				#else
+				<th class="showUrl">URL</th>
+				#end
+				<th class="delete">丢弃房源</th>
+				#if($isForum)
+				<th class="showPic">图片</th>
+				#end
+            </tr>
+            #foreach($h in $houses)
+            <tr>
+				#if($isForum)
+                <td>$!h.id</td>
+				#else
+				<td><a href="#url('/admin/external/ext')$!h.id" target="_blank">$!h.id</a></td>
+				#end
+				<td>$!houseUtils.formatSource($!h.source)</td>
+				#if(!$isForum)
+				<td>$!h.createdTime</td>
+				#end
+				<td>$!h.lastModifiedTime</td>
+				<td>$!h.city$!h.position</td>
+				#if(!$isForum)
+				<td>$!houseUtils.formatRentType($!h.rentType)</td>
+				#else
+				<td><a href="$!h.url" target="_blank">$!h.url</a></td>
+				#end
+				<td>
+				#if($isForum)
+				<a href="#url('/admin/external/ext')$!h.id?rentType=1" target="_blank">分租</a>
+				<a href="#url('/admin/external/ext')$!h.id?rentType=2" target="_blank">整租</a>
+				#end
+				<a class="deleteButton" href="javascript:;" hid=$!h.id>丢弃</a>
+				#if(($!h.operationStatus)==1)<a class="delayButton"  href="javascript:;" hid=$!h.id >延迟</a>
+				#end
+				</td>
+				#if($isForum)
+				<td>#if($h.imageIds)有图片#else 无图片#end
+                #if(($!h.operationStatus)==3)<p><label class="delayColor">已延迟</label></p>#end
+				</td>
+				#end
+            </tr>
+            #end
+		</tbody>
+	</table>
+</div>
+<script>
+	$("#houseList .deleteButton").click(function() {
+		var hid = $(this).attr("hid");
+		$.post("#url('/admin/external/submit/ext')" + hid, {operationStatus : 2});
+		$(this).closest("tr").remove();
+	});
+	$("#houseList .delayButton").click(function(){
+	   var hid = $(this).attr("hid");
+	   $.post("#url('/admin/external/submit/ext')" + hid, {operationStatus : 3});
+	   $(this).closest("tr").remove();
+	});
+	
+</script>

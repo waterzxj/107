@@ -1,0 +1,81 @@
+#set($pageTitle="豆瓣顶贴机")
+
+<style>
+    #posterBox {
+        padding: 20px 0;
+    }
+    table {
+        border: 1px solid;
+    }
+</style>
+
+<div id="posterBox">
+    <table>
+        <tbody>
+            <tr>
+                <th>ID</th>
+                <th>豆瓣昵称</th>
+                <th>URL1</th>
+                <th>URL2</th>
+                <th>豆瓣cookie</th>
+                <th>修改时间</th>
+                <th></th>
+            </tr>
+            #foreach($p in $posters)
+            <tr>
+                <td class="id">$!p.id</td>
+                <td>
+                <input class="name" type="text" value="$!p.name" />
+                </td>
+                <td>                <textarea class="url1">$!p.url1</textarea></td>
+                <td>                <textarea class="url2">$!p.url2</textarea></td>
+                <td>                <textarea class="cookie">$!stringUtils.escpaeHtml($p.cookie)</textarea></td>
+                <td>$!p.modifiedTime</td>
+                <td>
+                <button class="submit">
+                    提交
+                </button></td>
+                <td>
+                <button class="delete">
+                    删除
+                </button></td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $('button.delete').click(function() {
+        if (confirm('确认删除？')) {
+            var r = $(this).closest('tr');
+            var id = r.find('.id').text();
+            if (id) {
+                $.post('#url("/admin/upper/delete")', {
+                    id : id
+                }, function() {
+                    r.remove();
+                });
+            } else {
+                r.remove();
+            }
+        }
+    });
+    $('button.submit').click(function() {
+        var r = $(this).closest('tr');
+        $.post('#url("/admin/upper/submit")', {
+            id : r.find('.id').text(),
+            name : r.find('.name').val(),
+            url1 : r.find('.url1').val(),
+            url2 : r.find('.url2').val(),
+            cookie : r.find('.cookie').val()
+        }, function(data) {
+            data = _json(data);
+            if (data.status == 200) {
+                alert('更新成功');
+            } else {
+                alert('更新失败：' + data.message);
+            }
+        })
+    });
+</script>

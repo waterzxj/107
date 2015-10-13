@@ -1,0 +1,343 @@
+#mobile()
+
+<style>
+#verifyCard .panel {
+display: none;
+height: 100%;
+width: 100%;
+text-align: center;
+font-size: 13px;
+}
+#verifyCard .panel > * {
+position: absolute;
+width: 100%;
+}
+#verifyCard .inputBox{
+top: 15%;
+left: 10%;
+width: 80% !important;
+}
+#verifyCard .verify-code{
+color: #FFF;
+font-size: 20px;
+}
+#verifyCard input.email::-webkit-input-placeholder{
+   text-align: center; 
+}
+#verifyCard input.email:-moz-placeholder { /* Firefox 18- */
+   text-align: center;  
+}
+#verifyCard input.email::-moz-placeholder {  /* Firefox 19+ */
+   text-align: center;  
+}
+#verifyCard input.email:-ms-input-placeholder {  
+   text-align: center; 
+}
+.panel p.email {
+font-size: 16px;
+text-align: center;
+top: 35%;
+}
+.panel .emailBox {
+left: 0;
+text-align: center;
+top: 23%;
+}
+.panel label.bigEmail {
+position: relative;
+display: block;
+width: 50px;
+height: 50px;
+margin: 0 auto;
+background: url("#staticUrl('image/mobile/icon/common.png')") no-repeat scroll 0 -47px transparent;
+}
+.panel .op {
+font-size: 12px;
+height: 50px;
+top: 58%;
+}
+.panel .op > div{
+position: absolute;
+}
+.panel .op a{
+display: block;
+margin-top: 5px;
+color: ${lightColor};
+}
+.panel .left {
+left: 15%;
+}
+.panel .right {
+right: 15%;
+}
+.beforeSend .inputBox .error {
+position: relative;
+height: 20px;
+top: -10px;
+}
+.beforeSend .hint {
+position: relative;
+top: -5px;
+color: ${lightColor};
+font-size: 13px;
+line-height: 24px;
+text-align: center;
+}
+.beforeSend .hint .title {
+font-weight: bold;
+font-size: 15px;
+}
+.beforeSend .hint .desc {
+margin-bottom: 5px;
+position: relative;
+top: -5px;
+}
+.afterSend .desc1 {
+font-size:15px;
+line-height: 20px;
+top: 42%;
+}
+.reSend p.hint {
+font-size: 16px;
+letter-spacing: 1px;
+top: 50%;
+}
+.reSend p.hint span {
+display: inline-block;
+text-align: left;
+width: 20px;
+}
+.verifyFailed h4 {
+font-size: 17px;
+top: 43%;
+}
+.verifyFailed .desc1 {
+font-size: 15px;
+top: 49%;
+}
+</style>
+<div id="verifyCard" class="card #if($auth!=1)disabled#end">
+    <div class="header">
+        <div class="line"></div>
+        <div class="nav">
+            <a href="javascript:;">认&nbsp;&nbsp;证</a>
+        </div>
+    </div>
+    <div class="beforeSend panel">
+        <div class="inputBox">
+            <div class="inputLine">
+                <label class="email"></label>
+                <input class="email" type="text" placeholder="学校或工作单位邮箱">
+            </div>
+            <p class="error"></p>
+            <div class="hint">
+                <p class="title">
+                    学校邮箱
+                </p>
+                <p class="desc">
+                    例如 xxx@pku.edu.cn 等
+                </p>
+                <p class="title">
+                    工作单位邮箱
+                </p>
+                <p class="desc">
+                    例如 xxx@apple.com 等
+                </p>
+                <p>或</p>
+                <p>关注微信公众号"hi107room"</p>
+                <p>凭借此验证码(区分大小写)</p>
+                <p role="verify-code" class="verify-code">$!user.getToken()</p>
+                <p>在该公众号中上传身份证明即可</p>
+            </div>
+        </div>
+        <div class="submit">
+            <a validate="VerifyCard.validate" callback="VerifyCard.beforeSend" href="javascript:;"></a>
+        </div>
+    </div>
+    <div class="afterSend panel">
+        <div class="emailBox">
+            <label class="bigEmail"></label>
+        </div>
+        <p class="email"></p>
+        <div class="desc1 slow">
+            <p>
+                认证链接已发送至邮箱
+            </p>
+            <p>
+                点击链接后回此页确认
+            </p>
+            <br>
+        </div>
+        <div class="op slow">
+            <div class="left">
+                <p class="desc2">
+                    未收到邮件？
+                </p>
+                <a class="resend" href="javascript:;"> &gt;重发认证链接&lt; </a>
+            </div>
+            <div class="right">
+                <p class="desc2">
+                    填错了邮箱？
+                </p>
+                <a class="reinput" href="javascript:;"> &gt;重新填写邮箱&lt; </a>
+            </div>
+        </div>
+        <div class="submit">
+            <a class="slow" callback="VerifyCard.confirm" href="javascript:;"></a>
+        </div>
+    </div>
+    <div class="reSend panel">
+        <p class="email"></p>
+        <p class="hint">
+            重发中<span></span>
+        </p>
+    </div>
+    <div class="verifyFailed panel">
+        <div class="emailBox">
+            <label class="bigEmail"></label>
+        </div>
+        <p class="email"></p>
+        <h4>认证未成功</h4>
+        <p class="desc1">
+            先查收邮件再回此页确认
+        </p>
+        <div class="op">
+            <div class="left">
+                <p class="desc2">
+                    未收到邮件？
+                </p>
+                <a class="resend" href="javascript:;"> &gt;重发认证链接&lt; </a>
+            </div>
+            <div class="right">
+                <p class="desc2">
+                    填错了邮箱？
+                </p>
+                <a class="reinput" href="javascript:;"> &gt;重新填写邮箱&lt; </a>
+            </div>
+        </div>
+        <div class="submit">
+            <a callback="VerifyCard.confirm" href="javascript:;"></a>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        // menu
+        $('#verifyCard .header a').click(function() {
+            if (mainLayout.currentId() !== '#verifyCard') {
+                mainLayout.show('#verifyCard', 'toTop');
+            }
+        });
+        // input
+        $('#verifyCard input').focus(function() {
+            $('#verifyCard .error').empty();
+        });
+        // after send
+        $('#verifyCard a.resend').click(function() {
+            VerifyCard.showReSend();
+        });
+        $('#verifyCard a.reinput').click(function() {
+            VerifyCard.showBeforeSend();
+        });
+
+        $('.beforeSend').show();
+        // VerifyCard.showAfterSend();
+        // VerifyCard.showVerifyFailed();
+    });
+
+    /*
+     * validate
+     */
+    var VerifyCard = {
+        validate : function(e, hideError) {
+            var e = $('.beforeSend .error').empty(), errors = [];
+            if (!Validate.email($('.beforeSend input.email').val())) {
+                errors.push(Validate.errorType['email']);
+            }
+            // show error
+            errors.length && e.text(errors[0]);
+            return errors.length == 0;
+        },
+        beforeSend : function(e) {
+            var card = this;
+            var email = $('.beforeSend input.email').val();
+            $('#verifyCard p.email').val(email);
+            $.post("#url('/user/auth/verify/email')", appendDebug({
+                email : email,
+                source : 1
+            }), function(data) {
+                log('verify result: ' + data);
+                var msg = null;
+                switch(parseInt(data)) {
+                    case 1:
+                        msg = '请填写学校或工作单位邮箱';
+                        break;
+                    case 3:
+                        msg = '该邮箱已被占用';
+                        break;
+                }
+                if (msg) {
+                    $('.beforeSend .error').text(msg);
+                } else {
+                    VerifyCard.showAfterSend();
+                }
+                SubmitButton.loading(e, false);
+            });
+        },
+        showBeforeSend : function() {
+            $('#verifyCard .panel').hide();
+            $('.beforeSend').show();
+            $('.beforeSend input.email').focus();
+        },
+        showAfterSend : function() {
+            $('#verifyCard .panel').hide();
+            var p = $('.afterSend').show();
+            p.find('p.email').text($('.beforeSend input.email').val());
+            // animate email
+            p.find('.slow').hide();
+            p.find('label.bigEmail').css({
+                opacity : 0,
+                top : -50
+            }).animate({
+                opacity : 1,
+                top : 0
+            }, {
+                duration : 1000,
+                always : function() {
+                    p.find('.slow').fadeIn(1000);
+                }
+            });
+
+        },
+        showReSend : function() {
+            $('#verifyCard .panel').hide();
+            var p = $('.reSend').show();
+            p.find('p.email').text($('.beforeSend input.email').val());
+            UI.loading(p.find('p.hint span'), true, 500);
+            setTimeout(function() {
+                UI.loading(p.find('p.hint span'), false);
+                VerifyCard.showAfterSend();
+            }, 3000);
+        },
+        showVerifyFailed : function() {
+            $('#verifyCard .panel').hide();
+            $('.verifyFailed').show().find('p.email').text($('.beforeSend input.email').val());
+        },
+        confirm : function(e) {
+            $.get('#url("/user/update")', function(data) {
+                SubmitButton.loading(e, false);
+                var user = _json(data);
+                if (user) {
+                    if (user.verifyStatus == 0) {
+                        // invalid
+                        VerifyCard.showVerifyFailed();
+                    } else {// verified
+                        window.location.reload();
+                        return;
+                    }
+                }
+            });
+        }
+    };
+</script>

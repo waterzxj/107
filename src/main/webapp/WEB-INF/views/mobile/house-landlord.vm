@@ -1,0 +1,306 @@
+#set($normalFontsize="15px")
+
+#set($expItems=["school", "major", "company", "job"])
+#set($expItemsTitle=["学校", "专业", "单位", "职位"])
+#set($expItemsValue=[$school, $major, $company, $profession])
+
+#set($nonStatementFontSize="16px")
+#set($opacity="0.5")
+
+## <link rel="stylesheet" href="#staticUrl('css/mobile/house-holder/style.css')" type="text/css"/>
+<style>
+.holderInfoApp {
+  padding: 20px 10%;
+}
+.holderInfoApp .name {
+  text-align: center;
+}
+.holderInfoApp hr.crossStroke{
+  border-bottom: 1px solid #fff;
+  position: absolute;
+  width: 100%;
+  top: 7px;
+}
+.holderInfoApp .appTitle{
+  position: relative;
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.holderInfoApp .appTitle .title{
+  font-size: 14px;
+  position: relative;
+  z-index: 1;
+  width: 65px;
+  margin: 0 auto;
+  text-align: center;
+  background-color: $mainColor;
+}
+
+.holderInfoApp .picture{
+  padding-top: 10px;
+}
+
+.holderInfoApp .picture .householderBack{
+  position: relative;
+  margin: 0 auto;
+  width: 110px;
+  height: 110px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.holderInfoApp .picture .householderBack.border{
+  border: 2px solid #fff;
+
+}
+
+.holderInfoApp .picture .householderBack>img{
+  width: 110px;
+  height: 110px;
+}
+
+.holderInfoApp .picture .householderBack span.defaultImg{  
+  position: absolute;
+  display: inline-block;
+  background-image: url("/static/image/mobile/icon/houselandlord-back.png?20150421");
+  width: 48px;
+  height: 59px;
+  left: 52px;
+  top: 40px;
+}
+
+.holderInfoApp .basicInfo .item{
+  padding-top: 20px;
+  display: inline-block;
+  width: 32%;
+}
+
+.holderInfoApp .basicInfo .item label.title{
+  opacity: $opacity;
+  display: block;
+  font-size: $nonStatementFontSize;  
+  /*font-weight: bold;*/
+}
+
+
+/*icons*/
+.holderInfoApp span.icon{
+  display: inline-block;
+  vertical-align: middle;    
+  width: 40px;
+  height: 40px;
+  background-image: url("/static/image/mobile/icon/householder-info-icons.png?20150421");
+}
+
+.holderInfoApp span.icon.school{
+  background-position: 0px 0px;
+}
+
+.holderInfoApp span.icon.major{
+  background-position: -44px 0px;
+}
+.holderInfoApp span.icon.company{
+  background-position: -88px 0px;
+}
+.holderInfoApp span.icon.job{
+  background-position: -132px 0px;
+}
+.holderInfoApp span.icon.profile{
+  background-position: -176px 0px;
+}
+
+/*experience*/
+.holderInfoApp .experience{
+  padding-top: 15px;
+}
+
+.holderInfoApp .experience .item{
+  margin-bottom: 15px;
+}
+
+.holderInfoApp .experience .type{
+  width: 35%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.holderInfoApp .experience .item label{
+  opacity: $opacity;
+  margin-right: 10px;
+  /*font-weight: bold;*/
+  font-size: $nonStatementFontSize;
+}
+
+.holderInfoApp .experience .item span.value{
+  width: 63%;
+  display: inline-block;
+  /*font-weight: bold;*/
+  font-size: $nonStatementFontSize;
+  vertical-align: middle;
+  padding-top: 10px;
+}
+
+/*statement*/
+.holderInfoApp .statement{
+  padding-top: 28px;
+  font-size: $nonStatementFontSize;
+}
+
+.holderInfoApp .statement label{
+  opacity: $opacity;
+}
+
+.holderInfoApp .statement .icon.profile{  
+  margin-right: 15px;
+}
+
+.holderInfoApp .statement p.content{
+  font-size: $normalFontsize;
+  text-indent: 40px;
+  line-height: 1.6em;
+  font-size: 14px;
+}
+
+.holderInfoApp .statement p.content:first-of-type{
+  margin-top: 10px;
+}
+
+/*widgets style*/
+/*age widget*/
+.userinfoWidget {
+  height: 65px;
+  width: 55px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.userinfoWidget .userinfoComponent {
+  opacity: 0.1;
+}
+
+.userinfoWidget .key {
+  display: none;
+}
+
+.ageWidget {
+  left: 0px !important;
+}
+
+.basicInfoDiv {
+  position: absolute;
+  left: 150px;
+  top: 56px;
+  width: 320px;
+  height: 80px;
+}
+
+.ageWidget li {
+  position: absolute;
+  background: url("#staticUrl('/image/detail/age-dot.png')");
+  width: 5px;
+  height: 5px;
+}
+
+.age {
+  color: white;
+  background-color: $mainColor;
+}
+
+/*constellation widget*/
+.constellation{
+  color: white;
+  background-color: $mainColor;
+}
+
+/*a hacky way to adjust constellation widget position*/
+[role="constellation"] .constellationWidget{
+  left: 0px !important;
+}
+
+/*gender*/
+.userinfoWidget.genderDiv img{
+  display: block;/*Setting display to `block` to make style normal though I don't know why here.*/
+  width: 58px;
+}
+</style>
+<div id="landlordCard" class="card">
+  <div  class="holderInfoApp">
+    <div class="name" role="name">
+      <h2>$!name</h2>
+    </div>
+    <div class="appTitle">
+      <div class="title">
+        房东信息      
+      </div>
+      <hr class="crossStroke"/>
+    </div>
+    <div class="picture">    
+      #if($faviconUrl)    
+      <div class="householderBack border">
+          <img src="$!faviconUrl"/>
+      </div>              
+      #else
+      <div class="householderBack">      
+          <img src="#staticUrl('image/mobile/icon/houselandlord-back.png')" />
+      </div>                        
+      #end
+    </div>
+    <div class="basicInfo" role="basic_information">
+      <div class="item" role="age">
+        #if($age)
+          <label class="title">年龄</label>      
+          #set($userAge=$age)
+          #parse("house/age.vm")
+        #end
+      </div>
+      <div class="item" role="gender">
+        #set($userGender=$gender)      
+        #if($userGender=="男" || $userGender=="女")
+        <label class="title">性别</label>
+        <div class="userinfoWidget genderDiv">
+          #if($userGender=="男")
+          <img src="#staticUrl('image/detail/male.png')"/>
+          #elseif($userGender=="女")
+          <img src="#staticUrl('image/detail/female.png')"/>
+          #end
+        </div>
+        #end
+      </div>    
+      <div class="item" role="constellation">
+        #if($constellation)
+          <label class="title">星座</label>
+          #set($userConstellation=$constellation)
+          #set($constellationImgPath="/static/image/detail")
+          #parse("house/constellation.vm")
+        #end
+      </div>
+    </div>
+    <div class="experience" role="experience">
+      #foreach($item in $expItems)
+        #if($expItemsValue.get($foreach.index))
+          <div class="item" role="$item">
+            <div class="type">
+              <label>$expItemsTitle.get($foreach.index)</label>
+              <span class="icon $expItems.get($foreach.index)"></span>        
+            </div>
+            <span class="value">$!expItemsValue.get($foreach.index)</span>                          
+          </div>
+        #end
+      #end
+    </div>  
+    <div class="statement" role="statement">    
+      #if($description)
+        <span class="icon profile"></span>
+        <label>个人介绍</label>
+        <p class="content">
+          $!description
+        </p>    
+      #end
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  initAge(25);
+  initConstellation(25, 8);  
+</script>

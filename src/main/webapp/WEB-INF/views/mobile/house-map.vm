@@ -1,0 +1,56 @@
+<div id="mapCard" class="card">
+    <div class="map undraggable">
+        <div class="mapContent"></div>
+        <img class="op zoomin" src="#staticUrl('image/icon/map/zoomin.png')">
+        <img class="op zoomout" src="#staticUrl('image/icon/map/zoomout.png')">
+        <div class="loadingMask">
+            <div class="maker"></div>
+            <p>地图加载中...</p>
+        </div>
+    </div>
+    <div class="op">
+        <h2 title="$!title">$!title</h2>
+    </div>
+</div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=$!webUtils.getBaiduAK($request)"></script>
+<script type="text/javascript">
+    var bmap = Map.create($("#mapCard .map"), {
+        onLoad: function(){
+            $("#mapCard .map .loadingMask").fadeOut();
+        }
+    });
+    // init map
+    {
+        bmap.enableScrollWheelZoom();
+        // model
+        bmap._107 = {
+            housePoint : null,
+            zoomLevel : 14,
+            marker : null,
+            reset : function() {
+                // should called after init
+                function doReset() {
+                    bmap.centerAndZoom(bmap._107.housePoint, bmap._107.zoomLevel);
+                }
+
+                if (!this.housePoint) {// init
+                    new BMap.Geocoder().getPoint("$!house.city$!house.position", function(point) {
+                        bmap._107.housePoint = point;
+                        var marker = new BMap.Marker(point, {
+                            icon : new BMap.Icon('#staticUrl("image/icon/map/marker1-normal.png")', new BMap.Size(24, 31), {
+                                anchor : new BMap.Size(12, 28)
+                            }),
+                        });
+                        marker.setShadow(new BMap.Icon('#staticUrl("image/icon/map/marker1-normal.png")', new BMap.Size(24, 31), {
+                            imageOffset : new BMap.Size(-23, 4)
+                        }));
+                        bmap.addOverlay(marker);
+                        doReset();
+                    }, "$!house.province");
+                } else {
+                    doReset();
+                }
+            }
+        }
+    }
+</script>

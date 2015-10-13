@@ -1,0 +1,20 @@
+#mobile()
+#set($pageTitle = "用户协议")
+
+<style>
+    #protocolContainer {
+        color: ${textColor};
+        text-align: center;
+        background-color: white;
+        padding: 20px;
+        line-height: 1.5em;
+        font-size: 12px;
+    }
+    .docContent {
+        text-align: left;
+    }
+    .docContent p {
+        padding: 10px;
+    }
+</style>
+#parse("doc/protocol-content.vm")

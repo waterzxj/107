@@ -1,0 +1,312 @@
+#set($isAdd=true)
+#set($uptoken = $uptokenHouse)
+#set($login = $userUtils.isLoggedIn($request, $response))
+
+#set($pageTitle="发房")
+
+#parse("_style.vm")
+
+<script src="#staticUrl('js/jquery-ui/jquery-ui.min.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.imagesloaded.min.js')"></script>
+<script src="#staticUrl('js/EasySelector.js')?20131208"></script>
+<script src="#staticUrl('js/DragAndDrop.js')?20130915"></script>
+<script src="#staticUrl('js/NumberSlider.js')?20131208"></script>
+<script src="#staticUrl('js/SpinButton.js')?20131208"></script>
+<script src="#staticUrl('js/HouseStructSelector.js')?20131208"></script>
+
+<script src="#staticUrl('js/jquery-ui/jquery.ui.widget.min.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.iframe-transport.js')?20130915"></script>
+<script src="#staticUrl('js/jquery.fileupload.js')?20130915"></script>
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/scrollbar.css')?20130915">
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/NumberSlider.css')?20130915">
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/SpinButton.css')?20130915">
+<link rel="stylesheet" type="text/css" href="#staticUrl('css/HouseStructSelector.css')?20130915">
+
+<style>
+    .cardContent {
+        padding: 20px 30px;
+        height: 395px;
+        text-align: left;
+    }
+    #registerCard .cardContent {
+        padding: 0;
+    }
+    .card .panel {
+        float: left;
+        height: 100%;
+        position: relative;
+    }
+    .rightPanel {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 0 20px 20px 0;
+    }
+    .infoBox {
+        background-color: ${backgroundColor};
+        height: 36px;
+        line-height: 36px;
+        margin-bottom: 12px;
+        padding: 10px 0;
+        text-align: left;
+        cursor: default;
+        width: 100%;
+        position: relative;
+    }
+    .infoBox .infoInput, .infoBox .button {
+        height: 26px;
+        line-height: 26px;
+        text-align: center;
+    }
+    .infoBox .infoInput {
+        width: 270px;
+    }
+    .infoTitle {
+        font-size: 18px;
+        margin-right: 5px;
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        text-indent: 20px;
+    }
+    .infoTitleHint {
+        font-size: 10px;
+        left: 0px;
+        position: relative;
+        line-height: 20px;
+    vertical-align: -2px;
+    }
+    .infoUnit {
+        bottom: 7px;
+        color: #CCCCCC;
+        display: inline-block;
+        font-size: 12px;
+        position: absolute;
+        right: 20px;
+    }
+    .previous, .cancel, .ignore {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+    .previous:hover, .cancel:hover {
+        opacity: 0.8;
+    }
+    .rightPanel .button {
+        width: 130px;
+    }
+    .errorMessage {
+        position: absolute;
+        bottom: 20px;
+        left: 920px;
+        color: ${warnColor};
+        font-size: 13px;
+        z-index: 205;
+    }
+    #welcomeCard .descContainer {
+        margin-left: 60px;
+        margin-top: 40px;
+        letter-spacing: 1px;
+    }
+</style>
+<script>
+    window.global = window.global || {};
+    window.global.user = {
+        faviconUrl: "$!user.faviconUrl",
+        name: '$!stringUtils.escapeJS("$!user.name")',
+        school: '$!stringUtils.escapeJS("$!user.school")',
+        major: '$!stringUtils.escapeJS("$!user.major")',
+        company: '$!stringUtils.escapeJS("$!user.company")',
+        profession: '$!stringUtils.escapeJS("$!user.profession")',
+        description: '$!stringUtils.escapeJS("$!user.description")'
+    };
+    // redirect if the user has had house
+    if(room107.userType==3){
+        location.href = '/#url("house/manage")';
+    }
+
+    var rentOption = {
+        'rentType' : 1,
+        'house' : null,
+        'rooms' : {},
+        'cover' : null
+    };
+
+    var model = {
+        rentOption : rentOption,
+        houseId : parseInt('$!house.id'),
+        housePhotoPath : '#url("/static/user/house/")',
+        isByRoom : function() {
+            return (rentOption.rentType & 1) !== 0;
+        },
+        isByHouse : function() {
+            return (rentOption.rentType & 2) !== 0;
+        },
+        isBedroom : function(room) {
+            return room.type < 3;
+        },
+        deleteRoom : function(roomId) {
+            var o = this.rentOption;
+            for (var k in o) {
+                if (o[k] && o[k].roomId == roomId)
+                    delete o[k];
+            }
+        },
+        share : {
+            title : function() {
+                var house = rentOption.house.district + rentOption.house.position;
+                var room = '';
+                if (rentOption.rentType === 1) {
+                    for (var r in rentOption.rooms) {
+                        var t = rentOption.rooms[r].type
+                        if (t > 0 && t < 3) {
+                            if (room) {
+                                room += '+';
+                            }
+                            if (t === 1) {
+                                room += '主卧';
+                            } else if (t === 2) {
+                                room += '次卧';
+                            }
+                        }
+                    }
+                } else if (rentOption.rentType === 2) {
+                    room = '整租';
+                } else if (rentOption.rentType === 3) {
+                    room = '整租（可分租）';
+                }
+                return '[' + house + '  ' + room + ']';
+            },
+            url : function(isWeixin) {
+                if(isWeixin){
+                    return 'http://107room.com/m/house/' + model.houseId;
+                }
+                return 'http://107room.com/' + model.houseId;
+            },
+            summary : function(button) {
+                var summary = rentOption.house.description, limit = 200;
+                if (button.hasClass('jiathis_button_tsina')) {
+                    summary = '@107间  ' + summary;
+                }
+                if (summary && summary.length > limit) {
+                    summary = summary.substring(0, limit) + '...';
+                }
+                return summary;
+            }
+        },
+        // subscribers count in each district
+        districtsCount : {
+            #foreach($districtName in $!district2UserCount.keySet())
+                "$!districtName" : "$!district2UserCount.get($districtName)"#if($foreach.hasNext),#end
+            #end    
+        }
+    };
+    model.maxRoomCount = 3;
+
+</script>
+<div class="cardContainer">
+    #parse("house/add-addr.vm")    
+    #parse("house/add-detail.vm")
+    #parse("house/manage-room.vm")    
+    #parse("user-auth-register.vm")
+    #parse("house/manage-wechat.vm")
+    #parse("house/manage-totoro.vm")
+    #parse("house/manage-share.vm")
+    #parse("house/manage-usercenter.vm")    
+</div>
+
+<script>
+    room107.compacityTip = '你的浏览器模式与网站不兼容，如希望正常使用，请切换至“极（高）速模式”或使用右侧推荐的浏览器';
+    var card = Card.create();    
+    function initLayout() {
+        card.layout();
+        // read only input style
+        $('input').each(function() {
+            if ($(this).attr('readonly')) {
+        $(this).css('cursor', 'default');
+                //$(this).css('cursor', 'pointer').focus(function() {
+                //    $(this).blur();
+                //});
+            }
+        });
+    }    
+
+    function initEvent() {
+        function validate(button, onSuccess) {
+            var f = button.attr('validateFunction');
+            var v = false;
+            if (!f) {
+                v = Input.validateAll(button.parents('.card'));
+            } else {
+                v = eval(f + '()');
+            }
+            if (v) {
+                showError();
+                onSuccess();
+            }
+        }
+
+        $('.previous').click(function() {
+            clearError();
+            card.slideRight($(this).attr('previous'));
+        });
+        $('.next').click(function() {
+            clearError();
+            var button = $(this);
+            validate(button, function() {
+                var r = evalFunction(button.attr('onNext'));
+                if ( typeof r === 'undefined' || r) {
+                    card.slideLeft(button.attr('next'));
+                }
+            });
+        });
+        $('.cancel').click(function() {
+            clearError();
+            evalFunction($(this).attr('onCancel'));
+        });
+        $('.save').click(function() {
+            clearError();
+            var button = $(this);
+            validate(button, function() {
+                evalFunction(button.attr('onSave'));
+            });
+        });
+        $('.infoUnit').click(function(e) {
+            $(this).prev('input').click();
+            e.stopPropagation()
+        });
+    }
+  
+
+    $(function() {
+        initLayout();
+        initEvent();
+
+        // card.show("#detailCard");
+
+        $('input').attr('autocomplete', 'off');
+        // confirm when exit
+        $(window).bind('beforeunload', function(e) {            
+            if ($('#roomContent').is(':visible'))
+                return '房间信息还未保存';
+            var cid = $('.card:visible').attr('id');
+            if ((cid === 'detailCard') || (cid === 'registerCard') || (cid === 'roomCard')){
+                return '发房尚未完成';                
+            }
+        });
+    });
+
+    function showError(msg) {
+        $('.errorMessage').remove();
+        if (msg) {
+            $('<p class="errorMessage"></p>').text(msg).appendTo('.cardContainer').fadeOut(3000);
+        } else {// clear
+            $('.validateError').removeClass('validateError');
+        }
+    }
+
+    function clearError() {
+        showError();
+        $('.' + Input.validateErrorClass).removeClass(Input.validateErrorClass);
+    }
+</script>

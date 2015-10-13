@@ -1,0 +1,5 @@
+## --------------------- constants --------------------- ##
+## auth status
+#set($auth_notLogIn = 0)
+#set($auth_notVerified = 1)
+#set($auth_verified = 2)
